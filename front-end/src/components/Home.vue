@@ -1,14 +1,12 @@
 <template>
     <div id="home">
         <h1>Hi m8</h1>
-        <button v-on:click="myToggle">
-            <img  id="cockpit"  src="../assets/blue_button.png">
+        <button v-on:click="action(1)">
+            <img  id="button1"  src="../assets/blue_button.png">
         </button>
-        <div id="api">
-            <p>
-                {{info}}
-            </p>
-        </div>
+        <button v-on:click="action(2)">
+            <img  id="button2"  src="../assets/kc.png">
+        </button>
     </div>
 </template>
 
@@ -19,27 +17,45 @@
         data(){
             return {
                 info : null,
-                photoSrc:["./assets/blue_button.png","../assets/kc.png"],
+                photoSrc:["../assets/blue_button.png","../assets/kc.png"],
                 mySrc:0,
             }
         },
         mounted() {
             Axios.get("http://localhost:3000")
-            .then(response =>(this.info = response));
+            .then(response =>(this.info = response,
+            console.log(response)));
         },
         methods: {
-            myToggle:function () {
-
+            action:function (number) {
+                Axios.post('http://localhost:3000/button', {
+                    action: number,
+                })
+                    .then(res => {
+                        console.log(`statusCode: ${res.status}`)
+                        console.log(res)
+                    })
+                    .catch(error => {
+                        console.log(error);
+            });
             }
         },
     }
 </script>
 
 <style scoped>
-    #cockpit{
+    #button1{
         position: absolute;
         top:600px;
         right: 500px;
+        height: 5%;
+        width: 5%;
+        border-radius: 10%;
+    }
+    #button2{
+        position: absolute;
+        top:600px;
+        right: 1000px;
         height: 5%;
         width: 5%;
         border-radius: 10%;
