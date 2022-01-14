@@ -1,7 +1,7 @@
 <template>
     <div id="home">
         <h1>Hi m8</h1>
-        <img alt="home screen" src="../assets/kc.png">
+        <img alt="home screen" src="../assets/logo.png">
         <div id="api">
             <p>
                 {{info}}
@@ -20,7 +20,7 @@
             }
         },
         mounted() {
-            Axios.get("https://api.themoviedb.org/3/person/popular?api_key=f8c59b73c44d9240c1ded0a07da0d5f5")
+            Axios.get("https://localhost:3000")
             .then(response =>(this.info = response));
         }
     }
