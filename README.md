@@ -8,9 +8,9 @@ BackEnd : NodeJS
 
 
 Nombre de joueurs: 4  
-2 pilotes sur l'écran mural tactile 
-1 capitaine sur son smartphone
-1 mécanicien dans un set up VR
+2 pilotes sur l'écran mural tactile   
+1 capitaine sur son smartphone  
+1 mécanicien dans un set up VR  
 
 Scénario:  
 
