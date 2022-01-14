@@ -1,8 +1,8 @@
 # Ihm-reparties-regency
 
-Front-end VR : Unity
-Front-end web : VueJs
-Front-end Mobile : Flutter
+Front-end VR : Unity 
+Front-end web : VueJs 
+Front-end Mobile : Flutter 
 BackEnd : NodeJS  
 
 
