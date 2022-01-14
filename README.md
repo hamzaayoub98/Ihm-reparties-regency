@@ -8,6 +8,7 @@ BackEnd : NodeJS
 
 
 Nombre de joueurs: 4
+
 2 pilotes sur l'écran mural tactile 
 1 capitaine sur son smartphone
 1 mécanicien dans un set up VR
@@ -16,6 +17,7 @@ Scénario:
 Nos joueurs sont dans un vaisseaux spatiale à la poursuite de méchants
 
 Mission 1 - L'astéroïde :
+
 Un énorme astéroïde arrive à toute vitesse sur le vaisseau.
 Les pilotes doivent stabiliser le vaisseau en appuyant sur des boutons et mettres maintenir des curseurs à des positions !
 Le capitaine reçoit les information de l'IA du vaisseau et les communique aux pilotes
