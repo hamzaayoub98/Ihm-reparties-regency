@@ -1,9 +1,10 @@
 const express = require('express')
 const app = express()
-
+var bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
 var cors = require('cors')
 app.use(cors())
-
+app.use(bodyParser.json())
 let actionStack = []
 
 function oui(){
@@ -19,6 +20,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/button', function(request, response){
-    console.log(response);
+    actionStack.push(request.body.action)
+    console.log(actionStack)
     response.status(200).send("data received")
 });
