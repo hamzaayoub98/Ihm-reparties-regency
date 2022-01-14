@@ -1,5 +1,6 @@
 # Ihm-reparties-regency
 
-Front-end : VueJs
-BackEnd : NodeJS
-Mobile : Flutter
+Front-end : VueJs  
+BackEnd : NodeJS  
+Mobile : Flutter  
+ 
