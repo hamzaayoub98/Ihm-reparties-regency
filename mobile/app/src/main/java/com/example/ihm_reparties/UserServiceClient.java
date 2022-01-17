@@ -33,7 +33,7 @@ public class UserServiceClient
         try {
             Response<HelloWorldApiResponse> response = callSync.execute();
             HelloWorldApiResponse apiResponse = response.body();
-            System.out.println(apiResponse);
+            System.out.println(apiResponse.getHelloworld());
         } catch (Exception ex) {
             ex.printStackTrace();
         }

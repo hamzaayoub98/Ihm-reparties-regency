@@ -16,7 +16,7 @@ app.listen(3000, () => {
   })
 
 app.get('/', function(req, res) {
-    res.status(200).send('{helloworld: "Hello World !"}');
+    res.status(200).json({"helloworld": "Hello World !"});
 });
 
 app.post('/button', function(request, response){

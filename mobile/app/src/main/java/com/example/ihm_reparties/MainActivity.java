@@ -13,6 +13,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -116,7 +117,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         textViewAnswer = findViewById(R.id.textViewAnswer);
         buttonHelloWorld.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 400 milliseconds
+                vib.vibrate(400);
             }
         });
 
