@@ -1,5 +1,6 @@
 <template>
     <div id="home">
+        <button v-on:click="sendPing()">Send WS PING</button>
         <h1>Hi m8</h1>
         <button v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
@@ -19,7 +20,11 @@
                 info : null,
                 photoSrc:["../assets/blue_button.png","../assets/kc.png"],
                 mySrc:0,
+                connection: null,
             }
+        },
+        created: function() {
+            this.initWSConnection();
         },
         mounted() {
             Axios.get("http://localhost:3000")
@@ -38,6 +43,22 @@
                     .catch(error => {
                         console.log(error);
             });
+            },
+            initWSConnection: function() {
+                console.log("Starting connection to WebSocket Server")
+                this.connection = new WebSocket("ws://localhost:4000/")
+                this.connection.onmessage = function(event) {
+                    console.log(event.data);
+                }
+                this.connection.onopen = function(event) {
+                    console.log(event);
+                    console.log("Successfully connected to the websocket server...")
+                    this.connection.send('connectionDevice')
+                }
+            },
+            sendPing: function() {
+                this.connection.send('PING')
+
             }
         },
     }
