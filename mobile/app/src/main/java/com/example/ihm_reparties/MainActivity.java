@@ -30,6 +30,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -41,6 +44,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     public static final String EXTRA_MESSAGE = "Data";
@@ -120,6 +130,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 400 milliseconds
                 vib.vibrate(400);
+
+                ApiInterface api = ServiceGenerator.createService(ApiInterface.class);
+
+                // Calling '/'
+                Call<HelloWorldApiResponse> callSync = api.getHelloWorldCall();
+                callSync.enqueue(new Callback<HelloWorldApiResponse>() {
+                    @Override
+                    public void onResponse(Call<HelloWorldApiResponse> call, Response<HelloWorldApiResponse> response) {
+                        HelloWorldApiResponse apiResponse = response.body();
+                        System.out.println(apiResponse.getHelloworld());
+                        textViewAnswer.setText(apiResponse.getHelloworld());
+                    }
+
+                    @Override
+                    public void onFailure(Call<HelloWorldApiResponse> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
             }
         });
 
