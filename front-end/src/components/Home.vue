@@ -53,7 +53,6 @@
                 this.connection.onopen = function(event) {
                     console.log(event);
                     console.log("Successfully connected to the websocket server...")
-                    this.connection.send('connectionDevice')
                 }
             },
             sendPing: function() {

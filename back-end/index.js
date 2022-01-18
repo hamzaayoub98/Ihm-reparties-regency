@@ -31,7 +31,7 @@ server.listen(PORT_WS, () => {
     console.log("Serveur WS à l\'écoute ! port", PORT_WS);
 });
   
-
+let gameStarted = false;
 
 app.get('/', function(req, res) {
     res.status(200).json({"helloworld": "Hello World !"});
@@ -40,6 +40,16 @@ app.get('/', function(req, res) {
 app.post('/start', (req, res) => {
     res.status(200).json('ok');
     sockets.forEach((s) => s.send("Décollage !"));
+});
+
+app.get('/game/status', (req, res) => {
+    res.status(200).json({"started": gameStarted});
+});
+
+app.post('/start/game', function(request, response){
+    this.gameStarted = request.body.started;
+    console.log("🚀 ~ file: index.js ~ line 51 ~ app.post ~ this.gameStarted", this.gameStarted)
+    response.status(200).send("data game statis received")
 });
 
 app.post('/button', function(request, response){
