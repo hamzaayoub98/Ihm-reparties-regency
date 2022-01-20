@@ -1,20 +1,17 @@
 <template>
   <div id="app">
     <Home id="home"></Home>
-    <Test id="test"></Test>
   </div>
 </template>
 
 <script>
 
-import Test from "./components/test";
 import Home from "./components/Home";
 
 export default {
   name: 'App',
   components: {
     Home,
-    Test,
   }
 }
 </script>

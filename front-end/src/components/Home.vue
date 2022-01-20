@@ -7,13 +7,16 @@
         <button v-on:click="action(2)">
             <img  id="button2"  src="../assets/kc.png">
         </button>
+        <Test></Test>
     </div>
 </template>
 
 <script>
     import  Axios from 'axios';
+    import Test from "./test";
     export default {
         name: "Home",
+        components: {Test},
         data(){
             return {
                 info : null,
