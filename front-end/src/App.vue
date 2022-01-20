@@ -1,22 +1,27 @@
 <template>
   <div id="app">
-    <Home></Home>
+    <Home id="home"></Home>
+    <Test id="test"></Test>
   </div>
 </template>
 
 <script>
-import Home from "@/components/Home";
+
+import Test from "./components/test";
+import Home from "./components/Home";
 
 export default {
   name: 'App',
   components: {
     Home,
+    Test,
   }
 }
 </script>
 
 <style>
 #app {
+  display: flex;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
