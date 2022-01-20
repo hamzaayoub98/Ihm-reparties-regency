@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
+  <div id="app" :style="{'background-image':'url(' + require('./assets/background.png') + ')',backgroundPosition: 'center center',
+    backgroundSize: 'cover'}">
     <Home></Home>
   </div>
 </template>
@@ -22,6 +23,15 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #000000;
-  margin-top: 60px;
+  width: 100%;
+  height: 100%;
+  margin: none;
+  
+  
 }
+html,body{
+width: 100%;
+height: 100%;
+}
+
 </style>

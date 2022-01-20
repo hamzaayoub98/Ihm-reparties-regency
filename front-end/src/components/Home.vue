@@ -1,6 +1,5 @@
 <template>
-    <div id="home">
-        <h1>Hi m8</h1>
+    <div id="home" >
         <button v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
@@ -44,6 +43,7 @@
 </script>
 
 <style scoped>
+    
     #button1{
         position: absolute;
         top:600px;
@@ -60,13 +60,5 @@
         width: 5%;
         border-radius: 10%;
     }
-    #home{
-        color: #ff0028;
-        background-image: url("../assets/cockpit.png");
-        height: 2000px;
-        width: 100%;
-    }
-    #api{
-        color: chartreuse;
-    }
+    
 </style>
