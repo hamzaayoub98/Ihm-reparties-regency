@@ -6,16 +6,16 @@
         <button v-on:click="action(2)">
             <img  id="button2"  src="../assets/kc.png">
         </button>
-        <Test></Test>
+        <Asteroid></Asteroid>
     </div>
 </template>
 
 <script>
     import  Axios from 'axios';
-    import Test from "./test";
+    import Asteroid from "./Asteroid";
     export default {
         name: "Home",
-        components: {Test},
+        components: {Asteroid},
         data(){
             return {
                 info : null,
