@@ -15,6 +15,7 @@
 <script>
     import  Axios from 'axios';
     import Asteroid from "./Asteroid";
+    import { URL_REST, URL_WS } from '../main.js' 
     export default {
         name: "Home",
         components: {Asteroid},
@@ -30,13 +31,13 @@
             this.initWSConnection();
         },
         mounted() {
-            Axios.get("http://localhost:3000")
+            Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
             console.log(response)));
         },
         methods: {
             action:function (number) {
-                Axios.post('http://localhost:3000/button', {
+                Axios.post('http://" + URL_REST + "/button', {
                     action: number,
                 })
                     .then(res => {
@@ -49,7 +50,7 @@
             },
             initWSConnection: function() {
                 console.log("Starting connection to WebSocket Server")
-                this.connection = new WebSocket("ws://localhost:4000/")
+                this.connection = new WebSocket("ws://" + URL_WS)
                 this.connection.onmessage = function(event) {
                     console.log(event.data);
                 }
