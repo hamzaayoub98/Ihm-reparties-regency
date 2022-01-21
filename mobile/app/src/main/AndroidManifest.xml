@@ -25,6 +25,9 @@
             android:name=".DataActivity"
             android:exported="false" />
         <activity
+            android:name=".OrdersActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:parentActivityName=".MainActivity" />

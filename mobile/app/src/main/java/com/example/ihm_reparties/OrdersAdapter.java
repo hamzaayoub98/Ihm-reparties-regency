@@ -41,7 +41,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
         OrdersApiResponse order = orders.get(position);
 
         // Set item views based on your views and data model
-        TextView textView = holder.nameTextView;
+        TextView textView = holder.orderTextView;
         textView.setText(order.getTitle());
     }
 
@@ -55,8 +55,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView nameTextView;
-        public Button messageButton;
+        public TextView orderTextView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -65,7 +64,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            nameTextView = (TextView) itemView.findViewById(R.id.contact_name);
+            orderTextView = (TextView) itemView.findViewById(R.id.order_title);
         }
     }
 }

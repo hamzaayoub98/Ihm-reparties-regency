@@ -1,7 +1,9 @@
 package com.example.ihm_reparties;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -19,8 +21,8 @@ import retrofit2.Response;
 public class OrdersActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPref;
-    private Button buttonCallApi;
-    List<OrdersApiResponse> orders;
+    List<OrdersApiResponse> orders = new ArrayList<>();
+    private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +30,13 @@ public class OrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders);
 
         sharedPref = this.getSharedPreferences("app", this.MODE_PRIVATE);
-
         // Lookup the recyclerview in activity layout
         RecyclerView rvOrders = (RecyclerView) findViewById(R.id.rvOrders);
 
         if(getIpv4PortAddress().length() < 10){
             Toast toast = Toast.makeText(getApplicationContext(), "No ipv4 and port address defined in the settings.", Toast.LENGTH_SHORT);
             toast.show();
-            return;
+//            return;
         }
         ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getIpv4PortAddress());
 
@@ -45,6 +46,14 @@ public class OrdersActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<OrdersApiResponse>> call, Response<List<OrdersApiResponse>> response) {
                 orders = response.body();
+                Log.d("???", orders.toString());
+                // Create adapter passing in the sample user data
+                OrdersAdapter adapter = new OrdersAdapter(orders);
+                // Attach the adapter to the recyclerview to populate items
+                rvOrders.setAdapter(adapter);
+                // Set layout manager to position the items
+                rvOrders.setLayoutManager(new LinearLayoutManager(context));
+                // That's all!
             }
 
             @Override
@@ -52,15 +61,6 @@ public class OrdersActivity extends AppCompatActivity {
 
             }
         });
-
-
-        // Create adapter passing in the sample user data
-        OrdersAdapter adapter = new OrdersAdapter(orders);
-        // Attach the adapter to the recyclerview to populate items
-        rvOrders.setAdapter(adapter);
-        // Set layout manager to position the items
-        rvOrders.setLayoutManager(new LinearLayoutManager(this));
-        // That's all!
     }
 
     public String getIpv4PortAddress(){
