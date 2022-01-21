@@ -18,7 +18,8 @@
   "homepage": "https://github.com/hamzaayoub98/Ihm-reparties-regency#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {},
   "description": ""
