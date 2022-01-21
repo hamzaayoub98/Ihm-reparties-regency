@@ -10,8 +10,10 @@
   "dependencies": {
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
+    "eslint-utils": "^3.0.0",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1",
+    "three": "^0.136.0",
     "vue": "^2.6.11",
     "vue-socket.io": "^3.0.10"
   },

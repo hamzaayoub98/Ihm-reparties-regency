@@ -1,15 +1,13 @@
 <template>
-  <div id="app">
-  <div v-if="gameStarted">
-    <Home></Home>
-  </div>
-  <div v-else>
-    <h1>Bienvenue à bord !</h1>
-    <button v-on:click="startGame()">Nouvelle Partie</button>
-  </div>
-
-
-    
+  <div id="app" :style="{'background-image':'url(' + require('./assets/background.png') + ')',backgroundPosition: 'center center',
+    backgroundSize: 'cover'}">
+      <div v-if="gameStarted">
+        <Home></Home>
+      </div>
+      <div v-else>
+        <h1>Bienvenue à bord !</h1>
+        <button v-on:click="startGame()">Nouvelle Partie</button>
+    </div>
   </div>
 </template>
 
@@ -51,11 +49,21 @@ export default {
 
 <style>
 #app {
+  display: flex;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #000000;
-  margin-top: 60px;
+  width: 100%;
+  height: 100%;
+  margin: none;
+  
+  
 }
+html,body{
+width: 100%;
+height: 100%;
+}
+
 </style>

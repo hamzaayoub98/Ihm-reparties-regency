@@ -1,5 +1,5 @@
 <template>
-    <div id="home">
+    <div id="home" >
         <button v-on:click="sendPing()">Send WS PING</button>
         <h1>Hi m8</h1>
         <button v-on:click="action(1)">
@@ -8,13 +8,16 @@
         <button v-on:click="action(2)">
             <img  id="button2"  src="../assets/kc.png">
         </button>
+        <Asteroid></Asteroid>
     </div>
 </template>
 
 <script>
     import  Axios from 'axios';
+    import Asteroid from "./Asteroid";
     export default {
         name: "Home",
+        components: {Asteroid},
         data(){
             return {
                 info : null,
@@ -64,6 +67,7 @@
 </script>
 
 <style scoped>
+    
     #button1{
         position: absolute;
         top:600px;
@@ -80,13 +84,5 @@
         width: 5%;
         border-radius: 10%;
     }
-    #home{
-        color: #ff0028;
-        background-image: url("../assets/cockpit.png");
-        height: 2000px;
-        width: 100%;
-    }
-    #api{
-        color: chartreuse;
-    }
+    
 </style>
