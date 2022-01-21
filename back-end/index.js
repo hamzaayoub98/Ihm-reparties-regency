@@ -77,7 +77,7 @@ app.get('/actionvr',function (request,response) {
     action = parseInt(request.query.id)
     processAction(action)
     console.log(baseActions)
-    response.status(200).send("data received with id "+request.query.id);
+    response.status(200).send(actionStack.includes(action));
 })
 
 
