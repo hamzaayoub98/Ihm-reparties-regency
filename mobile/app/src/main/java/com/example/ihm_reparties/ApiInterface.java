@@ -1,5 +1,7 @@
 package com.example.ihm_reparties;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -25,6 +27,9 @@ public interface ApiInterface {
 
     @GET("/")
     Call<HelloWorldApiResponse> getHelloWorldCall();
+
+    @GET("/action-list")
+    Call<List<OrdersApiResponse>> getOrdersApiResponseCall();
 
 // CountryResponse is a POJO class which receives the response of this API
 
