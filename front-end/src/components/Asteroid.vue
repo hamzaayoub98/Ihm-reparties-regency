@@ -36,7 +36,7 @@
 
                 }, undefined, function ( error ) {
 
-                    console.error( 'merde',error );
+                    console.error( 'Une erreur est survenue',error );
                 })
 
                 let geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
