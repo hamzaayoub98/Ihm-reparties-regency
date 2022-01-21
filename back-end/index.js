@@ -56,17 +56,24 @@ app.get('/game/status', (req, res) => {
     res.status(200).json({"started": gameStarted});
 });
 
+app.get('/action-list',function (request,response){
+    console.log("envoie des actions au capitaine")
+    response.status(200).json(baseActions);
+})
+
 app.post('/start/game', function(request, response){
     this.gameStarted = request.body.started;
     console.log("🚀 ~ file: index.js ~ line 51 ~ app.post ~ this.gameStarted", this.gameStarted)
     response.status(200).send("data game statis received")
 });
 
-app.post('/button', function(request, response){
+app.post('/action', function(request, response){
     processAction(request.body.action)
     console.log(baseActions)
     response.status(200).send("data received")
 });
+
+
 
 
 function processAction(action){
@@ -78,5 +85,4 @@ function processAction(action){
             }
         })
     }
-
 }
