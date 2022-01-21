@@ -25,7 +25,7 @@ const PORT_WS = 4000
 const server = http.createServer(app);
 const websocketServer = new WebSocket.Server({ server });
 
-let actionStack = []
+let actionStack = [1,2,3]
 var sockets = [];
 
 websocketServer.on('connection', function (socket) {
