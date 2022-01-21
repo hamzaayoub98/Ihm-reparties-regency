@@ -1,0 +1,11 @@
+authtoken: 240hZvLuJthA2ICKEY99oUdZ9ki_7podzhUjwt9YqEYHsb3ss
+region: eu
+tunnels:
+  rest:
+    addr: 3000
+    proto: http
+    host_header: rest-regency.dev
+  ws:
+    addr: 4000
+    proto: http
+    host_header: ws-regency.dev
