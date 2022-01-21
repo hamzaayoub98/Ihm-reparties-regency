@@ -64,7 +64,7 @@ app.get('/action-list',function (request,response){
 app.post('/start/game', function(request, response){
     this.gameStarted = request.body.started;
     console.log("🚀 ~ file: index.js ~ line 51 ~ app.post ~ this.gameStarted", this.gameStarted)
-    response.status(200).send("data game statis received")
+    response.status(200).send("data game status received")
 });
 
 app.post('/action', function(request, response){
@@ -72,6 +72,13 @@ app.post('/action', function(request, response){
     console.log(baseActions)
     response.status(200).send("data received")
 });
+
+app.get('/actionvr',function (request,response) {
+    action = parseInt(request.query.id)
+    processAction(action)
+    console.log(baseActions)
+    response.status(200).send("data received with id "+request.query.id);
+})
 
 
 
