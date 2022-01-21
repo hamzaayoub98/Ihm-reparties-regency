@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean isSaving = false;
     private SharedPreferences sharedPref;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private Button buttonSave, buttonShow, buttonHelloWorld;
+    private Button buttonSave, buttonShow, buttonHelloWorld, buttonGoOrders;
     private TextView textView1, textViewAnswer;
 
     @Override
@@ -131,7 +131,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // Vibrate for 400 milliseconds
                 vib.vibrate(400);
 
-                ApiInterface api = ServiceGenerator.createService(ApiInterface.class);
+                if(getIpv4PortAddress().length() < 10){
+                    Toast toast = Toast.makeText(v.getContext(), "No ipv4 and port address defined in the settings.", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+                ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getIpv4PortAddress());
 
                 // Calling '/'
                 Call<HelloWorldApiResponse> callSync = api.getHelloWorldCall();
@@ -146,8 +151,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     @Override
                     public void onFailure(Call<HelloWorldApiResponse> call, Throwable t) {
                         t.printStackTrace();
+                        Toast toast = Toast.makeText(v.getContext(), "Communication failed. Verify ipv4 and port in settings.", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                 });
+            }
+        });
+
+        buttonGoOrders = (Button) findViewById(R.id.button_view_orders);
+        buttonGoOrders.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), OrdersActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -208,29 +223,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native Integer startNodeWithArguments(String[] arguments);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle item selection
-//        switch (item.getItemId()) {
-//            case R.id.settings:
-//                Intent intent = new Intent(this, SettingActivity.class);
-//                startActivity(intent);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public String getIpv4PortAddress(){
+        String ipv4 = sharedPref.getString(getString(R.string.ipv4), "");
+        String port = sharedPref.getString(getString(R.string.port), "");
+        String address = "http://" + ipv4 + ":" + port + "/";
+        return address;
+    }
 }
