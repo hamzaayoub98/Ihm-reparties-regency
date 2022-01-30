@@ -13,6 +13,11 @@ const baseActions = [{
     {
         title :"Remettre de l`antimatière",
         id: 3,
+    },
+    {
+        title:"Augmenter les rétro-propulseurs à 80%",
+        id:'slider',
+        value:80,
     }]
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -24,14 +29,25 @@ const PORT_WS = 4000
 
 const server = http.createServer(app);
 const websocketServer = new WebSocket.Server({ server });
-
+let sliderValue = 0;
 let actionStack = [1,2,3]
 var sockets = [];
-
+websocketServer.on('sliderValue',function (socket){
+   console.log("")
+});
 websocketServer.on('connection', function (socket) {
     socket.on('message', msg => {
+        const rawMsg = `${msg}`;
+        const trimmed = rawMsg.split(',');
         console.log(`Message: ${msg}`);
-        socket.send("Let's go !")
+        if(trimmed[0] === 'sliderValue'){
+            sliderValue = msg[1];
+            processAction({action:'slider'})
+            socket.send("slider value is updated");
+        }
+        else{
+            socket.send("Let's go !")
+        }
     });
 })
 app.listen(PORT_REST, () => {
@@ -84,6 +100,15 @@ app.get('/actionvr',function (request,response) {
 
 
 function processAction(action){
+    if(action.action === 'slider'){
+        baseActions.forEach(action =>{
+            if(action.id === 'slider'){
+                if(sliderValue >= 80){
+                    baseActions.splice(baseActions.indexOf(action),1)
+                }
+            }
+        })
+    }
     if(actionStack.includes(action)){
         actionStack.splice(actionStack.indexOf(action),1);
         baseActions.forEach(actions =>{

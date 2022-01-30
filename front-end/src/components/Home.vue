@@ -1,10 +1,10 @@
 <template>
     <div id="home" >
         <button v-on:click="sendPing()">Send WS PING</button>
-        <h1>Hi m8</h1>
         <button v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
+        <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>
         <button v-on:click="action(2)">
             <img  id="button2"  src="../assets/kc.png">
         </button>
@@ -15,15 +15,19 @@
 <script>
     import  Axios from 'axios';
     import Asteroid from "./Asteroid";
+    import VueSlider from 'vue-slider-component'
+    import 'vue-slider-component/theme/antd.css'
+
     export default {
         name: "Home",
-        components: {Asteroid},
+        components: {Asteroid,VueSlider},
         data(){
             return {
                 info : null,
                 photoSrc:["../assets/blue_button.png","../assets/kc.png"],
                 mySrc:0,
                 connection: null,
+                sliderValue:0,
             }
         },
         created: function() {
@@ -61,13 +65,21 @@
             sendPing: function() {
                 this.connection.send('PING')
 
+            },
+            sendSliderValue:function(){
+              this.connection.send(['sliderValue',this.sliderValue]);
             }
         },
     }
 </script>
 
 <style scoped>
-    
+    #slider{
+      display:flex;
+      position: relative;
+      top:750px;
+      left: 900px;
+    }
     #button1{
         position: absolute;
         top:600px;
@@ -84,5 +96,5 @@
         width: 5%;
         border-radius: 10%;
     }
-    
+
 </style>
