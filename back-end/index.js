@@ -11,10 +11,14 @@ const baseActions = [{
     id: 2,
 },
 {
-    title: "Remettre de l'antimatière",
+    title: "Remettre de l`antimatière",
     id: 3,
+},
+{
+    title: "Augmenter les rétro-propulseurs à 80%",
+    id: 'slider',
+    value: 80,
 }]
-
 const nextActions = [{
     title: "Remettre la gravité",
     id: 4,
@@ -35,22 +39,34 @@ const PORT_WS = 4000
 
 const server = http.createServer(app);
 const websocketServer = new WebSocket.Server({ server });
-
+let sliderValue = 0;
 let actionStack = [1,2,3]
 var sockets = [];
-
+websocketServer.on('sliderValue',function (socket){
+   console.log("")
+});
 websocketServer.on('connection', function (socket) {
     socket.on('message', msg => {
+        const rawMsg = `${msg}`;
+        const trimmed = rawMsg.split(',');
         console.log(`Message: ${msg}`);
-        socket.send("Let's go !")
+        if(trimmed[0] === 'sliderValue'){
+            sliderValue = msg[1];
+            processAction({action:'slider'})
+            socket.send("slider value is updated");
+        }
+        else{
+            socket.send("Let's go !")
+        }
     });
 })
 
 function updateDataGame() {
-    baseActions.push(nextActions.reverse().pop())
+    if (nextActions.length > 0) {
+        baseActions.push(nextActions.sort((a, b) => 0.5 - Math.random()).pop())
+    }
   }
 
-setInterval(updateDataGame, 10000)
 
 app.listen(PORT_REST, () => {
     console.log('Serveur REST à l\'écoute ! port', PORT_REST)
@@ -82,6 +98,7 @@ app.get('/action-list',function (request,response){
 app.post('/start/game', function(request, response){
     this.gameStarted = request.body.started;
     console.log("🚀 ~ file: index.js ~ line 51 ~ app.post ~ this.gameStarted", this.gameStarted)
+    setInterval(updateDataGame, 10000)
     response.status(200).send("data game status received")
 });
 
@@ -102,6 +119,15 @@ app.get('/actionvr',function (request,response) {
 
 
 function processAction(action){
+    if(action.action === 'slider'){
+        baseActions.forEach(action =>{
+            if(action.id === 'slider'){
+                if(sliderValue >= 80){
+                    baseActions.splice(baseActions.indexOf(action),1)
+                }
+            }
+        })
+    }
     if(actionStack.includes(action)){
         actionStack.splice(actionStack.indexOf(action),1);
         baseActions.forEach(actions =>{
