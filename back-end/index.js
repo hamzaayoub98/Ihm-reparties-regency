@@ -4,16 +4,27 @@ const cors = require('cors')
 const http = require("http");
 const WebSocket = require("ws");
 const baseActions = [{
-    title:"Appuyez sur le bouton 1",
-    id:1,
-},{
-    title:"Appuyez sur le bouton 2",
-    id:2,
+    title: "Appuyez sur le bouton 1",
+    id: 1,
+}, {
+    title: "Appuyez sur le bouton 2",
+    id: 2,
 },
-    {
-        title :"Remettre de l`antimatière",
-        id: 3,
-    }]
+{
+    title: "Remettre de l'antimatière",
+    id: 3,
+}]
+
+const nextActions = [{
+    title: "Remettre la gravité",
+    id: 4,
+}, {
+    title: "Appuyez sur le bouton 1",
+    id: 5,
+}, {
+    title: "Activez l'hyper vitesse",
+    id: 6,
+}]
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
@@ -34,6 +45,13 @@ websocketServer.on('connection', function (socket) {
         socket.send("Let's go !")
     });
 })
+
+function updateDataGame() {
+    baseActions.push(nextActions.reverse().pop())
+  }
+
+setInterval(updateDataGame, 10000)
+
 app.listen(PORT_REST, () => {
     console.log('Serveur REST à l\'écoute ! port', PORT_REST)
 })
