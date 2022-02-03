@@ -29,6 +29,11 @@ const nextActions = [{
     title: "Activez l'hyper vitesse",
     id: 6,
 }]
+
+const finishGame = {
+    isFinished: true,
+}
+
 const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
@@ -101,6 +106,13 @@ app.post('/start/game', function(request, response){
     setInterval(updateDataGame, 10000)
     response.status(200).send("data game status received")
 });
+
+app.post('/finish', function(request, response){
+    this.gameStarted = request.body.isFinished;
+    console.log("🚀 test finish game", this.gameStarted)
+    setInterval(updateDataGame, 10000)
+    response.status(200).json(finishGame);
+});    
 
 app.post('/action', function(request, response){
     processAction(request.body.action)
