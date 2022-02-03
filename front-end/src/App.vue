@@ -9,9 +9,9 @@
           <h1 class="text-primary d-flex justify-content-center">Embarquement immmédiat !</h1>
         </div>
       </div>
-      <div class="row">
+      <div class="row my-4">
         <div class="col">
-          <button type="button" class="btn btn-primary" v-on:click="startGame()">
+          <button type="button" class="btn btn-lg btn-primary" v-on:click="startGame()">
             Nouvelle Partie
           </button>
         </div>
@@ -26,6 +26,12 @@
             id="rocket"
           />
         </div>
+      </div>
+      <div v-if="this.displayError && !this.captainConnected" class="row my-4">
+        <div class="col text-danger"><h3>Le mobile du capitaine n'est pas connecté</h3></div>
+      </div>
+      <div v-if="this.displayError && !this.mecanoConnected" class="row my-4">
+        <div class="col text-danger"><h3>Le mobile du mécanicien n'est pas connecté</h3></div>
       </div>
     </div>
   </div>
@@ -43,6 +49,9 @@ export default {
   data() {
     return {
       gameStarted: false,
+      captainConnected: false,
+      mecanoConnected: false,
+      displayError: false
     };
   },
   mounted() {
@@ -52,16 +61,22 @@ export default {
   },
   methods: {
     startGame: function () {
-      Axios.post("http://localhost:3000/start/game", {
-        started: true,
-      })
-        .then((res) => {
-          console.log(res);
-          this.gameStarted = true;
+      if (!this.displayError){
+        this.displayError = true
+        this.captainConnected = false
+        this.mecanoConnected = false
+      } else {
+        Axios.post("http://localhost:3000/start/game", {
+          started: true,
         })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((res) => {
+            console.log(res);
+            this.gameStarted = true;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   },
 };
