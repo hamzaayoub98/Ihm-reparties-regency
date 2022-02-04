@@ -45,6 +45,7 @@ const PORT_WS = 4000
 const server = http.createServer(app);
 const websocketServer = new WebSocket.Server({ server });
 let sliderValue = 0;
+let counter = 0;
 let actionStack = [1,2,3]
 var sockets = [];
 websocketServer.on('sliderValue',function (socket){
@@ -67,8 +68,14 @@ websocketServer.on('connection', function (socket) {
 })
 
 function updateDataGame() {
-    if (nextActions.length > 0) {
-        baseActions.push(nextActions.sort((a, b) => 0.5 - Math.random()).pop())
+    counter +=1
+    if (counter%5==0 && nextActions.length > 0) {
+        let tmpAction = nextActions.sort((a, b) => 0.5 - Math.random()).pop()
+        baseActions.push(tmpAction)
+        actionStack.push(tmpAction.id)
+    }
+    if (baseActions.length + nextActions.length ==0) {
+        isFinished = true;
     }
   }
 
@@ -96,14 +103,14 @@ app.get('/game/status', (req, res) => {
 });
 
 app.get('/action-list',function (request,response){
-    console.log("envoie des actions au capitaine")
+    // console.log("envoie des actions au capitaine")
     response.status(200).json(baseActions);
 })
 
 app.post('/start/game', function(request, response){
     this.gameStarted = request.body.started;
     console.log("🚀 ~ file: index.js ~ line 51 ~ app.post ~ this.gameStarted", this.gameStarted)
-    setInterval(updateDataGame, 10000)
+    setInterval(updateDataGame, 1000)
     response.status(200).send("data game status received")
 });
 
@@ -116,14 +123,14 @@ app.post('/finish', function(request, response){
 
 app.post('/action', function(request, response){
     processAction(request.body.action)
-    console.log(baseActions)
+    console.log("baseActions", baseActions)
     response.status(200).send("data received")
 });
 
 app.get('/actionvr',function (request,response) {
     action = parseInt(request.query.id)
     processAction(action)
-    console.log(baseActions)
+    console.log("baseActions VR", baseActions)
     response.status(200).send(actionStack.includes(action));
 })
 
