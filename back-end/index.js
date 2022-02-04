@@ -75,7 +75,9 @@ function updateDataGame() {
         actionStack.push(tmpAction.id)
     }
     if (baseActions.length + nextActions.length ==0) {
-        isFinished = true;
+        finishGame.isFinished = true;
+        console.log("🚀 ~ file: index.js ~ line 79 ~ updateDataGame ~ isFinished", isFinished)
+        
     }
   }
 

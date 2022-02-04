@@ -39,8 +39,9 @@
                 this.light.position.set(200, 500, 200);
                 this.scene.add(this.light);
                 this.asteroids();
-                this.renderer = new THREE.WebGLRenderer();
+                this.renderer = new THREE.WebGLRenderer({ alpha: true });
                 this.renderer.setSize(container.clientWidth, container.clientWidth);
+
                 //controls = new THREE.OrbitControls(camera, renderer.domElement);
                 container.appendChild(this.renderer.domElement);
                 
@@ -98,7 +99,7 @@
                 parent.position.set(opts.pos.x, opts.pos.y, opts.pos.z);
                 parent.boxLength = opts.size.z;
                 parent.boxheight = opts.size.y;
-                this.scene.add(new THREE.BoxHelper(parent, 0xff0000));
+                //this.scene.add(new THREE.BoxHelper(parent, 0xff0000));
                 this.scene.add(parent);
                 return parent;
                 },
@@ -134,7 +135,6 @@
         height: 465px;
         width: 465px;
         top: 0%;
-        margin: 0 auto;
-        
+        margin: 0 auto;   
     }
 </style>
