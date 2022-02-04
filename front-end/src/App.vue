@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     startGame: function () {
-      if (!this.displayError){
+      if (this.displayError){ //TODO : disable for the moment
         this.displayError = true
         this.captainConnected = false
         this.mecanoConnected = false
