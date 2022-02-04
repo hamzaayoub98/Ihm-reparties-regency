@@ -2,7 +2,8 @@
   <div id="app" :style="{'background-image':'url(' + require('./assets/background.png') + ')',backgroundPosition: 'center center',
     backgroundSize: 'cover'}">
       <div v-if="gameStarted">
-        <Home></Home>
+        <Home ></Home>
+        
       </div>
       <div v-else>
         <h1>Bienvenue à bord !</h1>
@@ -15,10 +16,11 @@
 import Home from "@/components/Home";
 import  Axios from 'axios';
 
+
 export default {
   name: 'App',
   components: {
-    Home,
+    Home
   },
   data(){
     return {
@@ -58,6 +60,7 @@ export default {
   width: 100%;
   height: 100%;
   margin: none;
+  position: relative;
 
 
 }
