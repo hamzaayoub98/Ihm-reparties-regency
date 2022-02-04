@@ -1,9 +1,12 @@
 <template>
     <div id="home" >
         <Asteroid ></Asteroid>
+        <button v-on:click="sendPing()">Send WS PING</button>
+
         <button v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
+        <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>
         <button v-on:click="action(2)">
             <img  id="button2"  src="../assets/kc.png">
         </button>
@@ -16,29 +19,35 @@
 
 <script>
     import  Axios from 'axios';
-    import Asteroid from "@/components/Asteroid";
+
+    import Asteroid from "./Asteroid";
+    import { URL_REST, URL_WS } from '../main.js' 
+    import VueSlider from 'vue-slider-component'
+    import 'vue-slider-component/theme/antd.css'
+
     export default {
         name: "Home",
-        components:{Asteroid},
+        components: {Asteroid,VueSlider},
         data(){
             return {
                 info : null,
                 photoSrc:["../assets/blue_button.png","../assets/kc.png"],
                 mySrc:0,
                 connection: null,
+                sliderValue:0,
             }
         },
         created: function() {
             this.initWSConnection();
         },
         mounted() {
-            Axios.get("http://localhost:3000")
+            Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
             console.log(response)));
         },
         methods: {
             action:function (number) {
-                Axios.post('http://localhost:3000/button', {
+                Axios.post('http://" + URL_REST + "/button', {
                     action: number,
                 })
                     .then(res => {
@@ -51,7 +60,7 @@
             },
             initWSConnection: function() {
                 console.log("Starting connection to WebSocket Server")
-                this.connection = new WebSocket("ws://localhost:4000/")
+                this.connection = new WebSocket("ws://" + URL_WS)
                 this.connection.onmessage = function(event) {
                     console.log(event.data);
                 }
@@ -63,13 +72,21 @@
             sendPing: function() {
                 this.connection.send('PING')
 
+            },
+            sendSliderValue:function(){
+              this.connection.send(['sliderValue',this.sliderValue]);
             }
         },
     }
 </script>
 
 <style scoped>
-    
+    #slider{
+      display:flex;
+      position: relative;
+      top:750px;
+      left: 900px;
+    }
     #button1{
         position: absolute;
         top:600px;
@@ -102,4 +119,5 @@
     
     
     
+
 </style>

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ihm-reparties</string>
+    <string name="ipv4">IPV4</string>
+    <string name="port">Port</string>
 </resources>

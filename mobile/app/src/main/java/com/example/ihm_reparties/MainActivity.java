@@ -14,6 +14,7 @@ import android.hardware.camera2.CameraManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +30,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -42,6 +47,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     public static final String EXTRA_MESSAGE = "Data";
 
@@ -54,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean isSaving = false;
     private SharedPreferences sharedPref;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private Button buttonSave, buttonShow, buttonHelloWorld;
+    private Button buttonSave, buttonShow, buttonHelloWorld, buttonGoOrders,buttonFinishGame;
     private TextView textView1, textViewAnswer;
 
     @Override
@@ -120,6 +132,69 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 // Vibrate for 400 milliseconds
                 vib.vibrate(400);
+
+                if(getIpv4PortAddress().length() < 10){
+                    Toast toast = Toast.makeText(v.getContext(), "No ipv4 and port address defined in the settings.", Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+                ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getIpv4PortAddress());
+
+                // Calling '/'
+                Call<HelloWorldApiResponse> callSync = api.getHelloWorldCall();
+                callSync.enqueue(new Callback<HelloWorldApiResponse>() {
+                    @Override
+                    public void onResponse(Call<HelloWorldApiResponse> call, Response<HelloWorldApiResponse> response) {
+                        HelloWorldApiResponse apiResponse = response.body();
+                        if(apiResponse != null) {
+                            System.out.println(apiResponse.getHelloworld());
+                            textViewAnswer.setText(apiResponse.getHelloworld());
+                        }
+                        else {
+                            Toast toast = Toast.makeText(v.getContext(), "Got response but it's null.", Toast.LENGTH_SHORT);
+                            toast.show();
+                            Log.d("ApiResponseNull", "The API response is null.");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<HelloWorldApiResponse> call, Throwable t) {
+                        t.printStackTrace();
+                        Toast toast = Toast.makeText(v.getContext(), "Communication failed. Verify ipv4 and port in settings.", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+            }
+        });
+
+        buttonGoOrders = (Button) findViewById(R.id.button_view_orders);
+        buttonGoOrders.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), OrdersActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        buttonFinishGame = (Button) findViewById(R.id.button_finish_game);
+        buttonFinishGame.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getIpv4PortAddress());
+
+                Call<FinishGame> callSync = api.finishGame(new FinishGame(true));
+                callSync.enqueue(new Callback<FinishGame>() {
+                    @Override
+                    public void onResponse(Call<FinishGame> call, Response<FinishGame> response) {
+                        Log.d("CallBack FinishGame", "Saying game is finished !");
+                    }
+
+                    @Override
+                    public void onFailure(Call<FinishGame> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "FinishGame callback failure",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBackFinishGameFailed", "FinishGame callback failure");
+                        t.printStackTrace();
+                    }
+                });
             }
         });
 
@@ -180,29 +255,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    public native Integer startNodeWithArguments(String[] arguments);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle item selection
-//        switch (item.getItemId()) {
-//            case R.id.settings:
-//                Intent intent = new Intent(this, SettingActivity.class);
-//                startActivity(intent);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public String getIpv4PortAddress(){
+        String ipv4 = sharedPref.getString(getString(R.string.ipv4), "");
+        String port = sharedPref.getString(getString(R.string.port), "");
+        String address = "http://" + ipv4 + ":" + port + "/";
+        return address;
+    }
 }
