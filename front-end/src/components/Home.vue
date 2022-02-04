@@ -1,6 +1,8 @@
 <template>
     <div id="home" >
+        <Asteroid ></Asteroid>
         <button v-on:click="sendPing()">Send WS PING</button>
+
         <button v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
@@ -8,12 +10,16 @@
         <button v-on:click="action(2)">
             <img  id="button2"  src="../assets/kc.png">
         </button>
-        <Asteroid></Asteroid>
+        <button v-on:click="sendPing()">
+            <img  id="button3"  src="../assets/send.png">
+        </button>
+
     </div>
 </template>
 
 <script>
     import  Axios from 'axios';
+
     import Asteroid from "./Asteroid";
     import { URL_REST, URL_WS } from '../main.js' 
     import VueSlider from 'vue-slider-component'
@@ -98,5 +104,21 @@
         width: 5%;
         border-radius: 10%;
     }
+    #button3{
+        position: absolute;
+        top:95%;
+        right: 1000px;
+        height: 5%;
+        width: 5%;
+        border-radius: 10%;
+    }
+    #home{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
+    
+    
+    
 
 </style>

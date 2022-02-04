@@ -1,4 +1,5 @@
 <template>
+
   <div id="app">
     <div v-if="gameStarted" class="bg">
       <Home></Home>
@@ -41,10 +42,11 @@
 import Home from "@/components/Home";
 import Axios from "axios";
 
+
 export default {
   name: "App",
   components: {
-    Home,
+    Home
   },
   data() {
     return {
@@ -92,6 +94,7 @@ export default {
   width: 100%;
   height: 100%;
   margin: none;
+  position: relative;
     background-color: #0e1118;
     background-image: radial-gradient(
     ellipse at bottom,
