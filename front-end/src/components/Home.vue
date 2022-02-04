@@ -34,14 +34,15 @@
         created: function() {
             this.initWSConnection();
         },
-        mounted() {
+        mounted() {  
+            console.log("🚀 ~ file: Home.vue ~ line 43 ~ mounted ~ URL_REST", URL_REST)
             Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
             console.log(response)));
         },
         methods: {
             action:function (number) {
-                Axios.post('http://" + URL_REST + "/button', {
+                Axios.post("http://" + URL_REST + "/action", {
                     action: number,
                 })
                     .then(res => {
