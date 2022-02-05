@@ -109,7 +109,7 @@ body {
 }
 .bg {
   /* The image used */
-  background-image: url("./assets/background.png");
+  background-image: url("./assets/background1.png");
 
   /* Full height */
   height: 100%;

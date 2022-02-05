@@ -1,6 +1,7 @@
 <template>
     <div id="home" >
         <Asteroid ></Asteroid>
+        <AsteroidLeft></AsteroidLeft>
         <button v-on:click="sendPing()">Send WS PING</button>
 
         <button v-on:click="action(1)">
@@ -24,10 +25,11 @@
     import { URL_REST, URL_WS } from '../main.js' 
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
+    import AsteroidLeft from './AsteroidLeft';
 
     export default {
         name: "Home",
-        components: {Asteroid,VueSlider},
+        components: {Asteroid,VueSlider,AsteroidLeft},
         data(){
             return {
                 info : null,
