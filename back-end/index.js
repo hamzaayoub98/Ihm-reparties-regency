@@ -54,10 +54,10 @@ websocketServer.on('sliderValue',function (socket){
 websocketServer.on('connection', function (socket) {
     socket.on('message', msg => {
         const rawMsg = `${msg}`;
-        const trimmed = rawMsg.split(',');
+        let trimmed = rawMsg.split(',');
         console.log(`Message: ${msg}`);
         if(trimmed[0] === 'sliderValue'){
-            sliderValue = msg[1];
+            sliderValue = parseInt(trimmed[1]);
             processAction({action:'slider'})
             socket.send("slider value is updated");
         }
@@ -76,7 +76,7 @@ function updateDataGame() {
     }
     if (baseActions.length + nextActions.length ==0) {
         finishGame.isFinished = true;
-        console.log("🚀 ~ file: index.js ~ line 79 ~ updateDataGame ~ isFinished", isFinished)
+        console.log("🚀 ~ file: index.js ~ line 79 ~ updateDataGame ~ isFinished", finishGame.isFinished)
         
     }
   }
