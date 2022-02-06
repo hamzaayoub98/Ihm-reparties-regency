@@ -1,6 +1,9 @@
 <template>
     <div id="home" >
+        <Asteroid ></Asteroid>
+        <AsteroidLeft></AsteroidLeft>
         <button v-on:click="sendPing()">Send WS PING</button>
+
         <button v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
@@ -8,20 +11,25 @@
         <button v-on:click="action(2)">
             <img  id="button2"  src="../assets/kc.png">
         </button>
-        <Asteroid></Asteroid>
+        <button v-on:click="sendPing()">
+            <img  id="button3"  src="../assets/send.png">
+        </button>
+
     </div>
 </template>
 
 <script>
     import  Axios from 'axios';
+
     import Asteroid from "./Asteroid";
     import { URL_REST, URL_WS } from '../main.js' 
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
+    import AsteroidLeft from './AsteroidLeft';
 
     export default {
         name: "Home",
-        components: {Asteroid,VueSlider},
+        components: {Asteroid,VueSlider,AsteroidLeft},
         data(){
             return {
                 info : null,
@@ -34,14 +42,15 @@
         created: function() {
             this.initWSConnection();
         },
-        mounted() {
+        mounted() {  
+            console.log("🚀 ~ file: Home.vue ~ line 43 ~ mounted ~ URL_REST", URL_REST)
             Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
             console.log(response)));
         },
         methods: {
             action:function (number) {
-                Axios.post('http://" + URL_REST + "/button', {
+                Axios.post("http://" + URL_REST + "/action", {
                     action: number,
                 })
                     .then(res => {
@@ -97,5 +106,21 @@
         width: 5%;
         border-radius: 10%;
     }
+    #button3{
+        position: absolute;
+        top:95%;
+        right: 1000px;
+        height: 5%;
+        width: 5%;
+        border-radius: 10%;
+    }
+    #home{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
+    
+    
+    
 
 </style>
