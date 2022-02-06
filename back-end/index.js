@@ -65,6 +65,9 @@ websocketServer.on('connection', function (socket) {
             socket.send("Let's go !")
         }
     });
+    socket.on('sliderValue', msg => {
+        socket.send(sliderValue);
+    });
 })
 
 function updateDataGame() {
