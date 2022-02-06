@@ -2,9 +2,12 @@ package com.example.ihm_reparties;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -13,8 +16,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ekn.gruzer.gaugelibrary.HalfGauge;
+import com.ekn.gruzer.gaugelibrary.Range;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,7 +34,9 @@ public class OrdersActivity extends AppCompatActivity {
     private Context context = this;
     Handler handler = new Handler();
     Runnable runnable;
-    int delay = 2000;
+    int delay = 1000;
+    // Save state
+    private Parcelable recyclerViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +68,16 @@ public class OrdersActivity extends AppCompatActivity {
                         if(orders != null) {
                             Log.d("Orders", orders.toString());
                             // Create adapter passing in the sample user data
-                            OrdersAdapter adapter = new OrdersAdapter(orders);
+                            int random = new Random().nextInt(176);
+                            OrdersAdapter adapter = new OrdersAdapter(orders, random);
                             // Attach the adapter to the recyclerview to populate items
                             rvOrders.setAdapter(adapter);
                             // Set layout manager to position the items
                             rvOrders.setLayoutManager(new LinearLayoutManager(context));
-                            // That's all!
+
+
                         }
+
                     }
 
                     @Override
@@ -77,7 +89,6 @@ public class OrdersActivity extends AppCompatActivity {
                 });
             }
         }, delay);
-
     }
 
     @Override
