@@ -48,27 +48,45 @@ let sliderValue = 0;
 let counter = 0;
 let actionStack = [1,2,3]
 var sockets = [];
-websocketServer.on('sliderValue',function (socket){
-   console.log("")
-});
-websocketServer.on('connection', function (socket) {
-    socket.on('message', msg => {
-        const rawMsg = `${msg}`;
-        let trimmed = rawMsg.split(',');
-        console.log(`Message: ${msg}`);
-        if(trimmed[0] === 'sliderValue'){
-            sliderValue = parseInt(trimmed[1]);
-            processAction({action:'slider'})
-            socket.send("slider value is updated");
-        }
-        else{
-            socket.send("Let's go !")
-        }
-    });
-    socket.on('sliderValue', msg => {
-        socket.send(sliderValue);
-    });
+
+let frontWS;
+let mobileWS;
+websocketServer.on('connection', function (socket, req) {
+    if (req.url.includes("0")) {
+        console.log('Front is connected');
+        frontWS = socket;
+        socket.on('message', onMessageFromFront);
+
+    } else {
+        console.log("Mobile is connected");
+        mobileWS = socket;
+        socket.on('message', onMessageFromMobile);
+
+    }
+    // socket.on('message', msg => {
+    //     const rawMsg = `${msg}`;
+    //     let trimmed = rawMsg.split(',');
+    //     console.log(`Message: ${msg}`);
+    //     if(trimmed[0] === 'sliderValue'){
+    //         sliderValue = parseInt(trimmed[1]);
+    //         processAction({action:'slider'})
+    //         socket.send("slider value is updated");
+    //     }
+    //     else {
+    //         socket.send("Let's go !")
+    //     }
+    // });
 })
+
+function onMessageFromFront(msg) {
+    console.log("Message received from front:", msg.toString())
+    if (mobileWS) mobileWS.send(msg.toString())
+}
+function onMessageFromMobile(msg) {
+    console.log("Message received from mobile:", msg.toString())
+    if (frontWS) frontWS.send(msg.toString())
+}
+
 
 function updateDataGame() {
     counter +=1
