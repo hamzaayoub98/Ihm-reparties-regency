@@ -20,13 +20,11 @@ import java.util.List;
 public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int LAYOUT_ONE = 0;
     private final int LAYOUT_TWO = 1;
-    private int gaugeValue;
     private List<OrdersApiResponse> orders;
 
     // Pass in the contact array into the constructor
-    public OrdersAdapter(List<OrdersApiResponse> orders, int value) {
+    public OrdersAdapter(List<OrdersApiResponse> orders) {
         this.orders = orders;
-        this.gaugeValue = value;
     }
 
     @NonNull
@@ -75,16 +73,16 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Range range = new Range();
                 range.setColor(Color.parseColor("#ce0000"));
                 range.setFrom(0.0);
-                range.setTo(75.0);
+                range.setTo(order.getValue() - 10);
 
                 Range range2 = new Range();
                 range2.setColor(Color.parseColor("#00b20b"));
-                range2.setFrom(75.0);
-                range2.setTo(100.0);
+                range2.setFrom(order.getValue() - 10);
+                range2.setTo(order.getValue() + 10);
 
                 Range range3 = new Range();
                 range3.setColor(Color.parseColor("#ce0000"));
-                range3.setFrom(100.0);
+                range3.setFrom(order.getValue() + 10);
                 range3.setTo(175.0);
 
                 //add color ranges to gauge
@@ -95,7 +93,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //set min max and current value
                 speedGauge.setMinValue(0.0);
                 speedGauge.setMaxValue(175.0);
-                speedGauge.setValue(gaugeValue);
+                speedGauge.setValue(0.0);
                 Log.d("GAUGE", "value: " + speedGauge.getValue());
                 break;
         }
@@ -105,11 +103,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public int getItemViewType(int position) {
         OrdersApiResponse order = orders.get(position);
         if(order.getId().equals("slider")) {
-            Log.d("", "SLIDER SLIDER");
             return 1;
         }
         else {
-            Log.d("", "PAS SLIDER PAS SLIDER");
             return 0;
         }
     }

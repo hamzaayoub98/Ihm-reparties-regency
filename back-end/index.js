@@ -17,6 +17,31 @@ const PORT_WS = 4000
 
 const server = http.createServer(app);
 const websocketServer = new WebSocket.Server({ server });
+let sliderValue = 0;
+let counter = 0;
+let actionStack = [1,2,3]
+var sockets = [];
+websocketServer.on('sliderValue',function (socket){
+    console.log("")
+});
+websocketServer.on('connection', function (socket) {
+    socket.on('message', msg => {
+        const rawMsg = `${msg}`;
+        let trimmed = rawMsg.split(',');
+        console.log(`Message: ${msg}`);
+        if(trimmed[0] === 'sliderValue'){
+            sliderValue = parseInt(trimmed[1]);
+            processAction({action:'slider'})
+            socket.send("slider value is updated");
+        }
+        else{
+            socket.send("Let's go !")
+        }
+    });
+    socket.on('sliderValue', msg => {
+        socket.send(sliderValue);
+    });
+})
 
 let frontWS;
 let mobileWS;
