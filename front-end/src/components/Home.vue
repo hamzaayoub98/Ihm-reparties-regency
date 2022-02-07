@@ -50,7 +50,7 @@
         },
         methods: {
             action:function (number) {
-                Axios.post("http://" + URL_REST + "/action", {
+                Axios.post("http://" + URL_REST + "action", {
                     action: number,
                 })
                     .then(res => {
@@ -63,7 +63,7 @@
             },
             initWSConnection: function() {
                 console.log("Starting connection to WebSocket Server")
-                this.connection = new WebSocket("ws://" + URL_WS)
+                this.connection = new WebSocket("ws://" + URL_WS + "?id=0")
                 this.connection.onmessage = function(event) {
                     console.log(event.data);
                 }
