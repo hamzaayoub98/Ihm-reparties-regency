@@ -3,10 +3,10 @@ let counter = 0;
 let actionStack = [1,2,3]
 
 const baseActions = [{
-    title: "Appuyez sur le bouton 1",
+    title: "Appuyez sur le bouton bleu",
     id: 1,
 }, {
-    title: "Appuyez sur le bouton 2",
+    title: "Appuyez sur le bouton rouge",
     id: 2,
 },
 {
@@ -22,7 +22,7 @@ const nextActions = [{
     title: "Remettre la gravité",
     id: 4,
 }, {
-    title: "Appuyez sur le bouton 1",
+    title: "Appuyez sur le bouton bleu",
     id: 5,
 }, {
     title: "Activez l'hyper vitesse",
@@ -43,7 +43,7 @@ function updateDataGame() {
     if (baseActions.length + nextActions.length ==0) {
         finishGame.isFinished = true;
         console.log("🚀 ~ file: index.js ~ line 79 ~ updateDataGame ~ isFinished", finishGame.isFinished)
-        
+
     }
   }
 

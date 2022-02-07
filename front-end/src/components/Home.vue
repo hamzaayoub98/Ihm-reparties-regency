@@ -9,7 +9,7 @@
         </button>
         <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>
         <button v-on:click="action(2)">
-            <img  id="button2"  src="../assets/kc.png">
+            <img  id="button2"  src="../assets/redButton.png">
         </button>
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
@@ -22,7 +22,7 @@
     import  Axios from 'axios';
 
     import Asteroid from "./Asteroid";
-    import { URL_REST, URL_WS } from '../main.js' 
+    import { URL_REST, URL_WS } from '../main.js'
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
@@ -42,7 +42,7 @@
         created: function() {
             this.initWSConnection();
         },
-        mounted() {  
+        mounted() {
             console.log("🚀 ~ file: Home.vue ~ line 43 ~ mounted ~ URL_REST", URL_REST)
             Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
@@ -119,8 +119,8 @@
         height: 100%;
         position: absolute;
     }
-    
-    
-    
+
+
+
 
 </style>
