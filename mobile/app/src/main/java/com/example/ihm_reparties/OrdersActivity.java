@@ -126,7 +126,6 @@ public class OrdersActivity extends AppCompatActivity {
         Request request = new Request.Builder().url(getWsAddressPortString()).build();
         IHMWebSocketListener listener = new IHMWebSocketListener();
         ws = client.newWebSocket(request, listener);
-        client.dispatcher().executorService().shutdown();
     }
     public void output(final String txt) {
         runOnUiThread(new Runnable() {
@@ -142,6 +141,7 @@ public class OrdersActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacks(runnable);
+        client.dispatcher().executorService().shutdown(); // close WS
     }
 
     @Override
@@ -158,7 +158,7 @@ public class OrdersActivity extends AppCompatActivity {
         if(restPort.equals("")) {
             address = "http://" + restAddress;
         } else {
-            address = "http://" + restAddress + ":" + restPort + "/";
+            address = "http://" + restAddress + ":" + restPort;
         }
         return address;
     }

@@ -18,7 +18,7 @@ router.get('/game/status', (req, res) => {
 });
 
 router.get('/action-list',function (request,response){
-    response.status(200).json(actions.baseActions);
+    response.status(200).json(actions.getBaseActions());
 })
 
 router.post('/start/game', function(request, response){
@@ -32,7 +32,7 @@ router.post('/finish', function(request, response){
     this.gameStarted = request.body.isFinished;
     console.log("🚀 test finish game", this.gameStarted)
     setInterval(actions.updateDataGame, 10000)
-    response.status(200).json(finishGame);
+    response.status(200).json(actions.getFinishGame());
 });    
 
 router.post('/action', function(request, response){

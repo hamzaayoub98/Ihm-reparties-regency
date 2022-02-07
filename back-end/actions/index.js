@@ -69,10 +69,12 @@ function updateDataGame() {
 
 function getBaseActions(){return baseActions}
 function getActionStack(){return actionStack}
+function getFinishGame(){return finishGame}
 
 module.exports = {
     updateDataGame,
     processAction,
     getBaseActions,
-    getActionStack
+    getActionStack,
+    getFinishGame
 }
