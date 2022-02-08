@@ -1,0 +1,1 @@
+artillery run charge-tests-rest.yml

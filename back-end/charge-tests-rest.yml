@@ -1,0 +1,22 @@
+config:
+  target: "http://3fd7-88-160-150-178.eu.ngrok.io"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      name: Warm up
+    - duration: 120
+      arrivalRate: 5
+      rampTo: 50
+      name: Ramp up load
+    - duration: 600
+      arrivalRate: 50
+      name: Sustained load
+
+scenarios:
+  - name: "REST Charge Test"
+    flow:
+      - get:
+          url: "/action-list"
+      - think: 5
+      - get:
+          url: "/game/status"

@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 app.use(bodyParser.json())
 app.use('', api);
+app.use(express.static('public'));
 
 const PORT_REST = 3000
 const PORT_WS = 4000

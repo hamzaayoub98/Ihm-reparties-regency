@@ -1,0 +1,12 @@
+config:
+  target: "wss://70e5-88-160-150-178.eu.ngrok.io"
+  phases:
+    - duration: 20
+      arrivalRate: 10
+
+scenarios:
+  - engine: ws
+    name: Send a string
+    flow:
+      - connect: "{{ target }}"
+      - send: "Hello from Artillery"
