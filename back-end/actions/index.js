@@ -1,4 +1,3 @@
-let antimatiereValue = 0;
 let counter = 0;
 let actionStack = [1,2,3]
 
@@ -41,6 +40,11 @@ const finishGame = {
     isFinished: true,
 }
 
+const antimatiereValue = {
+    value: 0,
+}
+
+
 function updateDataGame() {
     counter +=1
     if (counter%5==0 && nextActions.length > 0) {
@@ -57,10 +61,10 @@ function updateDataGame() {
 
   function processAction(action){
     if(action.action === 'slider'){
-        baseActions.forEach(action =>{
-            if(action.id === 'slider'){
-                if(action.value >= 80){
-                    baseActions.splice(baseActions.indexOf(action),1)
+        baseActions.forEach(baseAction =>{
+            if(baseAction.id === 'slider'){
+                if(action.value >= baseAction.value - 10 && action.value <= baseAction.value + 10){
+                    baseActions.splice(baseActions.indexOf(baseAction),1)
                 }
             }
         })

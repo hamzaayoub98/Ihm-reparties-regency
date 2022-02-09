@@ -30,21 +30,21 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final int LAYOUT_PLUS = 2;
     private List<OrdersApiResponse> orders;
     private String restAddress;
-    private int valueAntimatiere;
+    AddAntimatiere addAntimatiere = new AddAntimatiere();
+    private int speedGaugeValue = 0;
 
     // Pass in the contact array into the constructor
-    public OrdersAdapter(List<OrdersApiResponse> orders, String restAddress, int valueAntimatiere) {
+    public OrdersAdapter(List<OrdersApiResponse> orders, String restAddress) {
         this.orders = orders;
         this.restAddress = restAddress;
-        this.valueAntimatiere = valueAntimatiere;
     }
 
-    public int getValueAntimatiere(){
-        return this.valueAntimatiere;
+    public void setSpeedGaugeValue(int value){
+        this.speedGaugeValue = value;
     }
 
-    public void setValueAntimatiere(int value){
-        this.valueAntimatiere = value;
+    public void setOrders(List<OrdersApiResponse> orders){
+        this.orders = orders;
     }
 
     @NonNull
@@ -117,7 +117,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 //set min max and current value
                 speedGauge.setMinValue(0.0);
                 speedGauge.setMaxValue(175.0);
-                speedGauge.setValue(0.0);
+                speedGauge.setValue(speedGaugeValue);
                 Log.d("GAUGE", "value: " + speedGauge.getValue());
                 break;
             case LAYOUT_PLUS:
@@ -131,12 +131,12 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Button buttonPlus = viewHolderWithButtonPlus.buttonPlus;
                 buttonPlus.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Call<AddAntimatiere> callSync = api.addAntimatiere(new AddAntimatiere(valueAntimatiere));
+                        Call<AddAntimatiere> callSync = api.addAntimatiere(addAntimatiere);
                         callSync.enqueue(new Callback<AddAntimatiere>() {
                             @Override
                             public void onResponse(Call<AddAntimatiere> call, Response<AddAntimatiere> response) {
-                                valueAntimatiere += 1;
-                                Log.d("Antimatiere", "Adding one antimatiere");
+                                addAntimatiere.setValue(addAntimatiere.getValue() + 1);
+                                Log.d("Antimatiere", "Adding one antimatiere : " + addAntimatiere.getValue());
                             }
 
                             @Override

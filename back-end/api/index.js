@@ -3,6 +3,7 @@ var router = express.Router();
 const actions = require('../actions');
 
 let gameStarted = false;
+let antimatiereValue = 0;
 
 router.get('/', function(req, res) {
     res.status(200).json({"helloworld": "Hello World !"});
@@ -37,7 +38,7 @@ router.post('/finish', function(request, response){
 
 router.post('/addAntimatiere', function(request, response){
     this.antimatiereValue = request.body.value;
-    console.log("🚀 test finish game", this.antimatiereValue)
+    console.log("🚀 test antimatiere value : ", this.antimatiereValue)
     response.status(200).json(actions.getAntimatiereValue());
 });
 

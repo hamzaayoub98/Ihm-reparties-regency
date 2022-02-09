@@ -37,13 +37,14 @@ public class OrdersActivity extends AppCompatActivity {
         }
         @Override
         public void onMessage(WebSocket webSocket, String text) {
-            output(text);
-            Log.d("onMessage", text);
+            String[] tab = text.split(",");
+            output(tab[1]);
+            Log.d("onMessageWS", text);
         }
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
             output(bytes.hex());
-            Log.d("onMessage", bytes.hex());
+            Log.d("onMessageWS", bytes.hex());
 
         }
         @Override
@@ -54,6 +55,7 @@ public class OrdersActivity extends AppCompatActivity {
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {
             output(t.getMessage());
+            Log.d("onFailureWS", t.getMessage());
         }
     }
 
@@ -67,7 +69,6 @@ public class OrdersActivity extends AppCompatActivity {
     private Parcelable recyclerViewState;
     private OkHttpClient client;
     private WebSocket ws;
-    int valueAntimatiere = 0;
     OrdersAdapter adapter;
 
     @Override
@@ -88,7 +89,7 @@ public class OrdersActivity extends AppCompatActivity {
         }
         startWsConnection();
         ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
-        adapter = new OrdersAdapter(orders, getRestAddressPortString(), valueAntimatiere);
+        adapter = new OrdersAdapter(orders, getRestAddressPortString());
         // Attach the adapter to the recyclerview to populate items
         rvOrders.setAdapter(adapter);
         // Set layout manager to position the items
@@ -107,14 +108,12 @@ public class OrdersActivity extends AppCompatActivity {
                         if(orders != null) {
                             Log.d("Orders", orders.toString());
                             // Create adapter passing in the sample user data
-                            valueAntimatiere = adapter.getValueAntimatiere();
-                            adapter = new OrdersAdapter(orders, getRestAddressPortString(), valueAntimatiere);
+                            adapter.setOrders(orders);
                             // Attach the adapter to the recyclerview to populate items
                             rvOrders.setAdapter(adapter);
                             // Set layout manager to position the items
                             rvOrders.setLayoutManager(new LinearLayoutManager(context));
                         }
-
                     }
 
                     @Override
@@ -138,6 +137,7 @@ public class OrdersActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                adapter.setSpeedGaugeValue(Integer.parseInt(txt));
                 Toast.makeText(OrdersActivity.this, "Message :" + txt,
                         Toast.LENGTH_SHORT).show();
             }
