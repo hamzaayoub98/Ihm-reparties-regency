@@ -1,6 +1,8 @@
 package com.example.ihm_reparties;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +12,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ekn.gruzer.gaugelibrary.HalfGauge;
+import com.ekn.gruzer.gaugelibrary.Range;
+
 import java.util.List;
 
-public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder> {
-
+public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final int LAYOUT_ONE = 0;
+    private final int LAYOUT_TWO = 1;
     private List<OrdersApiResponse> orders;
 
     // Pass in the contact array into the constructor
@@ -23,26 +29,85 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        // Inflate the custom layout
-        View orderView = inflater.inflate(R.layout.activity_orders_item, parent, false);
-
-        // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(orderView);
-        return viewHolder;
+        switch (viewType){
+            case 0:
+                View orderView = inflater.inflate(R.layout.activity_orders_item, parent, false);
+                ViewHolder viewHolder = new ViewHolder(orderView);
+                return viewHolder;
+            case 1:
+                View orderViewWithGauge = inflater.inflate(R.layout.activity_orders_item_with_gauge, parent, false);
+                ViewHolderWithGauge viewHolderWithGauge = new ViewHolderWithGauge(orderViewWithGauge);
+                return viewHolderWithGauge;
+            default:
+                View orderViewDefault = inflater.inflate(R.layout.activity_orders_item, parent, false);
+                ViewHolder viewHolder2 = new ViewHolder(orderViewDefault);
+                return viewHolder2;
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         // Get the data model based on position
         OrdersApiResponse order = orders.get(position);
+        TextView textView;
 
-        // Set item views based on your views and data model
-        TextView textView = holder.orderTextView;
-        textView.setText(order.getTitle());
+        switch(holder.getItemViewType()){
+            case 0:
+                ViewHolder viewHolder = (ViewHolder) holder;
+                // Set item views based on your views and data model
+                textView = viewHolder.orderTextView;
+                textView.setText(order.getTitle());
+                break;
+            case 1:
+                ViewHolderWithGauge viewHolderWithGauge = (ViewHolderWithGauge) holder;
+                // Set item views based on your views and data model
+                textView = viewHolderWithGauge.orderTextView;
+                textView.setText(order.getTitle());
+
+                HalfGauge speedGauge = viewHolderWithGauge.speedGauge;
+                speedGauge.enableAnimation(false);
+                Range range = new Range();
+                range.setColor(Color.parseColor("#ce0000"));
+                range.setFrom(0.0);
+                range.setTo(order.getValue() - 10);
+
+                Range range2 = new Range();
+                range2.setColor(Color.parseColor("#00b20b"));
+                range2.setFrom(order.getValue() - 10);
+                range2.setTo(order.getValue() + 10);
+
+                Range range3 = new Range();
+                range3.setColor(Color.parseColor("#ce0000"));
+                range3.setFrom(order.getValue() + 10);
+                range3.setTo(175.0);
+
+                //add color ranges to gauge
+                speedGauge.addRange(range);
+                speedGauge.addRange(range2);
+                speedGauge.addRange(range3);
+
+                //set min max and current value
+                speedGauge.setMinValue(0.0);
+                speedGauge.setMaxValue(175.0);
+                speedGauge.setValue(0.0);
+                Log.d("GAUGE", "value: " + speedGauge.getValue());
+                break;
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        OrdersApiResponse order = orders.get(position);
+        if(order.getId().equals("slider")) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
     }
 
     @Override
@@ -65,6 +130,24 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
             super(itemView);
 
             orderTextView = (TextView) itemView.findViewById(R.id.order_title);
+        }
+    }
+
+    public class ViewHolderWithGauge extends RecyclerView.ViewHolder {
+        // Your holder should contain a member variable
+        // for any view that will be set as you render a row
+        public TextView orderTextView;
+        public HalfGauge speedGauge;
+
+        // We also create a constructor that accepts the entire item row
+        // and does the view lookups to find each subview
+        public ViewHolderWithGauge(View itemView) {
+            // Stores the itemView in a public final member variable that can be used
+            // to access the context from any ViewHolder instance.
+            super(itemView);
+
+            orderTextView = (TextView) itemView.findViewById(R.id.order_title);
+            speedGauge = (HalfGauge) itemView.findViewById(R.id.speed_gauge);
         }
     }
 }

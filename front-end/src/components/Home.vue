@@ -25,7 +25,7 @@
     import  Axios from 'axios';
 
     import Asteroid from "./Asteroid";
-    import { URL_REST, URL_WS } from '../main.js' 
+    import { URL_REST, URL_WS } from '../main.js'
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
@@ -50,7 +50,7 @@
         created: function() {
             this.initWSConnection();
         },
-        mounted() {  
+        mounted() {
             console.log("🚀 ~ file: Home.vue ~ line 43 ~ mounted ~ URL_REST", URL_REST)
             Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
@@ -58,7 +58,7 @@
         },
         methods: {
             action:function (number) {
-                Axios.post("http://" + URL_REST + "/action", {
+                Axios.post("http://" + URL_REST + "action", {
                     action: number,
                 })
                     .then(res => {
@@ -71,7 +71,7 @@
             },
             initWSConnection: function() {
                 console.log("Starting connection to WebSocket Server")
-                this.connection = new WebSocket("ws://" + URL_WS)
+                this.connection = new WebSocket("ws://" + URL_WS + "?id=0")
                 this.connection.onmessage = function(event) {
                     console.log(event.data);
                 }
@@ -131,9 +131,10 @@
     #box {
     text-align:center;
     margin-bottom: 30px;
-}
+    }
     
     
     
+
 
 </style>
