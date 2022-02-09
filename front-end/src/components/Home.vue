@@ -5,8 +5,6 @@
         <div class="box">
             <ToggleButton />
         </div>
-        <button v-on:click="sendPing()">Send WS PING</button>
-
         <button v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
@@ -17,7 +15,7 @@
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
-        <button @click="isShow = !isShow">Hide Asteroids</button>
+        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="sendAsteroidsState()" >Hide Asteroids</button>
     </div>
 </template>
 
@@ -86,6 +84,9 @@
             },
             sendSliderValue:function(){
               this.connection.send(['sliderValue',this.sliderValue]);
+            },
+            sendAsteroidsState:function(){
+              this.connection.send(['AsteroidsState',this.isShow]);
             }
         },
     }
@@ -117,8 +118,8 @@
     }
     #button3{
         position: absolute;
-        top:95%;
-        right: 1000px;
+        top:65%;
+        left: 200px;
         height: 5%;
         width: 5%;
         border-radius: 10%;
