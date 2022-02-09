@@ -1,4 +1,4 @@
-
+let antimatiereValue = 0;
 let counter = 0;
 let actionStack = [1,2,3]
 
@@ -11,7 +11,7 @@ const baseActions = [{
 },
 {
     title: "Remettre de l`antimatière",
-    id: 3,
+    id: 'antimatiere',
 },
 {
     title: "Augmenter les rétro-propulseurs à 80%",
@@ -78,11 +78,13 @@ function updateDataGame() {
 function getBaseActions(){return baseActions}
 function getActionStack(){return actionStack}
 function getFinishGame(){return finishGame}
+function getAntimatiereValue(){return antimatiereValue}
 
 module.exports = {
     updateDataGame,
     processAction,
     getBaseActions,
     getActionStack,
-    getFinishGame
+    getFinishGame,
+    getAntimatiereValue
 }

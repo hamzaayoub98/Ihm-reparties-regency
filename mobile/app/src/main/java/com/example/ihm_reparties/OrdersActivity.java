@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,7 +67,8 @@ public class OrdersActivity extends AppCompatActivity {
     private Parcelable recyclerViewState;
     private OkHttpClient client;
     private WebSocket ws;
-
+    int valueAntimatiere = 0;
+    OrdersAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,11 @@ public class OrdersActivity extends AppCompatActivity {
         }
         startWsConnection();
         ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
+        adapter = new OrdersAdapter(orders, getRestAddressPortString(), valueAntimatiere);
+        // Attach the adapter to the recyclerview to populate items
+        rvOrders.setAdapter(adapter);
+        // Set layout manager to position the items
+        rvOrders.setLayoutManager(new LinearLayoutManager(context));
 
         handler.postDelayed(runnable = new Runnable() {
             public void run() {
@@ -99,13 +107,12 @@ public class OrdersActivity extends AppCompatActivity {
                         if(orders != null) {
                             Log.d("Orders", orders.toString());
                             // Create adapter passing in the sample user data
-                            OrdersAdapter adapter = new OrdersAdapter(orders);
+                            valueAntimatiere = adapter.getValueAntimatiere();
+                            adapter = new OrdersAdapter(orders, getRestAddressPortString(), valueAntimatiere);
                             // Attach the adapter to the recyclerview to populate items
                             rvOrders.setAdapter(adapter);
                             // Set layout manager to position the items
                             rvOrders.setLayoutManager(new LinearLayoutManager(context));
-
-
                         }
 
                     }
@@ -151,7 +158,7 @@ public class OrdersActivity extends AppCompatActivity {
         handler.postDelayed(runnable, delay);
     }
 
-    public String getRestAddressPortString(){
+    public final String getRestAddressPortString(){
         String restAddress = sharedPref.getString(getString(R.string.ipv4), "");
         String restPort = sharedPref.getString(getString(R.string.port), "");
         String address = "";
@@ -163,7 +170,7 @@ public class OrdersActivity extends AppCompatActivity {
         return address;
     }
 
-    public String getWsAddressPortString(){
+    public final String getWsAddressPortString(){
         String wsAddress = sharedPref.getString(getString(R.string.wsAddress), "");
         String wsPort = sharedPref.getString(getString(R.string.wsPort), "");
         String address;

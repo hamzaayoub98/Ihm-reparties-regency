@@ -35,6 +35,12 @@ router.post('/finish', function(request, response){
     response.status(200).json(actions.getFinishGame());
 });    
 
+router.post('/addAntimatiere', function(request, response){
+    this.antimatiereValue = request.body.value;
+    console.log("🚀 test finish game", this.antimatiereValue)
+    response.status(200).json(actions.getAntimatiereValue());
+});
+
 router.post('/action', function(request, response){
     actions.processAction(request.body.action)
     console.log("baseActions", actions.getBaseActions())
