@@ -16,7 +16,7 @@ public class AddAntimatiere implements Serializable
         this.value = value;
     }
 
-    @SerializedName("isFinished")
+    @SerializedName("value")
     @Expose
     private int value;
 
