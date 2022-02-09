@@ -27,6 +27,9 @@ const nextActions = [{
 }, {
     title: "Activez l'hyper vitesse",
     id: 6,
+}, {
+    title: "Appuyer sur les boutons rouge et bleu en même temps",
+    id:7,
 }]
 
 const finishGame = {

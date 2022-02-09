@@ -4,17 +4,16 @@
         <AsteroidLeft></AsteroidLeft>
         <button v-on:click="sendPing()">Send WS PING</button>
 
-        <button v-on:click="action(1)">
+        <button id="b1" v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
         <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>
-        <button v-on:click="action(2)">
+        <button id="b2" v-on:click="action(2)">
             <img  id="button2"  src="../assets/redButton.png">
         </button>
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
-
     </div>
 </template>
 
@@ -37,16 +36,44 @@
                 mySrc:0,
                 connection: null,
                 sliderValue:0,
+                finished : false,
+                doc:null,
+                button1:null,
+                button1Pressed : false,
+                button2Pressed:false,
+                button2:null,
+
             }
         },
         created: function() {
             this.initWSConnection();
         },
         mounted() {
+            this.doc = document.getElementById("home")
+            this.button1 = document.getElementById("b1")
+            this.button2 = document.getElementById("b2")
             console.log("🚀 ~ file: Home.vue ~ line 43 ~ mounted ~ URL_REST", URL_REST)
             Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
             console.log(response)));
+          this.button1.addEventListener('touchstart',function (event){
+                console.log("b1",event);
+                this.button1Pressed = true;
+                this.concurentTouch();
+          });
+          this.button2.addEventListener('touchstart',function (event){
+                console.log("b2",event);
+                this.button2Pressed = true;
+                this.concurentTouch();
+          });
+          this.button1.addEventListener('touchend',function (event){
+            console.log("b1-end",event);
+            this.button1Pressed = false;
+          });
+          this.button2.addEventListener('touchend',function (event){
+            console.log("b2-end",event);
+            this.button2Pressed = false;
+          });
         },
         methods: {
             action:function (number) {
@@ -78,6 +105,20 @@
             },
             sendSliderValue:function(){
               this.connection.send(['sliderValue',this.sliderValue]);
+            },
+            concurentTouch:function (){
+              if(this.button1Pressed && this.button2Pressed){
+                Axios.post("http://" + URL_REST + "action", {
+                  action: 7,
+                })
+                    .then(res => {
+                      console.log(`statusCode: ${res.status}`)
+                      console.log(res)
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    });
+              }
             }
         },
     }
