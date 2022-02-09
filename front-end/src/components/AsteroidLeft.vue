@@ -58,7 +58,7 @@
             },
             asteroids() {
                 this.material = new THREE.MeshPhongMaterial({
-                color: 0x0072c6,
+                color: '#696969',
                 shading: THREE.FlatShading,
                 emissive: 0.5,
                 shininess: 0
@@ -66,9 +66,9 @@
                 this.mesh = new THREE.Mesh(new THREE.OctahedronGeometry(15, 1), this.material);
                 var emitter1 = this.createEmitter({
                     size: {
-                    x: 100,
-                    y: 100,
-                    z: 500
+                    x: 50,
+                    y: 200,
+                    z: 700
                     },
                     pos: {
                     x: 0,
