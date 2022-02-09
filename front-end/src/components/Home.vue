@@ -1,9 +1,10 @@
 <template>
     <div id="home" >
-        <Asteroid ></Asteroid>
-        <AsteroidLeft></AsteroidLeft>
-        <button v-on:click="sendPing()">Send WS PING</button>
-
+        <Asteroid  v-show="isShow"></Asteroid>
+        <AsteroidLeft v-show="isShow"></AsteroidLeft>
+        <div class="box">
+            <ToggleButton />
+        </div>
         <button id="b1" v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
@@ -14,6 +15,7 @@
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
+        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="sendAsteroidsState()" >Hide Asteroids</button>
     </div>
 </template>
 
@@ -25,10 +27,11 @@
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
+    import ToggleButton from './ToggleButton.vue';
 
     export default {
         name: "Home",
-        components: {Asteroid,VueSlider,AsteroidLeft},
+        components: {Asteroid,VueSlider,AsteroidLeft,ToggleButton},
         data(){
             return {
                 info : null,
@@ -36,6 +39,7 @@
                 mySrc:0,
                 connection: null,
                 sliderValue:0,
+                isShow: true,
                 finished : false,
                 doc:null,
                 button1:null,
@@ -44,6 +48,9 @@
                 button2:null,
 
             }
+        },
+        props: {
+            msg: String,
         },
         created: function() {
             this.initWSConnection();
@@ -106,6 +113,9 @@
             sendSliderValue:function(){
               this.connection.send(['sliderValue',this.sliderValue]);
             },
+            sendAsteroidsState:function(){
+              this.connection.send(['AsteroidsState',this.isShow]);
+            },
             concurentTouch:function (){
               if(this.button1Pressed && this.button2Pressed){
                 Axios.post("http://" + URL_REST + "action", {
@@ -126,31 +136,32 @@
 
 <style scoped>
     #slider{
-      display:flex;
+
       position: relative;
-      top:750px;
-      left: 900px;
+      top:900px;
+      display: flex;
+      margin: 50 auto;
     }
     #button1{
         position: absolute;
-        top:600px;
-        right: 500px;
-        height: 5%;
-        width: 5%;
+        top:550px;
+        right: 485px;
+        height: 6%;
+        width: 7%;
         border-radius: 10%;
     }
     #button2{
         position: absolute;
-        top:600px;
-        right: 1000px;
-        height: 5%;
-        width: 5%;
+        top:550px;
+        left: 485px;
+        height: 6%;
+        width: 7%;
         border-radius: 10%;
     }
     #button3{
         position: absolute;
-        top:95%;
-        right: 1000px;
+        top:65%;
+        left: 200px;
         height: 5%;
         width: 5%;
         border-radius: 10%;
@@ -160,6 +171,11 @@
         height: 100%;
         position: absolute;
     }
+    #box {
+    text-align:center;
+    margin-bottom: 30px;
+    }
+
 
 
 
