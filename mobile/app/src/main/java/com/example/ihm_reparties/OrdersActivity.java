@@ -159,6 +159,7 @@ public class OrdersActivity extends AppCompatActivity {
         IHMWebSocketListener listener = new IHMWebSocketListener();
         ws = client.newWebSocket(request, listener);
     }
+
     public void output(final String txt, boolean error) {
         runOnUiThread(new Runnable() {
             @Override

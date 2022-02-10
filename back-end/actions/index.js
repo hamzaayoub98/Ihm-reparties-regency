@@ -1,5 +1,6 @@
 let counter = 0;
 let actionStack = [1,2,3]
+let sliderValue = 0;
 
 const baseActions = [{
     title: "Appuyez sur le bouton bleu",
@@ -19,17 +20,11 @@ const baseActions = [{
 },
 ]
 const nextActions = [{
-    title: "Remettre la gravité",
-    id: 4,
-}, {
-    title: "Appuyez sur le bouton bleu",
-    id: 5,
-}, {
     title: "Activez l'hyper vitesse",
     id: 6,
 },
 {
-    title: "Supprimer les asteroids",
+    title: "Détruire les asteroids",
     id: 'asteroidsVue',
 }, {
     title: "Appuyer sur les boutons rouge et bleu en même temps",
@@ -64,6 +59,11 @@ function updateDataGame() {
         baseActions.forEach(baseAction =>{
             if(baseAction.id === 'slider'){
                 if(action.value >= baseAction.value - 10 && action.value <= baseAction.value + 10){
+                    baseActions.splice(baseActions.indexOf(baseAction),1)
+                }
+            }
+            if(baseAction.id === 6){
+                if(action.value === 100){
                     baseActions.splice(baseActions.indexOf(baseAction),1)
                 }
             }
