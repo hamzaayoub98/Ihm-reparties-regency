@@ -41,6 +41,7 @@
 <script>
 import Home from "@/components/Home";
 import Axios from "axios";
+import { URL_REST } from './main.js'
 
 
 export default {
@@ -56,11 +57,6 @@ export default {
       displayError: false
     };
   },
-  mounted() {
-    Axios.get("http://localhost:3000/game/status").then(
-      (response) => ((this.gameStarted = response.data.started), console.log(response))
-    );
-  },
   methods: {
     startGame: function () {
       if (this.displayError){ //TODO : disable for the moment
@@ -68,7 +64,7 @@ export default {
         this.captainConnected = false
         this.mecanoConnected = false
       } else {
-        Axios.post("http://localhost:3000/start/game", {
+        Axios.post("http://" + URL_REST + "/start/game", {
           started: true,
         })
           .then((res) => {
