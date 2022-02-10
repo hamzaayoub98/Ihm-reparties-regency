@@ -1,5 +1,5 @@
 let counter = 0;
-let actionStack = [1,2,3]
+let actionStack = [1,2,3,"antimatiere","asteroides","Vue",7]
 
 const baseActions = [{
     title: "Appuyez sur le bouton bleu",
