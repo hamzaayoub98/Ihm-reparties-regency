@@ -66,12 +66,34 @@
           this.button1.addEventListener('touchstart',function (event){
                 console.log("b1",event);
                 this.button1Pressed = true;
-                this.concurentTouch();
+            if(this.button1Pressed && this.button2Pressed){
+              Axios.post("http://" + URL_REST + "action", {
+                action: 7,
+              })
+                  .then(res => {
+                    console.log(`statusCode: ${res.status}`)
+                    console.log(res)
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+            }
           });
           this.button2.addEventListener('touchstart',function (event){
                 console.log("b2",event);
                 this.button2Pressed = true;
-                this.concurentTouch();
+            if(this.button1Pressed && this.button2Pressed){
+              Axios.post("http://" + URL_REST + "action", {
+                action: 7,
+              })
+                  .then(res => {
+                    console.log(`statusCode: ${res.status}`)
+                    console.log(res)
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+            }
           });
           this.button1.addEventListener('touchend',function (event){
             console.log("b1-end",event);
