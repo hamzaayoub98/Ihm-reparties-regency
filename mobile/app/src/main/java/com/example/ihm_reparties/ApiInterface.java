@@ -4,11 +4,8 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public interface ApiInterface {
 
@@ -16,8 +13,8 @@ public interface ApiInterface {
 // For POST request
 
 
-    @POST("/finish") // specify the sub url for our base url
-    Call<FinishGame> finishGame(@Body FinishGame finishGame);
+    @POST("/start") // specify the sub url for our base url
+    Call<StartGame> startGame(@Body StartGame startGame);
 
     @POST("/addAntimatiere") // specify the sub url for our base url
     Call<AddAntimatiere> addAntimatiere(@Body AddAntimatiere addAntimatiere);
@@ -31,6 +28,8 @@ public interface ApiInterface {
     @GET("/action-list")
     Call<List<OrdersApiResponse>> getOrdersApiResponseCall();
 
+    @GET("/game/finish")
+    Call<GameFinished> getGameFinishedApiResponseCall();
 // CountryResponse is a POJO class which receives the response of this API
 
 }

@@ -19,6 +19,10 @@ router.get('/game/status', (req, res) => {
     res.status(200).json({"started": gameStarted});
 });
 
+router.get('/game/finish', (req, res) => {
+    res.status(200).json({"isFinished": gameStarted});
+});
+
 router.get('/action-list',function (request,response){
     response.status(200).json(actions.getBaseActions());
 });

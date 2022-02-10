@@ -1,17 +1,13 @@
 package com.example.ihm_reparties;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -27,32 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     public static final String EXTRA_MESSAGE = "Data";
@@ -180,18 +160,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View v) {
                 ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getIpv4PortAddress());
 
-                Call<FinishGame> callSync = api.finishGame(new FinishGame(true));
-                callSync.enqueue(new Callback<FinishGame>() {
+                Call<StartGame> callSync = api.startGame(new StartGame(true));
+                callSync.enqueue(new Callback<StartGame>() {
                     @Override
-                    public void onResponse(Call<FinishGame> call, Response<FinishGame> response) {
-                        Log.d("CallBack FinishGame", "Saying game is finished !");
+                    public void onResponse(Call<StartGame> call, Response<StartGame> response) {
+                        Log.d("CallBack StartGame", "Saying game is starting !");
                     }
 
                     @Override
-                    public void onFailure(Call<FinishGame> call, Throwable t) {
-                        Toast.makeText(MainActivity.this, "FinishGame callback failure",
+                    public void onFailure(Call<StartGame> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "StartGame callback failure",
                                 Toast.LENGTH_SHORT).show();
-                        Log.d("CallBackFinishGameFailed", "FinishGame callback failure");
+                        Log.d("CallBackStartGameFailed", "StartGame callback failure");
                         t.printStackTrace();
                     }
                 });
