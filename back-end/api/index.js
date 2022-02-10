@@ -3,7 +3,7 @@ var router = express.Router();
 const actions = require('../actions');
 
 let gameStarted = false;
-let antimatiereValue = 0;
+let antimatiereValue = 8;
 let noMoreAntimatiere = false;
 
 router.get('/', function(req, res) {
