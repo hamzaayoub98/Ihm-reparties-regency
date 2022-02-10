@@ -1,4 +1,3 @@
-
 let counter = 0;
 let actionStack = [1,2,3]
 
@@ -11,7 +10,7 @@ const baseActions = [{
 },
 {
     title: "Remettre de l`antimatière",
-    id: 3,
+    id: 'antimatiere',
 },
 {
     title: "Augmenter les rétro-propulseurs à 80%",
@@ -41,6 +40,11 @@ const finishGame = {
     isFinished: true,
 }
 
+const antimatiereValue = {
+    value: 0,
+}
+
+
 function updateDataGame() {
     counter +=1
     if (counter%5==0 && nextActions.length > 0) {
@@ -57,10 +61,10 @@ function updateDataGame() {
 
   function processAction(action){
     if(action.action === 'slider'){
-        baseActions.forEach(action =>{
-            if(action.id === 'slider'){
-                if(action.value >= 80){
-                    baseActions.splice(baseActions.indexOf(action),1)
+        baseActions.forEach(baseAction =>{
+            if(baseAction.id === 'slider'){
+                if(action.value >= baseAction.value - 10 && action.value <= baseAction.value + 10){
+                    baseActions.splice(baseActions.indexOf(baseAction),1)
                 }
             }
         })
@@ -78,11 +82,13 @@ function updateDataGame() {
 function getBaseActions(){return baseActions}
 function getActionStack(){return actionStack}
 function getFinishGame(){return finishGame}
+function getAntimatiereValue(){return antimatiereValue}
 
 module.exports = {
     updateDataGame,
     processAction,
     getBaseActions,
     getActionStack,
-    getFinishGame
+    getFinishGame,
+    getAntimatiereValue
 }

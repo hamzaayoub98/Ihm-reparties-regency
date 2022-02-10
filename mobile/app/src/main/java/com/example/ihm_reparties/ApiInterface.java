@@ -19,6 +19,9 @@ public interface ApiInterface {
     @POST("/finish") // specify the sub url for our base url
     Call<FinishGame> finishGame(@Body FinishGame finishGame);
 
+    @POST("/addAntimatiere") // specify the sub url for our base url
+    Call<AddAntimatiere> addAntimatiere(@Body AddAntimatiere addAntimatiere);
+
 
 // for GET request
 
