@@ -3,7 +3,7 @@ var router = express.Router();
 const actions = require('../actions');
 
 let gameStarted = false;
-let antimatiereValue = 8;
+let antimatiereValue = 0;
 let noMoreAntimatiere = false;
 
 router.get('/', function(req, res) {
@@ -19,23 +19,24 @@ router.get('/game/status', (req, res) => {
     res.status(200).json({"started": gameStarted});
 });
 
-router.get('/game/finish', (req, res) => {
-    res.status(200).json({"isFinished": gameStarted});
-});
-
 router.get('/action-list',function (request,response){
     response.status(200).json(actions.getBaseActions());
 });
 
+router.get('/game/finish', (req, res) => {
+    res.status(200).json({"isFinished": gameStarted});
+});
+
 router.get('/antimatiere',function (request,response){
     console.log("Getting antimatiere value : " + this.antimatiereValue);
-    response.status(200).json({"antimatiereValue": antimatiereValue});
+    response.status(200).json({"antimatiereValue": this.antimatiereValue});
 });
 
 router.get('/no-more-antimatiere', function (request,response){
     this.noMoreAntimatiere = true;
-    console.log("There is no more antimatiere : " + this.noMoreAntimatiere);
-    response.status(200).send("There is no more antimatiere : " + this.noMoreAntimatiere);
+    actions.processAction('antimatiere')
+    console.log("baseActions", actions.getBaseActions())
+    response.status(200).send("data received")
 });
 
 router.post('/start/game', function(request, response){

@@ -1,6 +1,5 @@
 let counter = 0;
-let actionStack = [1,2,3]
-let sliderValue = 0;
+let actionStack = [1,2,"antimatiere","asteroidsVue",7]
 
 const baseActions = [{
     title: "Appuyez sur le bouton bleu",
