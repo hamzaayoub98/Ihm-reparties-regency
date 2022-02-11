@@ -30,6 +30,9 @@ public interface ApiInterface {
 
     @GET("/game/finish")
     Call<GameFinished> getGameFinishedApiResponseCall();
+
+    @GET("/is-there-no-more-antimatiere")
+    Call<NoMoreAntimatiere> getNoMoreAntimatiereApiResponseCall();
 // CountryResponse is a POJO class which receives the response of this API
 
 }

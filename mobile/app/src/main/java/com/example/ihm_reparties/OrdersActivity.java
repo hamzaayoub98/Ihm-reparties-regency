@@ -64,6 +64,7 @@ public class OrdersActivity extends AppCompatActivity {
     private SharedPreferences sharedPref;
     List<OrdersApiResponse> orders = new ArrayList<>();
     GameFinished isGameFinished;
+    NoMoreAntimatiere noMoreAntimatiere;
     private Context context = this;
     Handler handler = new Handler();
     Runnable runnable;
@@ -149,6 +150,28 @@ public class OrdersActivity extends AppCompatActivity {
                         t.printStackTrace();
                     }
                 });
+
+                Call<NoMoreAntimatiere> callSyncForNoMoreAntimatiere = api.getNoMoreAntimatiereApiResponseCall();
+                callSyncForNoMoreAntimatiere.enqueue(new Callback<NoMoreAntimatiere>() {
+                    @Override
+                    public void onResponse(Call<NoMoreAntimatiere> call, Response<NoMoreAntimatiere> response) {
+                        noMoreAntimatiere = response.body();
+                        if(noMoreAntimatiere != null) {
+                            if (noMoreAntimatiere.getNoMoreAntimatiere()) {
+                                vibrate();
+                            }
+                            Log.d("CallBack FinishGame", "isFinished : " + isGameFinished.getIsFinished());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<NoMoreAntimatiere> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "FinishGame callback failure",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBackFinishGameFailed", "FinishGame callback failure");
+                        t.printStackTrace();
+                    }
+                });
             }
         }, delay);
     }
@@ -212,7 +235,7 @@ public class OrdersActivity extends AppCompatActivity {
     /**
      * Vibrates the device. Used for providing feedback when the user performs an action.
      */
-    public void vibrate(View view) {
-        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+    public void vibrate() {
+        this.findViewById(android.R.id.content).getRootView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
     }
 }

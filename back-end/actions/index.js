@@ -11,11 +11,6 @@ const baseActions = [{
 {
     title: "Remettre de l`antimatière",
     id: 'antimatiere',
-},
-{
-    title: "Augmenter les rétro-propulseurs",
-    id: 'slider',
-    value: 80,
 },{
     title: "Détruire les asteroids",
     id: 8,
@@ -28,6 +23,11 @@ const nextActions = [{
 {
     title: "Appuyer sur les boutons rouge et bleu en même temps",
     id:7,
+},
+{
+    title: "Augmenter les rétro-propulseurs",
+    id: 'slider',
+    value: 80,
 }]
 
 const finishGame = {
@@ -41,7 +41,7 @@ const antimatiereValue = {
 
 function updateDataGame() {
     counter +=1
-    if (counter%5==0 && nextActions.length > 0) {
+    if (counter%10==0 && nextActions.length > 0) {
         let tmpAction = nextActions.sort((a, b) => 0.5 - Math.random()).pop()
         baseActions.push(tmpAction)
         actionStack.push(tmpAction.id)

@@ -36,7 +36,12 @@ router.get('/no-more-antimatiere', function (request,response){
     this.noMoreAntimatiere = true;
     actions.processAction('antimatiere')
     console.log("baseActions", actions.getBaseActions())
-    response.status(200).send("data received")
+    response.status(200).json({"noMoreAntimatiere": this.noMoreAntimatiere})
+});
+
+router.get('/is-there-no-more-antimatiere', function (request,response){
+    console.log("baseActions", actions.getBaseActions())
+    response.status(200).json({"value": this.noMoreAntimatiere})
 });
 
 router.post('/start/game', function(request, response){
