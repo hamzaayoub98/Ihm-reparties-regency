@@ -16,7 +16,10 @@ const baseActions = [{
     title: "Augmenter les rétro-propulseurs à 80%",
     id: 'slider',
     value: 80,
-},
+},{
+    title: "Supprimer les asteroids",
+    id: 8,
+}
 ]
 const nextActions = [{
     title: "Remettre la gravité",
@@ -29,9 +32,6 @@ const nextActions = [{
     id: 6,
 },
 {
-    title: "Supprimer les asteroids",
-    id: 'asteroidsVue',
-}, {
     title: "Appuyer sur les boutons rouge et bleu en même temps",
     id:7,
 }]

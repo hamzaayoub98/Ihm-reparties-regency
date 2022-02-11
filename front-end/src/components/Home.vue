@@ -15,7 +15,7 @@
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
-        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="sendAsteroidsState()" >Hide Asteroids</button>
+        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Hide Asteroids</button>
     </div>
 </template>
 
