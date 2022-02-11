@@ -11,9 +11,11 @@ const baseActions = [{
 {
     title: "Remettre de l`antimatière",
     id: 'antimatiere',
-},{
-    title: "Détruire les asteroids",
-    id: 8,
+},
+{
+    title: "Augmenter les rétro-propulseurs",
+    id: 'slider',
+    value: 80,
 }
 ]
 const nextActions = [{
@@ -25,9 +27,8 @@ const nextActions = [{
     id:7,
 },
 {
-    title: "Augmenter les rétro-propulseurs",
-    id: 'slider',
-    value: 80,
+    title: "Détruire les asteroids",
+    id: 8,
 }]
 
 const finishGame = {

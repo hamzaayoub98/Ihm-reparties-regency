@@ -157,7 +157,7 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<NoMoreAntimatiere> call, Response<NoMoreAntimatiere> response) {
                         noMoreAntimatiere = response.body();
-                        if(noMoreAntimatiere != null) {
+                        if(noMoreAntimatiere != null && noMoreAntimatiere.getNoMoreAntimatiere() != null) {
                             if (noMoreAntimatiere.getNoMoreAntimatiere()) {
                                 Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                                 // Vibrate for 400 milliseconds
