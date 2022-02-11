@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -158,7 +159,9 @@ public class OrdersActivity extends AppCompatActivity {
                         noMoreAntimatiere = response.body();
                         if(noMoreAntimatiere != null) {
                             if (noMoreAntimatiere.getNoMoreAntimatiere()) {
-                                vibrate();
+                                Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                                // Vibrate for 400 milliseconds
+                                vib.vibrate(600);
                             }
                             Log.d("CallBack FinishGame", "isFinished : " + isGameFinished.getIsFinished());
                         }
@@ -230,12 +233,5 @@ public class OrdersActivity extends AppCompatActivity {
             address = "ws://" + wsAddress + ":" + wsPort + "/";
         }
         return address;
-    }
-
-    /**
-     * Vibrates the device. Used for providing feedback when the user performs an action.
-     */
-    public void vibrate() {
-        this.findViewById(android.R.id.content).getRootView().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
     }
 }
