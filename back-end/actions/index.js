@@ -33,7 +33,7 @@ const nextActions = [{
 }]
 
 const finishGame = {
-    isFinished: true,
+    isFinished: false,
 }
 
 const antimatiereValue = {
@@ -50,8 +50,6 @@ function updateDataGame() {
     }
     if (baseActions.length + nextActions.length ==0) {
         finishGame.isFinished = true;
-        console.log("🚀 ~ file: index.js ~ line 79 ~ updateDataGame ~ isFinished", finishGame.isFinished)
-
     }
   }
 
