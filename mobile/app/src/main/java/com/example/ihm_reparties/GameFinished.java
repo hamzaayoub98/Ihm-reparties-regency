@@ -6,13 +6,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 @Generated("jsonschema2pojo")
-public class FinishGame implements Serializable
+public class GameFinished implements Serializable
 {
-    public FinishGame(){
-        this.isFinished = false;
-    }
+    public GameFinished(){}
 
-    public FinishGame(boolean isFinished){
+    public GameFinished(boolean isFinished){
         this.isFinished = isFinished;
     }
 

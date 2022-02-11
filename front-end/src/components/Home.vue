@@ -43,8 +43,6 @@
                 finished : false,
                 doc:null,
                 button1:null,
-                button1Pressed : false,
-                button2Pressed:false,
                 button2:null,
 
             }
@@ -56,18 +54,20 @@
             this.initWSConnection();
         },
         mounted() {
+          let button1Pressed = false;
+          let button2Pressed = false;
             this.doc = document.getElementById("home")
             this.button1 = document.getElementById("b1")
             this.button2 = document.getElementById("b2")
-            console.log("🚀 ~ file: Home.vue ~ line 43 ~ mounted ~ URL_REST", URL_REST)
             Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
             console.log(response)));
           this.button1.addEventListener('touchstart',function (event){
                 console.log("b1",event);
-                this.button1Pressed = true;
-            if(this.button1Pressed && this.button2Pressed){
-              Axios.post("http://" + URL_REST + "action", {
+                button1Pressed = true;
+            if(button1Pressed && button2Pressed){
+              console.log("multi touch detected")
+              Axios.post("http://" + URL_REST + "/action", {
                 action: 7,
               })
                   .then(res => {
@@ -81,9 +81,11 @@
           });
           this.button2.addEventListener('touchstart',function (event){
                 console.log("b2",event);
-                this.button2Pressed = true;
-            if(this.button1Pressed && this.button2Pressed){
-              Axios.post("http://" + URL_REST + "action", {
+                button2Pressed = true;
+              console.log(button1Pressed, button2Pressed)
+            if(button1Pressed && button2Pressed){
+              console.log("multi touch detected")
+              Axios.post("http://" + URL_REST + "/action", {
                 action: 7,
               })
                   .then(res => {
@@ -106,7 +108,7 @@
         },
         methods: {
             action:function (number) {
-                Axios.post("http://" + URL_REST + "action", {
+                Axios.post("http://" + URL_REST + "/action", {
                     action: number,
                 })
                     .then(res => {
@@ -139,8 +141,10 @@
               this.connection.send(['AsteroidsState',this.isShow]);
             },
             concurentTouch:function (){
+              console.log("ok")
               if(this.button1Pressed && this.button2Pressed){
-                Axios.post("http://" + URL_REST + "action", {
+                console.log("multitouch detected")
+                Axios.post("http://" + URL_REST + "/action", {
                   action: 7,
                 })
                     .then(res => {

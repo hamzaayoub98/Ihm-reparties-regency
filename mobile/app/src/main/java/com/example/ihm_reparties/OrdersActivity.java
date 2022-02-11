@@ -1,11 +1,13 @@
 package com.example.ihm_reparties;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -38,29 +40,30 @@ public class OrdersActivity extends AppCompatActivity {
         @Override
         public void onMessage(WebSocket webSocket, String text) {
             String[] tab = text.split(",");
-            output(tab[1]);
+            output(tab[1], false);
             Log.d("onMessageWS", text);
         }
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
-            output(bytes.hex());
+            output(bytes.hex(), false);
             Log.d("onMessageWS", bytes.hex());
 
         }
         @Override
         public void onClosing(WebSocket webSocket, int code, String reason) {
             webSocket.close(NORMAL_CLOSURE_STATUS, null);
-            output(code + " / " + reason);
+            output(code + " / " + reason, true);
         }
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, okhttp3.Response response) {
-            output(t.getMessage());
+            output(t.getMessage(), true);
             Log.d("onFailureWS", t.getMessage());
         }
     }
 
     private SharedPreferences sharedPref;
     List<OrdersApiResponse> orders = new ArrayList<>();
+    GameFinished isGameFinished;
     private Context context = this;
     Handler handler = new Handler();
     Runnable runnable;
@@ -123,6 +126,29 @@ public class OrdersActivity extends AppCompatActivity {
                         Log.d("CallBackOrdersFailed", "Orders callback failure");
                     }
                 });
+
+                Call<GameFinished> callSyncForGameFinished = api.getGameFinishedApiResponseCall();
+                callSyncForGameFinished.enqueue(new Callback<GameFinished>() {
+                    @Override
+                    public void onResponse(Call<GameFinished> call, Response<GameFinished> response) {
+                        isGameFinished = response.body();
+                        if(isGameFinished != null) {
+                            if (isGameFinished.getIsFinished()) {
+                                Intent intent = new Intent(getApplicationContext(), GameFinishedActivity.class);
+                                startActivity(intent);
+                            }
+                            Log.d("CallBack FinishGame", "isFinished : " + isGameFinished.getIsFinished());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GameFinished> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "FinishGame callback failure",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBackFinishGameFailed", "FinishGame callback failure");
+                        t.printStackTrace();
+                    }
+                });
             }
         }, delay);
     }
@@ -133,12 +159,13 @@ public class OrdersActivity extends AppCompatActivity {
         IHMWebSocketListener listener = new IHMWebSocketListener();
         ws = client.newWebSocket(request, listener);
     }
-    public void output(final String txt) {
+
+    public void output(final String txt, boolean error) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 adapter.setSpeedGaugeValue(Integer.parseInt(txt));
-                Toast.makeText(OrdersActivity.this, "Message :" + txt,
+                if (error) Toast.makeText(OrdersActivity.this, "Message :" + txt,
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -182,4 +209,10 @@ public class OrdersActivity extends AppCompatActivity {
         return address;
     }
 
+    /**
+     * Vibrates the device. Used for providing feedback when the user performs an action.
+     */
+    public void vibrate(View view) {
+        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+    }
 }
