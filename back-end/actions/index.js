@@ -1,5 +1,5 @@
 let counter = 0;
-let actionStack = [1,2,"antimatiere","asteroidsVue",7]
+let actionStack = [1,2,"antimatiere","asteroidsVue",7,8]
 
 const baseActions = [{
     title: "Appuyez sur le bouton bleu",
@@ -13,11 +13,11 @@ const baseActions = [{
     id: 'antimatiere',
 },
 {
-    title: "Augmenter les rétro-propulseurs à 80%",
+    title: "Augmenter les rétro-propulseurs",
     id: 'slider',
     value: 80,
 },{
-    title: "Supprimer les asteroids",
+    title: "Détruire les asteroids",
     id: 8,
 }
 ]
