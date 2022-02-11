@@ -163,10 +163,12 @@
 <style scoped>
     #slider{
 
-      position: relative;
-      top:900px;
-      display: flex;
+      margin-right: 20%;
+      margin-left: 20%;
+      top:350px;
       margin: 50 auto;
+      width: 200px;
+      height: 30px;
     }
     #button1{
         position: absolute;
