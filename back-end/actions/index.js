@@ -2,11 +2,12 @@ let counter = 0;
 let actionStack = [1,2,"antimatiere","asteroidsVue",7,8]
 
 const baseActions = [{
+    title: "Appuyer sur les boutons rouge et bleu en même temps",
+    id:7,
+},
+{
     title: "Appuyez sur le bouton bleu",
     id: 1,
-}, {
-    title: "Appuyez sur le bouton rouge",
-    id: 2,
 },
 {
     title: "Remettre de l`antimatière",
@@ -23,12 +24,12 @@ const nextActions = [{
     id: 6,
 },
 {
-    title: "Appuyer sur les boutons rouge et bleu en même temps",
-    id:7,
-},
-{
     title: "Détruire les asteroids",
     id: 8,
+},
+{
+    title: "Appuyez sur le bouton rouge",
+    id: 2,
 }]
 
 const finishGame = {

@@ -107,7 +107,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Range range3 = new Range();
                 range3.setColor(Color.parseColor("#ce0000"));
                 range3.setFrom(order.getValue() + 10);
-                range3.setTo(175.0);
+                range3.setTo(100.0);
 
                 //add color ranges to gauge
                 speedGauge.addRange(range);
@@ -116,7 +116,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 //set min max and current value
                 speedGauge.setMinValue(0.0);
-                speedGauge.setMaxValue(175.0);
+                speedGauge.setMaxValue(100.0);
                 speedGauge.setValue(speedGaugeValue);
                 Log.d("GAUGE", "value: " + speedGauge.getValue());
                 break;
