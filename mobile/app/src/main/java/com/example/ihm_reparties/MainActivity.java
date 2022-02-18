@@ -1,19 +1,16 @@
 package com.example.ihm_reparties;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,31 +23,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     public static final String EXTRA_MESSAGE = "Data";
@@ -64,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean isSaving = false;
     private SharedPreferences sharedPref;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
-    private Button buttonSave, buttonShow, buttonHelloWorld, buttonGoOrders;
+    private Button buttonSave, buttonShow, buttonHelloWorld, buttonGoOrders,buttonFinishGame;
     private TextView textView1, textViewAnswer;
 
     @Override
@@ -144,8 +126,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     @Override
                     public void onResponse(Call<HelloWorldApiResponse> call, Response<HelloWorldApiResponse> response) {
                         HelloWorldApiResponse apiResponse = response.body();
-                        System.out.println(apiResponse.getHelloworld());
-                        textViewAnswer.setText(apiResponse.getHelloworld());
+                        if(apiResponse != null) {
+                            System.out.println(apiResponse.getHelloworld());
+                            textViewAnswer.setText(apiResponse.getHelloworld());
+                        }
+                        else {
+                            Toast toast = Toast.makeText(v.getContext(), "Got response but it's null.", Toast.LENGTH_SHORT);
+                            toast.show();
+                            Log.d("ApiResponseNull", "The API response is null.");
+                        }
                     }
 
                     @Override
@@ -163,6 +152,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), OrdersActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        buttonFinishGame = (Button) findViewById(R.id.button_finish_game);
+        buttonFinishGame.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getIpv4PortAddress());
+
+                Call<StartGame> callSync = api.startGame(new StartGame(true));
+                callSync.enqueue(new Callback<StartGame>() {
+                    @Override
+                    public void onResponse(Call<StartGame> call, Response<StartGame> response) {
+                        Log.d("CallBack StartGame", "Saying game is starting !");
+                    }
+
+                    @Override
+                    public void onFailure(Call<StartGame> call, Throwable t) {
+                        Toast.makeText(MainActivity.this, "StartGame callback failure",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBackStartGameFailed", "StartGame callback failure");
+                        t.printStackTrace();
+                    }
+                });
             }
         });
 

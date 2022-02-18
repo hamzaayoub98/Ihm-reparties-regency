@@ -14,6 +14,9 @@ public class OrdersApiResponse
     @SerializedName("id")
     @Expose
     private String id;
+    @SerializedName("value")
+    @Expose
+    private int value;
 
     public String getTitle() {
         return title;
@@ -29,5 +32,13 @@ public class OrdersApiResponse
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
     }
 }

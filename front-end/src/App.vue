@@ -1,4 +1,5 @@
 <template>
+
   <div id="app">
     <div v-if="gameStarted" class="bg">
       <Home></Home>
@@ -40,11 +41,13 @@
 <script>
 import Home from "@/components/Home";
 import Axios from "axios";
+import { URL_REST } from './main.js'
+
 
 export default {
   name: "App",
   components: {
-    Home,
+    Home
   },
   data() {
     return {
@@ -54,19 +57,14 @@ export default {
       displayError: false
     };
   },
-  mounted() {
-    Axios.get("http://localhost:3000/game/status").then(
-      (response) => ((this.gameStarted = response.data.started), console.log(response))
-    );
-  },
   methods: {
     startGame: function () {
-      if (!this.displayError){
+      if (this.displayError){ //TODO : disable for the moment
         this.displayError = true
         this.captainConnected = false
         this.mecanoConnected = false
       } else {
-        Axios.post("http://localhost:3000/start/game", {
+        Axios.post("http://" + URL_REST + "/start/game", {
           started: true,
         })
           .then((res) => {
@@ -92,6 +90,7 @@ export default {
   width: 100%;
   height: 100%;
   margin: none;
+  position: relative;
     background-color: #0e1118;
     background-image: radial-gradient(
     ellipse at bottom,
@@ -106,7 +105,7 @@ body {
 }
 .bg {
   /* The image used */
-  background-image: url("./assets/background.png");
+  background-image: url("./assets/background1.png");
 
   /* Full height */
   height: 100%;

@@ -1,12 +1,12 @@
 <template>
-    <div id="container"></div>
+    <div id="containerLeft"></div>
 </template>
 
 <script>
     import * as THREE from "three";
     
     export default {
-        name: "Asteroid",
+        name: "AsteroidLeft",
         data(){
             return {
                 camera: null,
@@ -24,7 +24,7 @@
         methods:{
             init: function() {
 
-                let container = document.getElementById('container');
+                let container = document.getElementById('containerLeft');
                 //let  loader = new GLTFLoader();
                 
                 this.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
@@ -131,12 +131,11 @@
     }
 </script>
 <style scoped>
-    #container{
+    #containerLeft{
         height: 540px;
         width:540px;
-        float: left;
-        top:0%;
-        left: 0%;
-
+        top: 0%;
+        float: right;
+         
     }
 </style>
