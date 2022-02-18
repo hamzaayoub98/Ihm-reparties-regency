@@ -56,13 +56,18 @@ router.post('/finish', function(request, response){
     console.log("🚀 test finish game", this.gameStarted)
     setInterval(actions.updateDataGame, 10000)
     response.status(200).json(actions.getFinishGame());
-});    
+});
 
 router.post('/addAntimatiere', function(request, response){
     this.antimatiereValue = request.body.value;
     console.log("🚀 test antimatiere value : ", this.antimatiereValue)
     response.status(200).json(actions.getAntimatiereValue());
 });
+
+router.post('/show-button',function(request,response){
+    actions.setShowButton(request.body.value);
+    response.status(200).json("new val is  : " + actions.getShowButton())
+})
 
 router.post('/action', function(request, response){
     actions.processAction(request.body.action)
