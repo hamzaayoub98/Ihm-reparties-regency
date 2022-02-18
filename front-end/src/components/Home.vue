@@ -8,7 +8,7 @@
         <button id="b1" v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
-        <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>
+        <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue(0)"/>
         <button id="b2" v-on:click="action(2)">
             <img  id="button2"  src="../assets/redButton.png">
         </button>
@@ -134,8 +134,8 @@
                 this.connection.send('PING')
 
             },
-            sendSliderValue:function(){
-              this.connection.send(['sliderValue',this.sliderValue]);
+            sendSliderValue:function(id){
+              this.connection.send(['sliderValue',id,this.sliderValue]);
             },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);

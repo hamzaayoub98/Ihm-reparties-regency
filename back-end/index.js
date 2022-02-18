@@ -41,9 +41,10 @@ function onMessageFromFront(msg) {
     const rawMsg = `${msg}`;
     let trimmed = rawMsg.split(',');
     if(trimmed[0] === 'sliderValue'){
-        let sliderValueTmp = parseInt(trimmed[1]);
-        console.log("sliderValueTmp : " + sliderValueTmp)
-        actions.processAction({action:'slider', value: sliderValueTmp})
+        let id = parseInt(trimmed[1]);
+        let sliderValueTmp = parseInt(trimmed[2]);
+        console.log("slider " + id + " value : " + sliderValueTmp)
+        actions.processAction({action:'slider', id: id, value: sliderValueTmp})
     }
 }
 
