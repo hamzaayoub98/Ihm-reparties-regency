@@ -46,7 +46,7 @@ function onMessageFromFront(msg) {
         actions.processAction({action:'slider', value: sliderValueTmp})
     }
     else if (trimmed[0] === 'lever'){
-        return actions.getShowButton()
+        frontWS.send(actions.getShowButton()+"")
     }
 }
 

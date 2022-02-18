@@ -128,7 +128,7 @@
                 console.log("Starting connection to WebSocket Server")
                 this.connection = new WebSocket("ws://" + URL_WS + "?id=0")
                 this.connection.onmessage = function(event) {
-                    console.log(event.data);
+                    console.log("message",event.data);
                 }
                 this.connection.onopen = function(event) {
                     console.log(event);
@@ -147,9 +147,10 @@
             },
             checkButtonState:function(){
               this.connection.send(['lever',"_"]);
+              console.log("avant");
               this.connection.onmessage = function (event) {
-                    console.log("bonjour",event.data)
-                    this.buttonVisible = event.data
+                    console.log(event.data === "true")
+                    this.buttonVisible = event.data === "true"
               }
             },
             concurentTouch:function (){

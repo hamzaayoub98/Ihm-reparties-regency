@@ -64,8 +64,8 @@ router.post('/addAntimatiere', function(request, response){
     response.status(200).json(actions.getAntimatiereValue());
 });
 
-router.post('/show-button',function(request,response){
-    actions.setShowButton(request.body.value);
+router.get('/show-button',function(request,response){
+    actions.setShowButton(true);
     response.status(200).json("new val is  : " + actions.getShowButton())
 })
 
