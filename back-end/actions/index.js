@@ -1,5 +1,6 @@
 let counter = 0;
 let actionStack = [1,2,"antimatiere","asteroidsVue",7,8]
+let showButton = false;
 
 const baseActions = [{
     title: "Appuyer sur les boutons rouge et bleu en même temps",
@@ -17,6 +18,9 @@ const baseActions = [{
     title: "Augmenter les rétro-propulseurs",
     id: 'slider',
     value: 80,
+},{
+    title:"Abaisser le levier",
+    id:'lever'
 }
 ]
 const nextActions = [{
@@ -68,6 +72,14 @@ function updateDataGame() {
             }
         })
     }
+    else if (action.action === 'lever'){
+            baseActions.forEach(baseAction =>{
+                if(baseAction.id === 'lever'){
+                    showButton = true
+                    baseActions.splice(baseAction.indexOf(baseAction),1)
+                }
+            })
+    }
     if(actionStack.includes(action)){
         actionStack.splice(actionStack.indexOf(action),1);
         baseActions.forEach(actions =>{
@@ -82,6 +94,8 @@ function getBaseActions(){return baseActions}
 function getActionStack(){return actionStack}
 function getFinishGame(){return finishGame}
 function getAntimatiereValue(){return antimatiereValue}
+function getShowButton(){return showButton}
+function setShowButton(newVal){showButton = newVal}
 
 module.exports = {
     updateDataGame,
@@ -89,5 +103,6 @@ module.exports = {
     getBaseActions,
     getActionStack,
     getFinishGame,
-    getAntimatiereValue
+    getShowButton,
+    setShowButton,
 }

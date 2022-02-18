@@ -45,6 +45,9 @@ function onMessageFromFront(msg) {
         console.log("sliderValueTmp : " + sliderValueTmp)
         actions.processAction({action:'slider', value: sliderValueTmp})
     }
+    else if (trimmed[0] === 'lever'){
+        return actions.getShowButton()
+    }
 }
 
 function onMessageFromMobile(msg) {

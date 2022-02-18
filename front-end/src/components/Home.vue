@@ -16,6 +16,7 @@
             <img  id="button3"  src="../assets/send.png">
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
+        <b-button id="b4" :disabled="buttonVisible == false" size="lg" variant="primary" >Disabled</b-button>
     </div>
 </template>
 
@@ -44,6 +45,7 @@
                 doc:null,
                 button1:null,
                 button2:null,
+                buttonVisible : false,
 
             }
         },
@@ -105,6 +107,9 @@
             console.log("b2-end",event);
             this.button2Pressed = false;
           });
+            window.setInterval(() => {
+                this.checkButtonState();
+            }, 500)
         },
         methods: {
             action:function (number) {
@@ -139,6 +144,13 @@
             },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);
+            },
+            checkButtonState:function(){
+              this.connection.send(['lever',"_"]);
+              this.connection.onmessage = function (event) {
+                    console.log("bonjour",event.data)
+                    this.buttonVisible = event.data
+              }
             },
             concurentTouch:function (){
               console.log("ok")
@@ -192,6 +204,14 @@
         left: 200px;
         height: 5%;
         width: 5%;
+        border-radius: 10%;
+    }
+    #b4{
+        position: absolute;
+        top:650px;
+        left: 854px;
+        height: 6%;
+        width: 7%;
         border-radius: 10%;
     }
     #home{
