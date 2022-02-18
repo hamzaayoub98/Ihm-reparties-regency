@@ -119,6 +119,7 @@ function getActionStack(){return actionStack}
 function getFinishGame(){return finishGame}
 function getAntimatiereValue(){return antimatiereValue}
 function getCourantStatus(){return courantRestart}
+function getCourantSequence(){return seqRelancerCourant}
 
 
 module.exports = {
@@ -128,5 +129,6 @@ module.exports = {
     getActionStack,
     getFinishGame,
     getAntimatiereValue,
-    getCourantStatus
+    getCourantStatus,
+    getCourantSequence
 }
