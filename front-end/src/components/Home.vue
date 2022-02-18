@@ -16,7 +16,7 @@
             <img  id="button3"  src="../assets/send.png">
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
-        <b-button id="b4" :disabled="buttonVisible == false" size="lg" variant="primary" >Disabled</b-button>
+        <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Disabled</b-button>
     </div>
 </template>
 
@@ -45,9 +45,11 @@
                 doc:null,
                 button1:null,
                 button2:null,
-                buttonVisible : false,
+                buttonVisible:false,
+                
 
             }
+
         },
         props: {
             msg: String,
@@ -147,10 +149,9 @@
             },
             checkButtonState:function(){
               this.connection.send(['lever',"_"]);
-              console.log("avant");
+              var _this = this;
               this.connection.onmessage = function (event) {
-                    console.log(event.data === "true")
-                    this.buttonVisible = event.data === "true"
+                    _this.buttonVisible = event.data === "true"
               }
             },
             concurentTouch:function (){
@@ -168,7 +169,8 @@
                       console.log(error);
                     });
               }
-            }
+            },
+            
         },
     }
 </script>
