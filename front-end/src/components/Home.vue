@@ -99,11 +99,11 @@
           });
           this.button1.addEventListener('touchend',function (event){
             console.log("b1-end",event);
-            this.button1Pressed = false;
+            button1Pressed = false;
           });
           this.button2.addEventListener('touchend',function (event){
             console.log("b2-end",event);
-            this.button2Pressed = false;
+            button2Pressed = false;
           });
         },
         methods: {

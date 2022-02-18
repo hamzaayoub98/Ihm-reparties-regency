@@ -35,12 +35,11 @@ router.get('/antimatiere',function (request,response){
 router.get('/no-more-antimatiere', function (request,response){
     this.noMoreAntimatiere = true;
     actions.processAction('antimatiere')
-    console.log("baseActions", actions.getBaseActions())
     response.status(200).json({"noMoreAntimatiere": this.noMoreAntimatiere})
 });
 
 router.get('/is-there-no-more-antimatiere', function (request,response){
-    console.log("baseActions", actions.getBaseActions())
+    // console.log("baseActions", actions.getBaseActions())
     response.status(200).json({"value": this.noMoreAntimatiere})
 });
 
@@ -53,14 +52,14 @@ router.post('/start/game', function(request, response){
 
 router.post('/finish', function(request, response){
     this.gameFinished = request.body.isFinished;
-    console.log("🚀 test finish game", this.gameStarted)
+    console.log("🚀 finish game", this.gameStarted)
     setInterval(actions.updateDataGame, 10000)
     response.status(200).json(actions.getFinishGame());
 });    
 
 router.post('/addAntimatiere', function(request, response){
     this.antimatiereValue = request.body.value;
-    console.log("🚀 test antimatiere value : ", this.antimatiereValue)
+    console.log("🚀 antimatiere value : ", this.antimatiereValue)
     response.status(200).json(actions.getAntimatiereValue());
 });
 

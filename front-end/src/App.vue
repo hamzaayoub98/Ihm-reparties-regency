@@ -7,7 +7,13 @@
     <div v-else class="starter">
       <div class="row py-4">
         <div class="col align-self-center">
-          <h1 class="text-primary d-flex justify-content-center">Embarquement immmédiat !</h1>
+          <h1 class="text-danger" v-touch:swipe="swipeHandler">Swipe Me</h1>
+          <h1 class="text-danger" v-touch:tap="logger">Tape Me</h1>
+          <button class="btn-lg mr-4" id="b2">Btn 2</button>
+          <button class="btn-lg" id="b1">Btn 1</button>
+          <!-- <h1 class="text-primary d-flex justify-content-center">Embarquement immmédiat !</h1> -->
+
+          <h2 class="text-success">event detected : {{this.eventDetected}}</h2>
         </div>
       </div>
       <div class="row my-4">
@@ -19,13 +25,13 @@
       </div>
       <div class="row">
         <div class="col">
-          <img
+          <!-- <img
             src="https://raw.githubusercontent.com/kabirbatra03/space-animation/c825fc0dff92bec170b370f6eb425cf1dd34c5ce/assets/spacecraft.svg"
             height="400"
             width="800"
             class="rocket fixed-bottom"
             id="rocket"
-          />
+          /> -->
         </div>
       </div>
       <div v-if="this.displayError && !this.captainConnected" class="row my-4">
@@ -49,8 +55,45 @@ export default {
   components: {
     Home
   },
+  mounted() {
+          let button1Pressed = false;
+          let button2Pressed = false;
+          var self = this;
+            this.doc = document.getElementById("home")
+            this.button1 = document.getElementById("b1")
+            this.button2 = document.getElementById("b2")
+            this.button1.addEventListener('touchstart',function (event){
+                console.log("b1",event);
+                button1Pressed = true;
+                self.eventDetected = "single tap b1"
+
+                if(button1Pressed && button2Pressed){
+                  console.log("multi touch detected")
+                  self.eventDetected = "multi tap"
+                }
+          });
+          this.button2.addEventListener('touchstart',function (event){
+                console.log("b2",event);
+                button2Pressed = true;
+                self.eventDetected = "single tap b2"
+              console.log(button1Pressed, button2Pressed)
+            if(button1Pressed && button2Pressed){
+              console.log("multi touch detected")
+              self.eventDetected = "multi tap"
+            }
+          });
+          this.button1.addEventListener('touchend',function (event){
+            console.log("b1-end",event);
+            button1Pressed = false;
+          });
+          this.button2.addEventListener('touchend',function (event){
+            console.log("b2-end",event);
+            button2Pressed = false;
+          });
+        },
   data() {
     return {
+      eventDetected: null,
       gameStarted: false,
       captainConnected: false,
       mecanoConnected: false,
@@ -58,6 +101,14 @@ export default {
     };
   },
   methods: {
+    logger (msg){
+      this.eventDetected = "single tap"
+      console.log("test", msg)
+    },
+    swipeHandler (direction) {
+        this.eventDetected = "swipe " + direction
+        console.log(direction)  // May be left / right / top / bottom
+    },
     startGame: function () {
       if (this.displayError){ //TODO : disable for the moment
         this.displayError = true
