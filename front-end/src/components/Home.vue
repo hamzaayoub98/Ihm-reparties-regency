@@ -44,6 +44,7 @@
                 doc:null,
                 button1:null,
                 button2:null,
+                buttonVisible : false,
 
             }
         },
@@ -105,6 +106,9 @@
             console.log("b2-end",event);
             this.button2Pressed = false;
           });
+            window.setInterval(() => {
+                this.checkButtonState();
+            }, 500)
         },
         methods: {
             action:function (number) {
@@ -139,6 +143,13 @@
             },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);
+            },
+            checkButtonState:function(){
+              this.connection.send(['lever',"_"]);
+              this.connection.onmessage = function (event) {
+                    console.log("bonjour",event.data)
+                    this.buttonVisible = event.data
+              }
             },
             concurentTouch:function (){
               console.log("ok")
