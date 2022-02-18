@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,6 +76,8 @@ public class OrdersActivity extends AppCompatActivity {
     private OkHttpClient client;
     private WebSocket ws;
     OrdersAdapter adapter;
+    Button button_captors;
+    ImageView logo_warning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,16 @@ public class OrdersActivity extends AppCompatActivity {
         RecyclerView rvOrders = (RecyclerView) findViewById(R.id.rvOrders);
         rvOrders.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+
+        button_captors = (Button) findViewById(R.id.button_captors);
+        button_captors.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), CaptorsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //Manage API
         if(getRestAddressPortString().length() < 10){
             Toast toast = Toast.makeText(getApplicationContext(), "No ipv4 and port address defined in the settings.", Toast.LENGTH_SHORT);
             toast.show();
