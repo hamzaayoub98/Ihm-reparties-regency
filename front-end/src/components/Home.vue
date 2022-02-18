@@ -16,6 +16,7 @@
             <img  id="button3"  src="../assets/send.png">
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
+        <b-button id="b4" :disabled="buttonVisible == false" size="lg" variant="primary" >Disabled</b-button>
     </div>
 </template>
 
@@ -203,6 +204,14 @@
         left: 200px;
         height: 5%;
         width: 5%;
+        border-radius: 10%;
+    }
+    #b4{
+        position: absolute;
+        top:650px;
+        left: 854px;
+        height: 6%;
+        width: 7%;
         border-radius: 10%;
     }
     #home{
