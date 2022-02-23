@@ -8,7 +8,7 @@
         <button id="b1" v-on:click="action(1)">
             <img  id="button1"  src="../assets/blue_button.png">
         </button>
-        <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>
+        <!--<VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>-->
         <button id="b2" v-on:click="action(2)">
             <img  id="button2"  src="../assets/redButton.png">
         </button>
@@ -16,7 +16,28 @@
             <img  id="button3"  src="../assets/send.png">
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
-        <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Disabled</b-button>
+        <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
+        <round-slider  v-bind:update="sendSliderValue"
+        v-bind:change="mouseDown"
+          id="roundslider"
+          v-model="sliderValue"
+          start-angle="315"
+          end-angle="+270"
+          line-cap="round"
+          radius="120"
+          rangeColor="red"    
+        />
+
+        <round-slider   v-bind:update="sendSliderValue2"
+        v-bind:change="mouseDown2"
+          id="roundslider2"
+          v-model="sliderValue2"
+          start-angle="315"
+          end-angle="+270"
+          line-cap="round"
+          radius="120"
+          rangeColor="red"    
+        />
     </div>
 </template>
 
@@ -25,14 +46,15 @@
 
     import Asteroid from "./Asteroid";
     import { URL_REST, URL_WS } from '../main.js'
-    import VueSlider from 'vue-slider-component'
+    //import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
     import ToggleButton from './ToggleButton.vue';
+    import RoundSlider from "vue-round-slider";
 
     export default {
         name: "Home",
-        components: {Asteroid,VueSlider,AsteroidLeft,ToggleButton},
+        components: {Asteroid,AsteroidLeft,ToggleButton,RoundSlider},
         data(){
             return {
                 info : null,
@@ -46,6 +68,8 @@
                 button1:null,
                 button2:null,
                 buttonVisible:false,
+                sliderValue2:0,
+                
                 
 
             }
@@ -141,8 +165,23 @@
                 this.connection.send('PING')
 
             },
+            mouseDown:function() {
+              this.connection.send(['sliderValue',this.sliderValue]);
+                 var _this = this;
+                 _this.sliderValue=0;
+
+            },
+            mouseDown2:function() {
+              this.connection.send(['sliderValue2',this.sliderValue2]);
+                 var _this = this;
+                 _this.sliderValue2=0;
+
+            },
             sendSliderValue:function(){
               this.connection.send(['sliderValue',this.sliderValue]);
+            },
+            sendSliderValue2:function(){
+              this.connection.send(['sliderValue2',this.sliderValue2]);
             },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);
@@ -181,6 +220,24 @@
       margin-right: 20%;
       margin-left: 20%;
       top:350px;
+      margin: 50 auto;
+      width: 200px;
+      height: 30px;
+    }
+     #roundslider{
+
+      margin-right: 20%;
+      margin-left: 20%;
+      top:680px;
+      margin: 50 auto;
+      width: 200px;
+      height: 30px;
+    }
+    #roundslider2{
+
+      margin-right: 20%;
+      margin-left: 65%;
+      top:440px;
       margin: 50 auto;
       width: 200px;
       height: 30px;

@@ -44,6 +44,10 @@ function onMessageFromFront(msg) {
         let sliderValueTmp = parseInt(trimmed[1]);
         console.log("sliderValueTmp : " + sliderValueTmp)
         actions.processAction({action:'slider', value: sliderValueTmp})
+    }else if(trimmed[0] === 'sliderValue2'){
+        let sliderValueTmp2 = parseInt(trimmed[1]);
+        console.log("sliderValueTmp : " + sliderValueTmp2)
+        actions.processAction({action:'slider', value: sliderValueTmp2})
     }
     else if (trimmed[0] === 'lever'){
         frontWS.send(actions.getShowButton()+"")
