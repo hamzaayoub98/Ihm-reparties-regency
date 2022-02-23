@@ -6,11 +6,11 @@
             <ToggleButton />
         </div>
         <button id="b1" v-on:click="action(1)">
-            <img  id="button1"  src="../assets/blue_button.png">
+            <img  id="button1" v-bind:class="buttonVisible?'button1':'button1Disabled'"  src="../assets/blue_button.png">
         </button>
         <!--<VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>-->
         <button id="b2" v-on:click="action(2)">
-            <img  id="button2"  src="../assets/redButton.png">
+            <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
@@ -25,7 +25,7 @@
           end-angle="+270"
           line-cap="round"
           radius="120"
-          rangeColor="red"    
+          rangeColor="red"
         />
 
         <round-slider   v-bind:update="sendSliderValue2"
@@ -36,7 +36,7 @@
           end-angle="+270"
           line-cap="round"
           radius="120"
-          rangeColor="red"    
+          rangeColor="red"
         />
     </div>
 </template>
@@ -69,8 +69,8 @@
                 button2:null,
                 buttonVisible:false,
                 sliderValue2:0,
-                
-                
+
+
 
             }
 
@@ -209,7 +209,7 @@
                     });
               }
             },
-            
+
         },
     }
 </script>
@@ -242,7 +242,7 @@
       width: 200px;
       height: 30px;
     }
-    #button1{
+    .button1{
         position: absolute;
         top:550px;
         right: 485px;
@@ -250,13 +250,31 @@
         width: 7%;
         border-radius: 10%;
     }
-    #button2{
+    .button1Disabled{
+      position: absolute;
+      top:550px;
+      right: 485px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter:contrast(0);
+    }
+    .button2{
         position: absolute;
         top:550px;
         left: 485px;
         height: 6%;
         width: 7%;
         border-radius: 10%;
+    }
+    .button2Disabled{
+      position: absolute;
+      top:550px;
+      left: 485px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter:contrast(0);
     }
     #button3{
         position: absolute;
