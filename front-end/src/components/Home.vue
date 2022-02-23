@@ -62,16 +62,15 @@
                 mySrc:0,
                 connection: null,
                 sliderValue:0,
+                onSlider :false,
                 isShow: true,
                 finished : false,
                 doc:null,
                 button1:null,
                 button2:null,
                 buttonVisible:false,
+                onSlider2:false,
                 sliderValue2:0,
-
-
-
             }
 
         },
@@ -136,6 +135,16 @@
             window.setInterval(() => {
                 this.checkButtonState();
             }, 500)
+          window.setInterval(() => {
+            if(!this.onSlider){
+              this.sliderValue--;
+            }
+          },100)
+          window.setInterval(() => {
+            if(!this.onSlider2){
+              this.sliderValue2--;
+            }
+          },100)
         },
         methods: {
             action:function (number) {
@@ -166,15 +175,18 @@
 
             },
             mouseDown:function() {
+              this.onSlider=true
               this.connection.send(['sliderValue',this.sliderValue]);
-                 var _this = this;
-                 _this.sliderValue=0;
-
+                 /*var _this = this;
+                 _this.sliderValue=0;*/
+              this.onSlider=false
             },
             mouseDown2:function() {
+              this.onSlider2=true
               this.connection.send(['sliderValue2',this.sliderValue2]);
-                 var _this = this;
-                 _this.sliderValue2=0;
+                 /*var _this = this;
+                 _this.sliderValue2=0;*/
+              this.onSlider2=false
 
             },
             sendSliderValue:function(){
