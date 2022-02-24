@@ -5,7 +5,6 @@ const actions = require('../actions');
 let gameStarted = false;
 let antimatiereValue = 0;
 let noMoreAntimatiere = false;
-
 router.get('/', function(req, res) {
     res.status(200).json({"helloworld": "Hello World !"});
 });
@@ -81,5 +80,13 @@ router.get('/actionvr',function (request,response) {
     console.log("baseActions VR", actions.getBaseActions())
     response.status(200).send(actions.getActionStack().includes(action));
 })
+
+router.get('/courant/status', (req, res) => {
+    res.status(200).json({"restart": actions.getCourantStatus()});
+});
+
+router.get('/courant/seq', (req, res) => {
+    res.status(200).json({"sequence": actions.getCourantSequence()});
+});
 
 module.exports = router;
