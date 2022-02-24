@@ -64,8 +64,8 @@ router.post('/addAntimatiere', function(request, response){
     response.status(200).json(actions.getAntimatiereValue());
 });
 
-router.post('/show-button',function(request,response){
-    actions.setShowButton(request.body.value);
+router.get('/show-button',function(request,response){
+    actions.setShowButton(true);
     response.status(200).json("new val is  : " + actions.getShowButton())
 })
 
@@ -81,5 +81,14 @@ router.get('/actionvr',function (request,response) {
     console.log("baseActions VR", actions.getBaseActions())
     response.status(200).send(actions.getActionStack().includes(action));
 })
+
+router.get('/courant/status', (req, res) => {
+    res.status(200).json({"restart": actions.getCourantStatus()});
+});
+
+router.get('/courant/seq', (req, res) => {
+    res.status(200).json({"sequence": actions.getCourantSequence()});
+});
+
 
 module.exports = router;
