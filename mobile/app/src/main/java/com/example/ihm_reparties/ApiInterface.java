@@ -19,6 +19,9 @@ public interface ApiInterface {
     @POST("/addAntimatiere") // specify the sub url for our base url
     Call<AddAntimatiere> addAntimatiere(@Body AddAntimatiere addAntimatiere);
 
+    @POST("/action") // specify the sub url for our base url
+    Call<ActivateEnergy> activateEnergy(@Body ActivateEnergy activateEnergy);
+
 
 // for GET request
 
@@ -33,6 +36,12 @@ public interface ApiInterface {
 
     @GET("/is-there-no-more-antimatiere")
     Call<NoMoreAntimatiere> getNoMoreAntimatiereApiResponseCall();
+
+    @GET("/courant/status")
+    Call<CourantStatus> getCourantStatusCall();
+
+    @GET("/courant/seq")
+    Call<CourantSequence> getCourantSequenceCall();
 // CountryResponse is a POJO class which receives the response of this API
 
 }

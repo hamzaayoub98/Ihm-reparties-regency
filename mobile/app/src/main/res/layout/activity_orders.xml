@@ -9,6 +9,7 @@
         android:id="@+id/captorsLayoutGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         app:constraint_referenced_ids="captorsLayout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -126,6 +127,7 @@
             app:layout_constraintTop_toBottomOf="@+id/logo_lightning_yellow_half_stroke" />
 
         <View
+            android:id="@+id/separator4"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
@@ -146,6 +148,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
         <View
+            android:id="@+id/separator3"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
@@ -166,6 +169,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline7" />
 
         <View
+            android:id="@+id/separator2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
@@ -229,6 +233,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline8" />
 
         <View
+            android:id="@+id/separator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"
@@ -369,7 +374,6 @@
         android:id="@+id/ordersLayoutGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
         app:constraint_referenced_ids="ordersLayout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

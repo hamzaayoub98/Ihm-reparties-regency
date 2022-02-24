@@ -73,8 +73,14 @@ public class OrdersActivity extends AppCompatActivity {
     List<OrdersApiResponse> orders = new ArrayList<>();
     GameFinished isGameFinished;
     NoMoreAntimatiere noMoreAntimatiere;
+    ActivateEnergy activateEnergy;
+    CourantStatus courantStatus;
+    boolean hasCourantStatusBeenCalled = true;
+    CourantSequence courantSequence;
+    int sizeCourantSequence = 0;
     boolean areOrdersVisible = true;
     private Context context = this;
+    Vibrator vib;
     Handler handler = new Handler();
     Runnable runnable;
     int delay = 1000;
@@ -83,7 +89,7 @@ public class OrdersActivity extends AppCompatActivity {
 
     //Graphic components
     OrdersAdapter adapter;
-    Button buttonCaptors, buttonOrders, buttonHypervitesse;
+    Button buttonCaptors, buttonOrders, buttonHypervitesse, buttonCourant;
     Group captorsLayoutGroup, ordersLayoutGroup;
     HalfGauge gaugeReact1, gaugeReact2;
     ImageView arrowEnergyIndicator, warningEnergy, warningAntimatiere, warningHypervitesse, checkEnergy, checkAntimatiere, checkHypervitesse;
@@ -107,12 +113,66 @@ public class OrdersActivity extends AppCompatActivity {
         }
         startWsConnection();
         ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
+
+        //Initialize graphic components
         adapter = new OrdersAdapter(orders, getRestAddressPortString());
         // Attach the adapter to the recyclerview to populate items
         rvOrders.setAdapter(adapter);
         // Set layout manager to position the items
         rvOrders.setLayoutManager(new LinearLayoutManager(context));
+        gaugeReact1 = (HalfGauge) findViewById(R.id.gauge_react1);
+        gaugeReact2 = (HalfGauge) findViewById(R.id.gauge_react2);
+        arrowEnergyIndicator = (ImageView) findViewById(R.id.logo_arrow_indicator);
+        warningEnergy = (ImageView) findViewById(R.id.logo_warning_energy);;
+        warningAntimatiere = (ImageView) findViewById(R.id.logo_warning_antimatiere);;
+        warningHypervitesse = (ImageView) findViewById(R.id.logo_warning_hypervitesse);;
+        checkEnergy = (ImageView) findViewById(R.id.logo_check_energy);;
+        checkAntimatiere = (ImageView) findViewById(R.id.logo_check_antimatiere);;
+        checkHypervitesse = (ImageView) findViewById(R.id.logo_check_hypervitesse);;
+        buttonHypervitesse = (Button) findViewById(R.id.button_hypervitesse);
+        buttonOrders = (Button) findViewById(R.id.button_orders);
+        buttonCourant = (Button) findViewById(R.id.button_activate_energy);
+        captorsLayoutGroup = (Group) findViewById(R.id.captorsLayoutGroup);
+        ordersLayoutGroup = (Group) findViewById(R.id.ordersLayoutGroup);
 
+        initGauge(R.id.gauge_react1);
+        initGauge(R.id.gauge_react2);
+
+        buttonCaptors = (Button) findViewById(R.id.button_captors);
+        buttonCaptors.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                swapGroupVisibility();
+            }
+        });
+
+        buttonOrders = (Button) findViewById(R.id.button_orders);
+        buttonOrders.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                swapGroupVisibility();
+            }
+        });
+
+        buttonCourant.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Call<ActivateEnergy> callSync = api.activateEnergy(activateEnergy);
+                callSync.enqueue(new Callback<ActivateEnergy>() {
+                    @Override
+                    public void onResponse(Call<ActivateEnergy> call, Response<ActivateEnergy> response) {
+                        Log.d("CallBack Energy", "Sending activate energy action successful");
+                    }
+
+                    @Override
+                    public void onFailure(Call<ActivateEnergy> call, Throwable t) {
+                        Log.d("CallBack Energy", "Sending activate energy action failed");
+                        t.printStackTrace();
+                    }
+                });
+            }
+        });
+
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        //API Call
         handler.postDelayed(runnable = new Runnable() {
             public void run() {
                 handler.postDelayed(runnable, delay);
@@ -172,8 +232,7 @@ public class OrdersActivity extends AppCompatActivity {
                         noMoreAntimatiere = response.body();
                         if(noMoreAntimatiere != null && noMoreAntimatiere.getNoMoreAntimatiere() != null) {
                             if (noMoreAntimatiere.getNoMoreAntimatiere()) {
-                                Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                                // Vibrate for 400 milliseconds
+                                // Vibrate for 600 milliseconds
                                 vib.vibrate(600);
                             }
                             Log.d("CallBack FinishGame", "isFinished : " + isGameFinished.getIsFinished());
@@ -188,39 +247,74 @@ public class OrdersActivity extends AppCompatActivity {
                         t.printStackTrace();
                     }
                 });
+
+                Call<CourantSequence> callSyncForCourantSequence = api.getCourantSequenceCall();
+                callSyncForCourantSequence.enqueue(new Callback<CourantSequence>() {
+                    @Override
+                    public void onResponse(Call<CourantSequence> call, Response<CourantSequence> response) {
+                        courantSequence = response.body();
+                        Log.d("Sequence", courantSequence.getCourantSequence().toString());
+                        if(courantSequence != null && courantSequence.getCourantSequence() != null) {
+                            if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3) {
+                                buttonCourant.setVisibility(View.INVISIBLE);
+                                moveArrowIndicator(0);
+                                sizeCourantSequence = 0;
+                                Toast.makeText(getApplicationContext(), "Le courant est HS !", Toast.LENGTH_SHORT).show();
+                            } else if(courantSequence.getCourantSequence().size()%3 == 1 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
+                                moveArrowIndicator(1);
+                                sizeCourantSequence = 1;
+                                Toast.makeText(getApplicationContext(), "Il y a un changement avec le courant... !", Toast.LENGTH_SHORT).show();
+                            } else if(courantSequence.getCourantSequence().size()%3 == 2 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3) {
+                                moveArrowIndicator(2);
+                                sizeCourantSequence = 2;
+                                Toast.makeText(getApplicationContext(), "On devrait être sur la bonne voie...", Toast.LENGTH_SHORT).show();
+                                buttonCourant.setVisibility(View.VISIBLE);
+                            } else if (courantSequence.getCourantSequence().size()%3 == 3 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
+                                moveArrowIndicator(3);
+                                sizeCourantSequence = 3;
+                                hasCourantStatusBeenCalled = false;
+                                Toast.makeText(getApplicationContext(), "Le courant... il est sur le point de fonctionner !", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CourantSequence> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "Courant Sequence failure",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBack Courant Sequence", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
+
+                Call<CourantStatus> callSyncForCourantStatus = api.getCourantStatusCall();
+                callSyncForCourantStatus.enqueue(new Callback<CourantStatus>() {
+                    @Override
+                    public void onResponse(Call<CourantStatus> call, Response<CourantStatus> response) {
+                        courantStatus = response.body();
+                        if(courantStatus != null && courantStatus.getCourantStatus() != null && !hasCourantStatusBeenCalled) {
+                            if (courantStatus.getCourantStatus()) {
+                                transformWarningEnergyToCheck();
+                                Toast.makeText(getApplicationContext(), "Le courant a été rétabli !", Toast.LENGTH_LONG).show();
+                            } else {
+                                vib.vibrate(300);
+//                                moveArrowIndicator(0);
+                                Toast.makeText(getApplicationContext(), "IA : Les étapes ont été effectuées dans le désordre, reprenez la procédure du début.", Toast.LENGTH_LONG).show();
+                            }
+                            hasCourantStatusBeenCalled = true;
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CourantStatus> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "Courant Status failure",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBack Courant Status", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
             }
         }, delay);
-
-        gaugeReact1 = (HalfGauge) findViewById(R.id.gauge_react1);
-        gaugeReact2 = (HalfGauge) findViewById(R.id.gauge_react2);
-        arrowEnergyIndicator = (ImageView) findViewById(R.id.logo_arrow_indicator);
-        warningEnergy = (ImageView) findViewById(R.id.logo_warning_energy);;
-        warningAntimatiere = (ImageView) findViewById(R.id.logo_warning_antimatiere);;
-        warningHypervitesse = (ImageView) findViewById(R.id.logo_warning_hypervitesse);;
-        checkEnergy = (ImageView) findViewById(R.id.logo_check_energy);;
-        checkAntimatiere = (ImageView) findViewById(R.id.logo_check_antimatiere);;
-        checkHypervitesse = (ImageView) findViewById(R.id.logo_check_hypervitesse);;
-        buttonHypervitesse = (Button) findViewById(R.id.button_hypervitesse);
-        buttonOrders = (Button) findViewById(R.id.button_orders);
-        captorsLayoutGroup = (Group) findViewById(R.id.captorsLayoutGroup);
-        ordersLayoutGroup = (Group) findViewById(R.id.ordersLayoutGroup);
-
-        initGauge(R.id.gauge_react1);
-        initGauge(R.id.gauge_react2);
-
-        buttonCaptors = (Button) findViewById(R.id.button_captors);
-        buttonCaptors.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                swapGroupVisibility();
-            }
-        });
-
-        buttonOrders = (Button) findViewById(R.id.button_orders);
-        buttonOrders.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                swapGroupVisibility();
-            }
-        });
     }
 
 
@@ -269,17 +363,17 @@ public class OrdersActivity extends AppCompatActivity {
     }
 
     public void transformWarningEnergyToCheck(){
-        warningEnergy.setVisibility(View.GONE);
+        warningEnergy.setVisibility(View.INVISIBLE);
         checkEnergy.setVisibility(View.VISIBLE);
     }
 
     public void transformWarningAntimatiereToCheck(){
-        warningAntimatiere.setVisibility(View.GONE);
+        warningAntimatiere.setVisibility(View.INVISIBLE);
         checkAntimatiere.setVisibility(View.VISIBLE);
     }
 
     public void transformWarningHypervitesseToCheck(){
-        warningHypervitesse.setVisibility(View.GONE);
+        warningHypervitesse.setVisibility(View.INVISIBLE);
         checkHypervitesse.setVisibility(View.VISIBLE);
     }
 
