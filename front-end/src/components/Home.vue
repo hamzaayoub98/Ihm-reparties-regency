@@ -5,11 +5,11 @@
         <div class="box">
             <ToggleButton />
         </div>
-        <button id="b1" v-on:click="action(1)">
+        <button id="b1" :disabled="buttonVisible===false" v-on:click="action(1)">
             <img  id="button1" v-bind:class="buttonVisible?'button1':'button1Disabled'"  src="../assets/blue_button.png">
         </button>
         <!--<VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>-->
-        <button id="b2" v-on:click="action(2)">
+        <button id="b2" :disabled="buttonVisible===false" v-on:click="action(2)">
             <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
         <button v-on:click="sendPing()">
@@ -269,7 +269,7 @@
       height: 6%;
       width: 7%;
       border-radius: 10%;
-      filter:contrast(0);
+      filter: grayscale(100%);
     }
     .button2{
         position: absolute;
@@ -286,7 +286,7 @@
       height: 6%;
       width: 7%;
       border-radius: 10%;
-      filter:contrast(0);
+      filter: grayscale(100%);
     }
     #button3{
         position: absolute;
