@@ -82,4 +82,13 @@ router.get('/actionvr',function (request,response) {
     response.status(200).send(actions.getActionStack().includes(action));
 })
 
+router.get('/courant/status', (req, res) => {
+    res.status(200).json({"restart": actions.getCourantStatus()});
+});
+
+router.get('/courant/seq', (req, res) => {
+    res.status(200).json({"sequence": actions.getCourantSequence()});
+});
+
+
 module.exports = router;

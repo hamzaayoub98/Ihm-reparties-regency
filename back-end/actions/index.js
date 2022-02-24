@@ -1,6 +1,10 @@
 let counter = 0;
 let actionStack = [1,2,"antimatiere","asteroidsVue",7,8]
 let showButton = false;
+let slider1Value = 0
+let slider2Value = 0
+let seqRelancerCourant = []
+let courantRestart = false
 
 const baseActions = [{
     title: "Appuyer sur les boutons rouge et bleu en même temps",
@@ -44,6 +48,17 @@ const antimatiereValue = {
     value: 0,
 }
 
+function arrayEquals(a, b) {
+    return Array.isArray(a) &&
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((val, index) => val === b[index]);
+  }
+
+  function processActionSeq(seq){
+    courantRestart = arrayEquals(seq.splice(-3), [1,2,3])
+    return courantRestart
+  }
 
 function updateDataGame() {
     counter +=1
@@ -61,6 +76,11 @@ function updateDataGame() {
     if(action.action === 'slider'){
         baseActions.forEach(baseAction =>{
             if(baseAction.id === 'slider'){
+                if (action.id === 1) slider1Value = action.value
+                if (action.id === 2) slider2Value = action.value
+                if (slider1Value == 100 && slider2Value == 100) {
+                    seqRelancerCourant.push(1);
+                }
                 if(action.value >= baseAction.value - 10 && action.value <= baseAction.value + 10){
                     baseActions.splice(baseActions.indexOf(baseAction),1)
                 }
@@ -88,6 +108,22 @@ function updateDataGame() {
             }
         })
     }
+
+        // Actions du mécano
+        if (action.action === "activerLevier"){
+            seqRelancerCourant.push(2);
+            processActionSeq(seqRelancerCourant)
+        }
+        if (action.action === "desactiverLevier"){
+            seqRelancerCourant.forEach(e => {
+                seqRelancerCourant.splice(seqRelancerCourant.indexOf(e),1)
+            })
+            processActionSeq(seqRelancerCourant)
+        }
+        if (action.action === "activerCourant"){ // Action du capitaine
+            seqRelancerCourant.push(3)
+            processActionSeq(seqRelancerCourant)
+        }
 }
 
 function getBaseActions(){return baseActions}
@@ -96,6 +132,8 @@ function getFinishGame(){return finishGame}
 function getAntimatiereValue(){return antimatiereValue}
 function getShowButton(){return showButton}
 function setShowButton(newVal){showButton = newVal}
+function getCourantStatus(){return courantRestart}
+function getCourantSequence(){return seqRelancerCourant}
 
 module.exports = {
     updateDataGame,
@@ -105,4 +143,7 @@ module.exports = {
     getFinishGame,
     getShowButton,
     setShowButton,
+    getAntimatiereValue,
+    getCourantStatus,
+    getCourantSequence,
 }
