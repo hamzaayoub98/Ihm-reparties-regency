@@ -39,10 +39,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         this.restAddress = restAddress;
     }
 
-    public void setSpeedGaugeValue(int value){
-        this.speedGaugeValue = value;
-    }
-
     public void setOrders(List<OrdersApiResponse> orders){
         this.orders = orders;
     }
@@ -58,10 +54,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 View orderView = inflater.inflate(R.layout.activity_orders_item, parent, false);
                 ViewHolder viewHolder = new ViewHolder(orderView);
                 return viewHolder;
-            case LAYOUT_GAUGE:
-                View orderViewWithGauge = inflater.inflate(R.layout.activity_orders_item_with_gauge, parent, false);
-                ViewHolderWithGauge viewHolderWithGauge = new ViewHolderWithGauge(orderViewWithGauge);
-                return viewHolderWithGauge;
             case LAYOUT_PLUS:
                 View orderViewWithButtonPlus = inflater.inflate(R.layout.activity_orders_item_with_plus, parent, false);
                 ViewHolderWithButtonPlus viewWithButtonPlus = new ViewHolderWithButtonPlus(orderViewWithButtonPlus);
@@ -85,40 +77,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 // Set item views based on your views and data model
                 textView = viewHolder.orderTextView;
                 textView.setText(order.getTitle());
-                break;
-            case LAYOUT_GAUGE:
-                ViewHolderWithGauge viewHolderWithGauge = (ViewHolderWithGauge) holder;
-                // Set item views based on your views and data model
-                textView = viewHolderWithGauge.orderTextView;
-                textView.setText(order.getTitle());
-
-                HalfGauge speedGauge = viewHolderWithGauge.speedGauge;
-                speedGauge.enableAnimation(false);
-                Range range = new Range();
-                range.setColor(Color.parseColor("#ce0000"));
-                range.setFrom(0.0);
-                range.setTo(order.getValue() - 10);
-
-                Range range2 = new Range();
-                range2.setColor(Color.parseColor("#00b20b"));
-                range2.setFrom(order.getValue() - 10);
-                range2.setTo(order.getValue() + 10);
-
-                Range range3 = new Range();
-                range3.setColor(Color.parseColor("#ce0000"));
-                range3.setFrom(order.getValue() + 10);
-                range3.setTo(100.0);
-
-                //add color ranges to gauge
-                speedGauge.addRange(range);
-                speedGauge.addRange(range2);
-                speedGauge.addRange(range3);
-
-                //set min max and current value
-                speedGauge.setMinValue(0.0);
-                speedGauge.setMaxValue(100.0);
-                speedGauge.setValue(speedGaugeValue);
-                Log.d("GAUGE", "value: " + speedGauge.getValue());
                 break;
             case LAYOUT_PLUS:
                 ApiInterface api = ServiceGenerator.createService(ApiInterface.class, restAddress);
@@ -155,10 +113,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
         OrdersApiResponse order = orders.get(position);
-        if(order.getId().equals("slider")) {
-            return LAYOUT_GAUGE;
-        }
-        else if (order.getId().equals("antimatiere")){
+        if (order.getId().equals("antimatiere")){
             return LAYOUT_PLUS;
         } else {
             return LAYOUT_DEFAULT;
@@ -185,24 +140,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             super(itemView);
 
             orderTextView = (TextView) itemView.findViewById(R.id.order_title);
-        }
-    }
-
-    public class ViewHolderWithGauge extends RecyclerView.ViewHolder {
-        // Your holder should contain a member variable
-        // for any view that will be set as you render a row
-        public TextView orderTextView;
-        public HalfGauge speedGauge;
-
-        // We also create a constructor that accepts the entire item row
-        // and does the view lookups to find each subview
-        public ViewHolderWithGauge(View itemView) {
-            // Stores the itemView in a public final member variable that can be used
-            // to access the context from any ViewHolder instance.
-            super(itemView);
-
-            orderTextView = (TextView) itemView.findViewById(R.id.order_title);
-            speedGauge = (HalfGauge) itemView.findViewById(R.id.speed_gauge);
         }
     }
 
