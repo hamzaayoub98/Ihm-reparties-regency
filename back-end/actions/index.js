@@ -124,8 +124,9 @@ function updateDataGame() {
             })
             processActionSeq(seqRelancerCourant)
         }
-        if (action.action === "activerCourant"){ // Action du capitaine
+        if (action === "activerCourant"){ // Action du capitaine
             seqRelancerCourant.push(3)
+            console.log("HHIHIHI : " + seqRelancerCourant)
             processActionSeq(seqRelancerCourant)
         }
 }

@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,16 +69,25 @@ public class OrdersActivity extends AppCompatActivity {
             Log.d("onFailureWS", t.getMessage());
         }
     }
+    ApiInterface api;
     private final int DEFAULT_REACTOR_GAUGE_VALUE = 80;
     private SharedPreferences sharedPref;
     List<OrdersApiResponse> orders = new ArrayList<>();
     GameFinished isGameFinished;
     NoMoreAntimatiere noMoreAntimatiere;
-    ActivateEnergy activateEnergy;
+    ActivateEnergy activateEnergy = new ActivateEnergy();
+    ActivateHypervitesse activateHypervitesse = new ActivateHypervitesse();
+    ActivateMissile activateMissile = new ActivateMissile();
+    AntimatiereValue antimatiereValue = new AntimatiereValue();
+    MissileReady missileReady;
+    MissilePlaced missilePlaced;
+    HypervitesseReady hypervitesseReady;
     CourantStatus courantStatus;
     boolean hasCourantStatusBeenCalled = true;
+    boolean enigmAlreadyStartedOnce = false;
     CourantSequence courantSequence;
     int sizeCourantSequence = 0;
+    int hypervitesseButtonCountClick = 3;
     boolean areOrdersVisible = true;
     private Context context = this;
     Vibrator vib;
@@ -89,10 +99,11 @@ public class OrdersActivity extends AppCompatActivity {
 
     //Graphic components
     OrdersAdapter adapter;
-    Button buttonCaptors, buttonOrders, buttonHypervitesse, buttonCourant;
+    Button buttonCaptors, buttonOrders, buttonHypervitesse, buttonCourant, buttonMissile;
     Group captorsLayoutGroup, ordersLayoutGroup;
     HalfGauge gaugeReact1, gaugeReact2;
     ImageView arrowEnergyIndicator, warningEnergy, warningAntimatiere, warningHypervitesse, checkEnergy, checkAntimatiere, checkHypervitesse;
+    TextView counterHypervitesse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +123,7 @@ public class OrdersActivity extends AppCompatActivity {
             toast.show();
         }
         startWsConnection();
-        ApiInterface api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
+        api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
 
         //Initialize graphic components
         adapter = new OrdersAdapter(orders, getRestAddressPortString());
@@ -134,9 +145,12 @@ public class OrdersActivity extends AppCompatActivity {
         buttonCourant = (Button) findViewById(R.id.button_activate_energy);
         captorsLayoutGroup = (Group) findViewById(R.id.captorsLayoutGroup);
         ordersLayoutGroup = (Group) findViewById(R.id.ordersLayoutGroup);
+        counterHypervitesse = (TextView) findViewById(R.id.counter_hypervitesse);
+        buttonMissile = (Button) findViewById(R.id.button_missile);
 
-        initGauge(R.id.gauge_react1);
-        initGauge(R.id.gauge_react2);
+        courantStatus = new CourantStatus(false);
+        initGauge(gaugeReact1);
+        initGauge(gaugeReact2);
 
         buttonCaptors = (Button) findViewById(R.id.button_captors);
         buttonCaptors.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +181,26 @@ public class OrdersActivity extends AppCompatActivity {
                         t.printStackTrace();
                     }
                 });
+            }
+        });
+
+        buttonMissile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<ActivateMissile> callSync = api.activateMissile(activateMissile);
+                callSync.enqueue(new Callback<ActivateMissile>() {
+                    @Override
+                    public void onResponse(Call<ActivateMissile> call, Response<ActivateMissile> response) {
+                        Log.d("CallBack ActivateMissile", "Sending activate missile action successful");
+                    }
+
+                    @Override
+                    public void onFailure(Call<ActivateMissile> call, Throwable t) {
+                        Log.d("CallBack ActivateMissile", "Sending activate missile action failed");
+                        t.printStackTrace();
+                    }
+                });
+                buttonMissile.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -234,16 +268,18 @@ public class OrdersActivity extends AppCompatActivity {
                             if (noMoreAntimatiere.getNoMoreAntimatiere()) {
                                 // Vibrate for 600 milliseconds
                                 vib.vibrate(600);
+                                Toast.makeText(OrdersActivity.this, "Il n'y a plus d'antimatière.",
+                                        Toast.LENGTH_SHORT).show();
                             }
-                            Log.d("CallBack FinishGame", "isFinished : " + isGameFinished.getIsFinished());
+                            Log.d("CallBack NoMoreAntimatiere", "No more antimatiere");
                         }
                     }
 
                     @Override
                     public void onFailure(Call<NoMoreAntimatiere> call, Throwable t) {
-                        Toast.makeText(OrdersActivity.this, "FinishGame callback failure",
+                        Toast.makeText(OrdersActivity.this, "NoMoreAntimatiere callback failure",
                                 Toast.LENGTH_SHORT).show();
-                        Log.d("CallBackFinishGameFailed", "FinishGame callback failure");
+                        Log.d("CallBack NoMoreAntimatiere", "No more antimatiere failed");
                         t.printStackTrace();
                     }
                 });
@@ -254,7 +290,7 @@ public class OrdersActivity extends AppCompatActivity {
                     public void onResponse(Call<CourantSequence> call, Response<CourantSequence> response) {
                         courantSequence = response.body();
                         Log.d("Sequence", courantSequence.getCourantSequence().toString());
-                        if(courantSequence != null && courantSequence.getCourantSequence() != null) {
+                        if(courantSequence != null && courantSequence.getCourantSequence() != null && !courantStatus.getCourantStatus()) {
                             if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != -1 && sizeCourantSequence == 2) {
                                 moveArrowIndicator(3);
                                 sizeCourantSequence = -1;
@@ -271,7 +307,7 @@ public class OrdersActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "On devrait être sur la bonne voie...", Toast.LENGTH_SHORT).show();
                                 buttonCourant.setVisibility(View.VISIBLE);
                             } else if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
-                                buttonCourant.setVisibility(View.INVISIBLE);
+//                                buttonCourant.setVisibility(View.INVISIBLE);
                                 moveArrowIndicator(0);
                                 sizeCourantSequence = 0;
                                 Toast.makeText(getApplicationContext(), "Le courant est HS !", Toast.LENGTH_SHORT).show();
@@ -314,6 +350,95 @@ public class OrdersActivity extends AppCompatActivity {
                         t.printStackTrace();
                     }
                 });
+
+                Call<AntimatiereValue> callSyncForAntimatiereValue = api.getAntimatiereValueCall();
+                callSyncForAntimatiereValue.enqueue(new Callback<AntimatiereValue>() {
+                    @Override
+                    public void onResponse(Call<AntimatiereValue> call, Response<AntimatiereValue> response) {
+                        antimatiereValue = response.body();
+                        if(antimatiereValue != null) {
+                            gaugeReact2.setValue(antimatiereValue.getValue());
+                            Toast.makeText(OrdersActivity.this, "Le réacteur 2 se remplit...",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AntimatiereValue> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "AntimatiereValue failed",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBack AntimatiereValue", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
+
+                Call<MissilePlaced> callSyncForMissilePlaced = api.getMissilePlacedCall();
+                callSyncForMissilePlaced.enqueue(new Callback<MissilePlaced>() {
+                    @Override
+                    public void onResponse(Call<MissilePlaced> call, Response<MissilePlaced> response) {
+                        missilePlaced = response.body();
+                        if(missilePlaced != null && missilePlaced.getIsPlaced() != null) {
+                            if(missilePlaced.getIsPlaced()){
+                                vib.vibrate(1000);
+                                Toast.makeText(OrdersActivity.this, "Un missile est positionné...",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MissilePlaced> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "MissilePlaced failed",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBack MissilePlaced", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
+
+                Call<MissileReady> callSyncForMissileReady = api.getMissileReadyCall();
+                callSyncForMissileReady.enqueue(new Callback<MissileReady>() {
+                    @Override
+                    public void onResponse(Call<MissileReady> call, Response<MissileReady> response) {
+                        missileReady = response.body();
+                        if(missileReady != null && missileReady.getIsReady() != null) {
+                            buttonMissile.setVisibility(View.VISIBLE);
+                            Toast.makeText(OrdersActivity.this, "Le réacteur 2 se remplit...",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<MissileReady> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "MissileReady failed",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBack MissileReady", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
+
+                Call<HypervitesseReady> callSyncForHypervitesseReady = api.getHypervitesseReadyCall();
+                callSyncForHypervitesseReady.enqueue(new Callback<HypervitesseReady>() {
+                    @Override
+                    public void onResponse(Call<HypervitesseReady> call, Response<HypervitesseReady> response) {
+                        hypervitesseReady = response.body();
+                        if(hypervitesseReady != null && hypervitesseReady.getHypervitesseReady() != null) {
+                            if(hypervitesseReady.getHypervitesseReady() && !enigmAlreadyStartedOnce){
+                                enigmWithVibrations();
+                                enigmAlreadyStartedOnce = true;
+                                Toast.makeText(OrdersActivity.this, "Le bouton semble défaillant...",
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<HypervitesseReady> call, Throwable t) {
+                        Toast.makeText(OrdersActivity.this, "HypervitesseReady failed",
+                                Toast.LENGTH_SHORT).show();
+                        Log.d("CallBack HypervitesseReady", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
             }
         }, delay);
     }
@@ -331,6 +456,93 @@ public class OrdersActivity extends AppCompatActivity {
         super.onResume();
         handler.removeCallbacks(runnable);
         handler.postDelayed(runnable, delay);
+    }
+
+    public void enigmWithVibrations(){
+        List<Integer> checkClicks = new ArrayList<>();
+        List<Integer> correctsClicks = new ArrayList<>();
+        correctsClicks.add(0);
+        correctsClicks.add(1);
+        correctsClicks.add(0);
+        hypervitesseButtonCountClick = 3;
+        buttonHypervitesse.setText(hypervitesseButtonCountClick);
+        buttonHypervitesse.setEnabled(true);
+        buttonHypervitesse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkClicks.add(0);
+                hypervitesseButtonCountClick -= 1;
+                buttonHypervitesse.setText(hypervitesseButtonCountClick);
+                if(hypervitesseButtonCountClick == 0){
+                    buttonHypervitesse.setEnabled(false);
+                    if(checkClicks.equals(correctsClicks)){
+                        Call<ActivateHypervitesse> callSync = api.activateHypervitesse(activateHypervitesse);
+                        callSync.enqueue(new Callback<ActivateHypervitesse>() {
+                            @Override
+                            public void onResponse(Call<ActivateHypervitesse> call, Response<ActivateHypervitesse> response) {
+                                Log.d("CallBack HypervitesseActivated", "Sending activate hypervitesse action successful");
+                            }
+
+                            @Override
+                            public void onFailure(Call<ActivateHypervitesse> call, Throwable t) {
+                                Log.d("CallBack HypervitesseActivated", "Sending activate hypervitesse action failed");
+                                t.printStackTrace();
+                            }
+                        });
+                        Toast.makeText(getApplicationContext(), "Bravo ! Vous êtes sortis du champ d'astéroïde en vie !", Toast.LENGTH_LONG);
+                    } else {
+                        enigmWithVibrations();
+                    }
+                }
+            }
+        });
+
+        buttonHypervitesse.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                checkClicks.add(1);
+                hypervitesseButtonCountClick -= 1;
+                buttonHypervitesse.setText(hypervitesseButtonCountClick);
+                if(hypervitesseButtonCountClick == 0){
+                    buttonHypervitesse.setEnabled(false);
+                    if(checkClicks.equals(correctsClicks)){
+                        Call<ActivateHypervitesse> callSync = api.activateHypervitesse(activateHypervitesse);
+                        callSync.enqueue(new Callback<ActivateHypervitesse>() {
+                            @Override
+                            public void onResponse(Call<ActivateHypervitesse> call, Response<ActivateHypervitesse> response) {
+                                Log.d("CallBack HypervitesseActivated", "Sending activate hypervitesse action successful");
+                            }
+
+                            @Override
+                            public void onFailure(Call<ActivateHypervitesse> call, Throwable t) {
+                                Log.d("CallBack HypervitesseActivated", "Sending activate hypervitesse action failed");
+                                t.printStackTrace();
+                            }
+                        });
+                        Toast.makeText(getApplicationContext(), "Bravo ! Vous êtes sortis du champ d'astéroïde en vie !", Toast.LENGTH_LONG);
+                    } else {
+                        enigmWithVibrations();
+                    }
+                }
+                return false;
+            }
+        });
+        new CountDownTimer(2100, 700) {
+
+            public void onTick(long millisUntilFinished) {
+                if(millisUntilFinished / 700 > 2 ){
+                    vib.vibrate(300);
+                } else if (millisUntilFinished / 700 > 1 && millisUntilFinished / 700 <= 2) {
+                    vib.vibrate(800);
+                } else {
+                    vib.vibrate(300);
+                }
+            }
+
+            public void onFinish() {
+                Toast.makeText(getApplicationContext(), "3 vibrations...", Toast.LENGTH_LONG);
+            }
+        }.start();
     }
 
     private void swapGroupVisibility(){
@@ -354,14 +566,14 @@ public class OrdersActivity extends AppCompatActivity {
         }
     }
 
-    public int getReactorValue(){
-        for(OrdersApiResponse order : orders) {
-            if(order.getId().equals("slider")){
-                return order.getValue();
-            }
-        }
-        return -1;
-    }
+//    public int getReactorValue(){
+//        for(OrdersApiResponse order : orders) {
+//            if(order.getId().equals("slider")){
+//                return order.getValue();
+//            }
+//        }
+//        return -1;
+//    }
 
     public void transformWarningEnergyToCheck(){
         warningEnergy.setVisibility(View.INVISIBLE);
@@ -391,14 +603,14 @@ public class OrdersActivity extends AppCompatActivity {
                 break;
             case 2:
                 constraintSet.clone(constraintLayout);
-                constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.END,R.id.guideline_start_lightning_full,ConstraintSet.START,0);
+                constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.END,R.id.guideline_end_lightning_full,ConstraintSet.START,0);
                 constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.START,R.id.guideline_start_lightning_full,ConstraintSet.START,0);
                 constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.TOP,R.id.logo_lightning_yellow_full_stroke,ConstraintSet.BOTTOM,0);
                 constraintSet.applyTo(constraintLayout);
                 break;
             case 3:
                 constraintSet.clone(constraintLayout);
-                constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.END,R.id.guideline_start_lightning_filled,ConstraintSet.START,0);
+                constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.END,R.id.guideline_end_lightning_filled,ConstraintSet.START,0);
                 constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.START,R.id.guideline_start_lightning_filled,ConstraintSet.START,0);
                 constraintSet.connect(R.id.logo_arrow_indicator,ConstraintSet.TOP,R.id.logo_lightning_yellow_filled,ConstraintSet.BOTTOM,0);
                 constraintSet.applyTo(constraintLayout);
@@ -412,42 +624,37 @@ public class OrdersActivity extends AppCompatActivity {
         }
     }
 
-    public void initGauge(int gaugeId){
-        int gaugeValue = getReactorValue();
-        if(gaugeValue == -1){
-            gaugeValue = DEFAULT_REACTOR_GAUGE_VALUE;
-        }
-
-        HalfGauge gaugeReact = (HalfGauge) findViewById(gaugeId);
-        gaugeReact.enableAnimation(false);
+    public void initGauge(HalfGauge gauge){
+        int gaugeGreenSectionValue = DEFAULT_REACTOR_GAUGE_VALUE;
+        gauge.enableAnimation(false);
 
         Range range = new Range();
         range.setColor(Color.parseColor("#ce0000"));
         range.setFrom(0.0);
-        range.setTo(gaugeValue - 10);
+        range.setTo(gaugeGreenSectionValue - 10);
 
         Range range2 = new Range();
         range2.setColor(Color.parseColor("#00b20b"));
-        range2.setFrom(gaugeValue - 10);
-        range2.setTo(gaugeValue + 10);
+        range2.setFrom(gaugeGreenSectionValue - 10);
+        range2.setTo(gaugeGreenSectionValue + 10);
 
         Range range3 = new Range();
         range3.setColor(Color.parseColor("#ce0000"));
-        range3.setFrom(gaugeValue + 10);
+        range3.setFrom(gaugeGreenSectionValue + 10);
         range3.setTo(100.0);
 
         //add color ranges to gauge
-        gaugeReact.addRange(range);
-        gaugeReact.addRange(range2);
-        gaugeReact.addRange(range3);
+        gauge.addRange(range);
+        gauge.addRange(range2);
+        gauge.addRange(range3);
 
         //set min max and current value
-        gaugeReact.setMinValue(0.0);
-        gaugeReact.setMaxValue(100.0);
-        if(gaugeId == R.id.gauge_react1){
-            gaugeReact.setValue(85.0);
+        gauge.setMinValue(0.0);
+        gauge.setMaxValue(100.0);
+        if(gauge.equals(gaugeReact1)){
+            gauge.setValue(85.0);
         } else {
-            gaugeReact.setValue(9.0);
+            gauge.setValue(9.0);
 
         }
     }

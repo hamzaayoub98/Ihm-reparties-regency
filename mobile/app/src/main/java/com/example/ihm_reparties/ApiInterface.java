@@ -19,8 +19,15 @@ public interface ApiInterface {
     @POST("/addAntimatiere") // specify the sub url for our base url
     Call<AddAntimatiere> addAntimatiere(@Body AddAntimatiere addAntimatiere);
 
+
     @POST("/action") // specify the sub url for our base url
     Call<ActivateEnergy> activateEnergy(@Body ActivateEnergy activateEnergy);
+
+    @POST("/hypervitesse/activated") // specify the sub url for our base url
+    Call<ActivateHypervitesse> activateHypervitesse(@Body ActivateHypervitesse activateHypervitesse);
+
+    @POST("/missile/activated") // specify the sub url for our base url
+    Call<ActivateMissile> activateMissile(@Body ActivateMissile activateMissile);
 
 
 // for GET request
@@ -37,8 +44,20 @@ public interface ApiInterface {
     @GET("/is-there-no-more-antimatiere")
     Call<NoMoreAntimatiere> getNoMoreAntimatiereApiResponseCall();
 
+    @GET("/antimatiere/value")
+    Call<AntimatiereValue> getAntimatiereValueCall();
+
     @GET("/courant/status")
     Call<CourantStatus> getCourantStatusCall();
+
+    @GET("/hypervitesse")
+    Call<HypervitesseReady> getHypervitesseReadyCall();
+
+    @GET("/missile/ready")
+    Call<MissileReady> getMissileReadyCall();
+
+    @GET("/missile/placed")
+    Call<MissilePlaced> getMissilePlacedCall();
 
     @GET("/courant/seq")
     Call<CourantSequence> getCourantSequenceCall();
