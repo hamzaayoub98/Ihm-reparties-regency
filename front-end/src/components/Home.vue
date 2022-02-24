@@ -269,7 +269,7 @@
       height: 6%;
       width: 7%;
       border-radius: 10%;
-      filter:contrast(0);
+      filter: grayscale(100%);
     }
     .button2{
         position: absolute;
@@ -286,7 +286,7 @@
       height: 6%;
       width: 7%;
       border-radius: 10%;
-      filter:contrast(0);
+      filter: grayscale(100%);
     }
     #button3{
         position: absolute;
