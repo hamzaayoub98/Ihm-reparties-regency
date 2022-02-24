@@ -255,11 +255,12 @@ public class OrdersActivity extends AppCompatActivity {
                         courantSequence = response.body();
                         Log.d("Sequence", courantSequence.getCourantSequence().toString());
                         if(courantSequence != null && courantSequence.getCourantSequence() != null) {
-                            if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3) {
-                                buttonCourant.setVisibility(View.INVISIBLE);
-                                moveArrowIndicator(0);
-                                sizeCourantSequence = 0;
-                                Toast.makeText(getApplicationContext(), "Le courant est HS !", Toast.LENGTH_SHORT).show();
+                            if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != -1 && sizeCourantSequence == 2) {
+                                moveArrowIndicator(3);
+                                sizeCourantSequence = -1;
+                                hasCourantStatusBeenCalled = false;
+                                Toast.makeText(getApplicationContext(), "Le courant... il est sur le point de fonctionner !", Toast.LENGTH_SHORT).show();
+
                             } else if(courantSequence.getCourantSequence().size()%3 == 1 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
                                 moveArrowIndicator(1);
                                 sizeCourantSequence = 1;
@@ -269,11 +270,11 @@ public class OrdersActivity extends AppCompatActivity {
                                 sizeCourantSequence = 2;
                                 Toast.makeText(getApplicationContext(), "On devrait être sur la bonne voie...", Toast.LENGTH_SHORT).show();
                                 buttonCourant.setVisibility(View.VISIBLE);
-                            } else if (courantSequence.getCourantSequence().size()%3 == 3 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
-                                moveArrowIndicator(3);
-                                sizeCourantSequence = 3;
-                                hasCourantStatusBeenCalled = false;
-                                Toast.makeText(getApplicationContext(), "Le courant... il est sur le point de fonctionner !", Toast.LENGTH_SHORT).show();
+                            } else if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
+                                buttonCourant.setVisibility(View.INVISIBLE);
+                                moveArrowIndicator(0);
+                                sizeCourantSequence = 0;
+                                Toast.makeText(getApplicationContext(), "Le courant est HS !", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
