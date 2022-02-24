@@ -4,6 +4,8 @@ let slider1Value = 0
 let slider2Value = 0
 let seqRelancerCourant = []
 let courantRestart = false
+let showButton = false;
+
 const baseActions = [{
     title: "Appuyer sur les boutons rouge et bleu en même temps",
     id:7,
@@ -20,6 +22,9 @@ const baseActions = [{
     title: "Augmenter les rétro-propulseurs",
     id: 'slider',
     value: 80,
+},{
+    title:"Abaisser le levier",
+    id:'lever'
 }
 ]
 const nextActions = [{
@@ -88,6 +93,14 @@ function updateDataGame() {
             }
         })
     }
+    else if (action.action === 'lever'){
+            baseActions.forEach(baseAction =>{
+                if(baseAction.id === 'lever'){
+                    showButton = true
+                    baseActions.splice(baseAction.indexOf(baseAction),1)
+                }
+            })
+    }
     if(actionStack.includes(action)){
         actionStack.splice(actionStack.indexOf(action),1);
         baseActions.forEach(actions =>{
@@ -120,7 +133,8 @@ function getFinishGame(){return finishGame}
 function getAntimatiereValue(){return antimatiereValue}
 function getCourantStatus(){return courantRestart}
 function getCourantSequence(){return seqRelancerCourant}
-
+function getShowButton(){return showButton}
+function setShowButton(newVal){showButton = newVal}
 
 module.exports = {
     updateDataGame,
@@ -130,5 +144,7 @@ module.exports = {
     getFinishGame,
     getAntimatiereValue,
     getCourantStatus,
-    getCourantSequence
+    getCourantSequence,
+    getShowButton,
+    setShowButton,
 }

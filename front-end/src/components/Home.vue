@@ -6,16 +6,38 @@
             <ToggleButton />
         </div>
         <button id="b1" v-on:click="action(1)">
-            <img  id="button1"  src="../assets/blue_button.png">
+            <img  id="button1" v-bind:class="buttonVisible?'button1':'button1Disabled'"  src="../assets/blue_button.png">
         </button>
-        <VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue(0)"/>
+        <!--<VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue(0)"/>-->
         <button id="b2" v-on:click="action(2)">
-            <img  id="button2"  src="../assets/redButton.png">
+            <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
+        <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
+        <round-slider  v-bind:update="sendSliderValue(1)"
+        v-bind:change="mouseDown"
+          id="roundslider"
+          v-model="sliderValue"
+          start-angle="315"
+          end-angle="+270"
+          line-cap="round"
+          radius="120"
+          rangeColor="red"
+        />
+
+        <round-slider   v-bind:update="sendSliderValue(2)"
+        v-bind:change="mouseDown2"
+          id="roundslider2"
+          v-model="sliderValue2"
+          start-angle="315"
+          end-angle="+270"
+          line-cap="round"
+          radius="120"
+          rangeColor="red"
+        />
     </div>
 </template>
 
@@ -24,14 +46,15 @@
 
     import Asteroid from "./Asteroid";
     import { URL_REST, URL_WS } from '../main.js'
-    import VueSlider from 'vue-slider-component'
+    //import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
     import ToggleButton from './ToggleButton.vue';
+    import RoundSlider from "vue-round-slider";
 
     export default {
         name: "Home",
-        components: {Asteroid,VueSlider,AsteroidLeft,ToggleButton},
+        components: {Asteroid,AsteroidLeft,ToggleButton,RoundSlider},
         data(){
             return {
                 info : null,
@@ -39,13 +62,17 @@
                 mySrc:0,
                 connection: null,
                 sliderValue:0,
+                onSlider :false,
                 isShow: true,
                 finished : false,
                 doc:null,
                 button1:null,
                 button2:null,
-
+                buttonVisible:false,
+                onSlider2:false,
+                sliderValue2:0,
             }
+
         },
         props: {
             msg: String,
@@ -105,6 +132,19 @@
             console.log("b2-end",event);
             this.button2Pressed = false;
           });
+            window.setInterval(() => {
+                this.checkButtonState();
+            }, 500)
+          window.setInterval(() => {
+            if(!this.onSlider){
+              this.sliderValue--;
+            }
+          },100)
+          window.setInterval(() => {
+            if(!this.onSlider2){
+              this.sliderValue2--;
+            }
+          },100)
         },
         methods: {
             action:function (number) {
@@ -123,7 +163,7 @@
                 console.log("Starting connection to WebSocket Server")
                 this.connection = new WebSocket("ws://" + URL_WS + "?id=0")
                 this.connection.onmessage = function(event) {
-                    console.log(event.data);
+                    console.log("message",event.data);
                 }
                 this.connection.onopen = function(event) {
                     console.log(event);
@@ -135,10 +175,36 @@
 
             },
             sendSliderValue:function(id){
+            if (id==1) this.connection.send(['sliderValue',id,this.sliderValue]);
+            if (id==2) this.connection.send(['sliderValue2',id,this.sliderValue2]);
+            else {
               this.connection.send(['sliderValue',id,this.sliderValue]);
+            }
+             },
+            mouseDown:function() {
+              this.onSlider=true
+              this.connection.send(['sliderValue',this.sliderValue]);
+                 /*var _this = this;
+                 _this.sliderValue=0;*/
+              this.onSlider=false
+            },
+            mouseDown2:function() {
+              this.onSlider2=true
+              this.connection.send(['sliderValue2',this.sliderValue2]);
+                 /*var _this = this;
+                 _this.sliderValue2=0;*/
+              this.onSlider2=false
+
             },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);
+            },
+            checkButtonState:function(){
+              this.connection.send(['lever',"_"]);
+              var _this = this;
+              this.connection.onmessage = function (event) {
+                    _this.buttonVisible = event.data === "true"
+              }
             },
             concurentTouch:function (){
               console.log("ok")
@@ -155,7 +221,8 @@
                       console.log(error);
                     });
               }
-            }
+            },
+
         },
     }
 </script>
@@ -170,7 +237,25 @@
       width: 200px;
       height: 30px;
     }
-    #button1{
+     #roundslider{
+
+      margin-right: 20%;
+      margin-left: 20%;
+      top:680px;
+      margin: 50 auto;
+      width: 200px;
+      height: 30px;
+    }
+    #roundslider2{
+
+      margin-right: 20%;
+      margin-left: 65%;
+      top:440px;
+      margin: 50 auto;
+      width: 200px;
+      height: 30px;
+    }
+    .button1{
         position: absolute;
         top:550px;
         right: 485px;
@@ -178,7 +263,16 @@
         width: 7%;
         border-radius: 10%;
     }
-    #button2{
+    .button1Disabled{
+      position: absolute;
+      top:550px;
+      right: 485px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter:contrast(0);
+    }
+    .button2{
         position: absolute;
         top:550px;
         left: 485px;
@@ -186,12 +280,29 @@
         width: 7%;
         border-radius: 10%;
     }
+    .button2Disabled{
+      position: absolute;
+      top:550px;
+      left: 485px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter:contrast(0);
+    }
     #button3{
         position: absolute;
         top:65%;
         left: 200px;
         height: 5%;
         width: 5%;
+        border-radius: 10%;
+    }
+    #b4{
+        position: absolute;
+        top:650px;
+        left: 854px;
+        height: 6%;
+        width: 7%;
         border-radius: 10%;
     }
     #home{

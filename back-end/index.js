@@ -46,6 +46,9 @@ function onMessageFromFront(msg) {
         console.log("slider " + id + " value : " + sliderValueTmp)
         actions.processAction({action:'slider', id: id, value: sliderValueTmp})
     }
+    else if (trimmed[0] === 'lever'){
+        frontWS.send(actions.getShowButton()+"")
+    }
 }
 
 function onMessageFromMobile(msg) {
