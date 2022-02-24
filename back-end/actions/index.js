@@ -21,7 +21,7 @@ const baseActions = [{
 {
     title: "Augmenter les rétro-propulseurs",
     id: 'slider',
-    value: 80,
+    value: 100,
 },{
     title:"Abaisser le levier",
     id:'lever'
@@ -73,14 +73,18 @@ function updateDataGame() {
   }
 
   function processAction(action){
+    console.log("test", seqRelancerCourant)
+
+    if (action.id === 1) slider1Value = action.value
+    if (action.id === 2) slider2Value = action.value
+    console.log("test3", slider1Value, slider2Value)
+    if (slider1Value == 100 && slider2Value == 100) {
+        seqRelancerCourant.push(1);
+    }
+
     if(action.action === 'slider'){
         baseActions.forEach(baseAction =>{
             if(baseAction.id === 'slider'){
-                if (action.id === 1) slider1Value = action.value
-                if (action.id === 2) slider2Value = action.value
-                if (slider1Value == 100 && slider2Value == 100) {
-                    seqRelancerCourant.push(1);
-                }
                 if(action.value >= baseAction.value - 10 && action.value <= baseAction.value + 10){
                     baseActions.splice(baseActions.indexOf(baseAction),1)
                 }

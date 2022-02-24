@@ -35,7 +35,7 @@ websocketServer.on('connection', function (socket, req) {
 })
 
 function onMessageFromFront(msg) {
-    console.log("Message received from front:", msg.toString())
+    //console.log("Message received from front:", msg.toString())
     if (mobileWS) mobileWS.send(msg.toString())
 
     const rawMsg = `${msg}`;
