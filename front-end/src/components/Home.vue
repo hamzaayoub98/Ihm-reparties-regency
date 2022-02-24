@@ -8,7 +8,7 @@
         <button id="b1" v-on:click="action(1)">
             <img  id="button1" v-bind:class="buttonVisible?'button1':'button1Disabled'"  src="../assets/blue_button.png">
         </button>
-        <!--<VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue(0)"/>-->
+        <!--<VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>-->
         <button id="b2" v-on:click="action(2)">
             <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
@@ -17,7 +17,7 @@
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
-        <round-slider  v-bind:update="sendSliderValue(1)"
+        <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
           id="roundslider"
           v-model="sliderValue"
@@ -28,7 +28,7 @@
           rangeColor="red"
         />
 
-        <round-slider   v-bind:update="sendSliderValue(2)"
+        <round-slider   v-bind:update="sendSliderValue2"
         v-bind:change="mouseDown2"
           id="roundslider2"
           v-model="sliderValue2"
@@ -174,13 +174,6 @@
                 this.connection.send('PING')
 
             },
-            sendSliderValue:function(id){
-            if (id==1) this.connection.send(['sliderValue',id,this.sliderValue]);
-            if (id==2) this.connection.send(['sliderValue2',id,this.sliderValue2]);
-            else {
-              this.connection.send(['sliderValue',id,this.sliderValue]);
-            }
-             },
             mouseDown:function() {
               this.onSlider=true
               this.connection.send(['sliderValue',this.sliderValue]);
@@ -195,6 +188,12 @@
                  _this.sliderValue2=0;*/
               this.onSlider2=false
 
+            },
+            sendSliderValue:function(){
+              this.connection.send(['sliderValue',this.sliderValue]);
+            },
+            sendSliderValue2:function(){
+              this.connection.send(['sliderValue2',this.sliderValue2]);
             },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);
