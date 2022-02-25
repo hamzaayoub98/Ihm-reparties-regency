@@ -70,6 +70,14 @@ router.get('/courant/seq', (req, res) => {
     res.status(200).json({"sequence": actions.getCourantSequence()});
 });
 
+router.get('/slider1/value', (req, res) => {
+    res.status(200).json(actions.getSliderValue2());
+});
+
+router.get('/slider2/value', (req, res) => {
+    res.status(200).json(actions.getSliderValue1());
+});
+
 /* ########################### ANTIMATIERE ###########################
 */
 router.post('/addAntimatiere', function(request, response){

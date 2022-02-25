@@ -137,12 +137,12 @@
             }, 500)
           window.setInterval(() => {
             if(!this.onSlider){
-              //this.sliderValue--;
+              this.sliderValue--;
             }
           },100)
           window.setInterval(() => {
             if(!this.onSlider2){
-              //this.sliderValue2--;
+              this.sliderValue2--;
             }
           },100)
         },
