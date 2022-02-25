@@ -34,6 +34,9 @@
           <img  id="button9"  v-bind:class="buttonVisible?'button9':'button9Disabled'"     src="../assets/fire.png">
         </button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
+        <button id="b10" :disabled="buttonVisible === false" v-bind:class="buttonVisible?'button10':'button10Disabled'" v-on:click="activateAntiMater">
+            <img id="button10" src="../assets/energy.png">
+        </button>
         <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
           id="roundslider"
@@ -254,12 +257,12 @@
             }, 500)
           window.setInterval(() => {
             if(!this.onSlider){
-              //this.sliderValue--;
+              this.sliderValue--;
             }
           },100)
           window.setInterval(() => {
             if(!this.onSlider2){
-              //this.sliderValue2--;
+              this.sliderValue2--;
             }
           },100)
         },
@@ -321,6 +324,11 @@
               this.connection.onmessage = function (event) {
                     _this.buttonVisible = event.data === "true"
               }
+            },
+            activateAntiMater:function(){
+              Axios.get('http://'+URL_REST+'/activateMater').then(
+                  console.log("distribution activated")
+              )
             },
             concurentTouch:function (){
               console.log("ok")
@@ -497,6 +505,23 @@
         height: 5%;
         width: 5%;
         border-radius: 10%;
+    }
+    .button10{
+        position: absolute;
+        top:800px;
+        right: 1000px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button10Disabled{
+        position: absolute;
+        top:800px;
+        right: 1000px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+        filter: grayscale(100%);
     }
     #b4{
         position: absolute;

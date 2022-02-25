@@ -70,6 +70,22 @@ router.get('/courant/seq', (req, res) => {
     res.status(200).json({"sequence": actions.getCourantSequence()});
 });
 
+router.get('/slider1/value', (req, res) => {
+    res.status(200).json(actions.getSliderValue2());
+});
+
+router.get('/slider2/value', (req, res) => {
+    res.status(200).json(actions.getSliderValue1());
+});
+router.get('/activateMater',(req, res) => {
+    actions.processAction('antimater')
+    res.status(200).json("antimater is now active")
+})
+
+router.get('/antimatiere/unlocked',(req, res) => {
+    res.status(200).json({"unlocked": actions.getActivateAntiMatiere()})
+})
+
 /* ########################### ANTIMATIERE ###########################
 */
 router.post('/addAntimatiere', function(request, response){

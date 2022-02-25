@@ -5,6 +5,7 @@ let slider1Value = 0
 let slider2Value = 0
 let seqRelancerCourant = []
 let courantRestart = false
+let activateAntimatière = false;
 
 const baseActions = [{
     title: "Appuyer sur les boutons rouge et bleu en même temps",
@@ -25,11 +26,19 @@ const baseActions = [{
 },{
     title:"Abaisser le levier",
     id:'lever'
-}
+},
+    {
+        title:"Activer la distribution d'antimatière",
+        id:'antimater'
+    },
 ]
 const nextActions = [{
     title: "Activez l'hyper vitesse",
     id: 6,
+},
+{
+    title: "Appuyer sur les 4 boutons orange en même temps",
+    id:9,
 },
 {
     title: "Détruire les asteroids",
@@ -75,9 +84,8 @@ function updateDataGame() {
   function processAction(action){
     console.log("test", seqRelancerCourant)
 
-    if (action.id === 1) slider1Value = action.value
-    if (action.id === 2) slider2Value = action.value
-    console.log("test3", slider1Value, slider2Value)
+    if (action.id === 1) this.slider1Value = action.value
+    if (action.id === 2) this.slider2Value = action.value
     if (slider1Value == 100 && slider2Value == 100) {
         seqRelancerCourant.push(1);
     }
@@ -100,9 +108,17 @@ function updateDataGame() {
             baseActions.forEach(baseAction =>{
                 if(baseAction.id === 'lever'){
                     showButton = true
-                    baseActions.splice(baseAction.indexOf(baseAction),1)
+                    baseActions.splice(baseActions.indexOf(baseAction),1)
                 }
             })
+    }
+    else if (action === 'antimater'){
+        baseActions.forEach(baseAction =>{
+            if(baseAction.id === 'antimater'){
+                activateAntimatière = true;
+                baseActions.splice(baseActions.indexOf(baseAction),1)
+            }
+        })
     }
     if(actionStack.includes(action)){
         actionStack.splice(actionStack.indexOf(action),1);
@@ -139,6 +155,9 @@ function getShowButton(){return showButton}
 function setShowButton(newVal){showButton = newVal}
 function getCourantStatus(){return courantRestart}
 function getCourantSequence(){return seqRelancerCourant}
+function getSliderValue1(){return slider1Value}
+function getSliderValue2(){return slider2Value}
+function getActivateAntiMatiere(){return activateAntimatière}
 
 module.exports = {
     updateDataGame,
@@ -151,4 +170,7 @@ module.exports = {
     getAntimatiereValue,
     getCourantStatus,
     getCourantSequence,
+    getSliderValue1,
+    getSliderValue2,
+    getActivateAntiMatiere,
 }
