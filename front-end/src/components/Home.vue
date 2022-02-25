@@ -12,6 +12,21 @@
         <button id="b2" :disabled="buttonVisible===false" v-on:click="action(2)">
             <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
+        <button id="b5" :disabled="buttonVisible===false" v-on:click="action(2)">
+            <img  id="button5"  v-bind:class="buttonVisible?'button5':'button5Disabled'"     src="../assets/orange.png">
+        </button>
+        <button id="b6" :disabled="buttonVisible===false" v-on:click="action(2)">
+            <img  id="button6"  v-bind:class="buttonVisible?'button6':'button6Disabled'"     src="../assets/orange.png">
+        </button>
+        <button id="b7" :disabled="buttonVisible===false" v-on:click="action(2)">
+            <img  id="button7"  v-bind:class="buttonVisible?'button7':'button7Disabled'"     src="../assets/orange.png">
+        </button>
+        <button id="b8" :disabled="buttonVisible===false" v-on:click="action(2)">
+            <img  id="button8"  v-bind:class="buttonVisible?'button8':'button8Disabled'"     src="../assets/orange.png">
+        </button>
+        
+      
+
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
@@ -83,9 +98,19 @@
         mounted() {
           let button1Pressed = false;
           let button2Pressed = false;
+          
+          let button5Pressed = false;
+          let button6Pressed = false;
+          let button7Pressed = false;
+          let button8Pressed = false;
+          
             this.doc = document.getElementById("home")
             this.button1 = document.getElementById("b1")
             this.button2 = document.getElementById("b2")
+            this.button5 = document.getElementById("b5")
+            this.button6 = document.getElementById("b6")
+            this.button7 = document.getElementById("b7")
+            this.button8 = document.getElementById("b8")
             Axios.get("http://" + URL_REST)
             .then(response =>(this.info = response,
             console.log(response)));
@@ -124,6 +149,79 @@
                   });
             }
           });
+          
+          this.button5.addEventListener('touchstart',function (event){
+                console.log("b5",event);
+                button5Pressed = true;
+              console.log(button5Pressed, button6Pressed,button7Pressed, button8Pressed)
+            if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
+              console.log("multi touch detected")
+              Axios.post("http://" + URL_REST + "/action", {
+                action: 9,
+              })
+                  .then(res => {
+                    console.log(`statusCode: ${res.status}`)
+                    console.log(res)
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+            }
+          });
+          this.button6.addEventListener('touchstart',function (event){
+                console.log("b6",event);
+                button6Pressed = true;
+              console.log(button5Pressed, button6Pressed,button7Pressed, button8Pressed)
+            if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
+              console.log("multi touch detected")
+              Axios.post("http://" + URL_REST + "/action", {
+                action: 9,
+              })
+                  .then(res => {
+                    console.log(`statusCode: ${res.status}`)
+                    console.log(res)
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+            }
+          });
+          this.button7.addEventListener('touchstart',function (event){
+                console.log("b7",event);
+                button5Pressed = true;
+              console.log(button5Pressed, button6Pressed,button7Pressed, button8Pressed)
+            if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
+              console.log("multi touch detected")
+              Axios.post("http://" + URL_REST + "/action", {
+                action: 9,
+              })
+                  .then(res => {
+                    console.log(`statusCode: ${res.status}`)
+                    console.log(res)
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+            }
+          });
+          this.button8.addEventListener('touchstart',function (event){
+                console.log("b5",event);
+                button8Pressed = true;
+              console.log(button5Pressed, button6Pressed,button7Pressed, button8Pressed)
+            if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
+              console.log("multi touch detected")
+              Axios.post("http://" + URL_REST + "/action", {
+                action: 9,
+              })
+                  .then(res => {
+                    console.log(`statusCode: ${res.status}`)
+                    console.log(res)
+                  })
+                  .catch(error => {
+                    console.log(error);
+                  });
+            }
+          });
           this.button1.addEventListener('touchend',function (event){
             console.log("b1-end",event);
             this.button1Pressed = false;
@@ -132,17 +230,34 @@
             console.log("b2-end",event);
             this.button2Pressed = false;
           });
+          
+          this.button5.addEventListener('touchend',function (event){
+            console.log("b5-end",event);
+            this.button5Pressed = false;
+          });
+          this.button6.addEventListener('touchend',function (event){
+            console.log("b6-end",event);
+            this.button6Pressed = false;
+          });
+          this.button7.addEventListener('touchend',function (event){
+            console.log("b7-end",event);
+            this.button7Pressed = false;
+          });
+          this.button8.addEventListener('touchend',function (event){
+            console.log("b5-end",event);
+            this.button8Pressed = false;
+          });
             window.setInterval(() => {
                 this.checkButtonState();
             }, 500)
           window.setInterval(() => {
             if(!this.onSlider){
-              this.sliderValue--;
+              //this.sliderValue--;
             }
           },100)
           window.setInterval(() => {
             if(!this.onSlider2){
-              this.sliderValue2--;
+              //this.sliderValue2--;
             }
           },100)
         },
@@ -257,7 +372,7 @@
     .button1{
         position: absolute;
         top:550px;
-        right: 485px;
+        right: 690px;
         height: 6%;
         width: 7%;
         border-radius: 10%;
@@ -265,7 +380,7 @@
     .button1Disabled{
       position: absolute;
       top:550px;
-      right: 485px;
+      right: 690px;
       height: 6%;
       width: 7%;
       border-radius: 10%;
@@ -274,7 +389,7 @@
     .button2{
         position: absolute;
         top:550px;
-        left: 485px;
+        left: 690px;
         height: 6%;
         width: 7%;
         border-radius: 10%;
@@ -282,7 +397,75 @@
     .button2Disabled{
       position: absolute;
       top:550px;
-      left: 485px;
+      left: 690px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter: grayscale(100%);
+    }
+    .button5{
+        position: absolute;
+        top:490px;
+        left: 400px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button5Disabled{
+      position: absolute;
+      top:490px;
+      left: 400px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter: grayscale(100%);
+    }
+    .button6{
+        position: absolute;
+        top:580px;
+        left: 400px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button6Disabled{
+      position: absolute;
+      top:580px;
+      left: 400px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter: grayscale(100%);
+    }
+    .button7{
+        position: absolute;
+        top:490px;
+        right: 400px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button7Disabled{
+      position: absolute;
+      top:490px;
+      right: 400px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter: grayscale(100%);
+    }
+    .button8{
+        position: absolute;
+        top:580px;
+        right: 400px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button8Disabled{
+      position: absolute;
+      top:580px;
+      right: 400px;
       height: 6%;
       width: 7%;
       border-radius: 10%;
@@ -298,7 +481,7 @@
     }
     #b4{
         position: absolute;
-        top:650px;
+        top:750px;
         left: 854px;
         height: 6%;
         width: 7%;
