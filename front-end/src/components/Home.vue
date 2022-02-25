@@ -32,6 +32,9 @@
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
+        <button id="b10" :disabled="buttonVisible === false" v-bind:class="buttonVisible?'button10':'button10Disabled'" v-on:click="activateAntiMater">
+            <img id="button10" src="../assets/energy.png">
+        </button>
         <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
           id="roundslider"
@@ -320,6 +323,11 @@
                     _this.buttonVisible = event.data === "true"
               }
             },
+            activateAntiMater:function(){
+              Axios.get('http://'+URL_REST+'/activateMater').then(
+                  console.log("distribution activated")
+              )
+            },
             concurentTouch:function (){
               console.log("ok")
               if(this.button1Pressed && this.button2Pressed){
@@ -478,6 +486,23 @@
         height: 5%;
         width: 5%;
         border-radius: 10%;
+    }
+    .button10{
+        position: absolute;
+        top:800px;
+        right: 1000px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button10Disabled{
+        position: absolute;
+        top:800px;
+        right: 1000px;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+        filter: grayscale(100%);
     }
     #b4{
         position: absolute;

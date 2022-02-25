@@ -70,6 +70,15 @@ router.get('/courant/seq', (req, res) => {
     res.status(200).json({"sequence": actions.getCourantSequence()});
 });
 
+router.get('/activateMater',(req, res) => {
+    actions.processAction('antimater')
+    res.status(200).json("antimater is now active")
+})
+
+router.get('/antimatiere/unlocked',(req, res) => {
+    res.status(200).json(actions.getActivateAntiMatiere())
+})
+
 /* ########################### ANTIMATIERE ###########################
 */
 router.post('/addAntimatiere', function(request, response){
