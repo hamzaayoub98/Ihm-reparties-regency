@@ -30,7 +30,9 @@
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
-        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
+        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >
+          <img  id="button9"  v-bind:class="buttonVisible?'button9':'button9Disabled'"     src="../assets/fire.png">
+        </button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
         <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
@@ -466,6 +468,23 @@
       position: absolute;
       top:580px;
       right: 400px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter: grayscale(100%);
+    }
+    .button9{
+        position: absolute;
+        top:50px;
+        right: 47%;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button9Disabled{
+      position: absolute;
+      top:50px;
+      right: 47%;
       height: 6%;
       width: 7%;
       border-radius: 10%;
