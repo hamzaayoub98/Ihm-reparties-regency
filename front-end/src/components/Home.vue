@@ -24,8 +24,8 @@
         <button id="b8" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button8"  v-bind:class="buttonVisible?'button8':'button8Disabled'"     src="../assets/orange.png">
         </button>
-        
-      
+
+
 
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
@@ -34,6 +34,10 @@
           <img  id="button9"  v-bind:class="buttonVisible?'button9':'button9Disabled'"     src="../assets/fire.png">
         </button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
+
+        <button id="b10" :disabled="buttonVisible === false"  v-on:click="activateAntiMater">
+            <img id="button10" src="../assets/energy.png" v-bind:class="buttonVisible?'button10':'button10Disabled'">
+        </button>
         <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
           id="roundslider"
@@ -100,12 +104,12 @@
         mounted() {
           let button1Pressed = false;
           let button2Pressed = false;
-          
+
           let button5Pressed = false;
           let button6Pressed = false;
           let button7Pressed = false;
           let button8Pressed = false;
-          
+
             this.doc = document.getElementById("home")
             this.button1 = document.getElementById("b1")
             this.button2 = document.getElementById("b2")
@@ -151,7 +155,7 @@
                   });
             }
           });
-          
+
           this.button5.addEventListener('touchstart',function (event){
                 console.log("b5",event);
                 button5Pressed = true;
@@ -232,7 +236,7 @@
             console.log("b2-end",event);
             this.button2Pressed = false;
           });
-          
+
           this.button5.addEventListener('touchend',function (event){
             console.log("b5-end",event);
             this.button5Pressed = false;
@@ -498,6 +502,24 @@
         width: 5%;
         border-radius: 10%;
     }
+    .button10{
+        position: absolute;
+        top:800px;
+        right: 1000px;
+        height: 10%;
+        width: 5%;
+        border-radius: 10%;
+    }
+    .button10Disabled{
+        position: absolute;
+        top:800px;
+        right: 1000px;
+        height: 10%;
+        width: 5%;
+        border-radius: 10%;
+        filter: grayscale(100%);
+    }
+
     #b4{
         position: absolute;
         top:750px;
