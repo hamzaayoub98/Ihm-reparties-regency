@@ -76,7 +76,7 @@ router.get('/activateMater',(req, res) => {
 })
 
 router.get('/antimatiere/unlocked',(req, res) => {
-    res.status(200).json(actions.getActivateAntiMatiere())
+    res.status(200).json({"unlocked": actions.getActivateAntiMatiere()})
 })
 
 /* ########################### ANTIMATIERE ###########################
