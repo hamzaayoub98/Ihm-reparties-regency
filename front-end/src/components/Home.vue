@@ -12,16 +12,16 @@
         <button id="b2" :disabled="buttonVisible===false" v-on:click="action(2)">
             <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
-        <button id="b5" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b5" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button5"  v-bind:class="buttonVisible?'button5':'button5Disabled'"     src="../assets/orange.png">
         </button>
-        <button id="b6" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b6" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button6"  v-bind:class="buttonVisible?'button6':'button6Disabled'"     src="../assets/orange.png">
         </button>
-        <button id="b7" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b7" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button7"  v-bind:class="buttonVisible?'button7':'button7Disabled'"     src="../assets/orange.png">
         </button>
-        <button id="b8" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b8" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button8"  v-bind:class="buttonVisible?'button8':'button8Disabled'"     src="../assets/orange.png">
         </button>
         
@@ -34,9 +34,6 @@
           <img  id="button9"  v-bind:class="buttonVisible?'button9':'button9Disabled'"     src="../assets/fire.png">
         </button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
-        <button id="b10" :disabled="buttonVisible === false" v-bind:class="buttonVisible?'button10':'button10Disabled'" v-on:click="activateAntiMater">
-            <img id="button10" src="../assets/energy.png">
-        </button>
         <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
           id="roundslider"
@@ -257,12 +254,12 @@
             }, 500)
           window.setInterval(() => {
             if(!this.onSlider){
-              this.sliderValue--;
+              //this.sliderValue--;
             }
           },100)
           window.setInterval(() => {
             if(!this.onSlider2){
-              this.sliderValue2--;
+              //this.sliderValue2--;
             }
           },100)
         },
@@ -324,11 +321,6 @@
               this.connection.onmessage = function (event) {
                     _this.buttonVisible = event.data === "true"
               }
-            },
-            activateAntiMater:function(){
-              Axios.get('http://'+URL_REST+'/activateMater').then(
-                  console.log("distribution activated")
-              )
             },
             concurentTouch:function (){
               console.log("ok")
@@ -505,23 +497,6 @@
         height: 5%;
         width: 5%;
         border-radius: 10%;
-    }
-    .button10{
-        position: absolute;
-        top:800px;
-        right: 1000px;
-        height: 6%;
-        width: 7%;
-        border-radius: 10%;
-    }
-    .button10Disabled{
-        position: absolute;
-        top:800px;
-        right: 1000px;
-        height: 6%;
-        width: 7%;
-        border-radius: 10%;
-        filter: grayscale(100%);
     }
     #b4{
         position: absolute;
