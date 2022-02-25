@@ -30,7 +30,9 @@
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
-        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
+        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >
+          <img  id="button9"  v-bind:class="buttonVisible?'button9':'button9Disabled'"     src="../assets/fire.png">
+        </button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
         <button id="b10" :disabled="buttonVisible === false"  v-on:click="activateAntiMater">
             <img id="button10" src="../assets/energy.png" v-bind:class="buttonVisible?'button10':'button10Disabled'">
@@ -255,12 +257,12 @@
             }, 500)
           window.setInterval(() => {
             if(!this.onSlider){
-              //this.sliderValue--;
+              this.sliderValue--;
             }
           },100)
           window.setInterval(() => {
             if(!this.onSlider2){
-              //this.sliderValue2--;
+              this.sliderValue2--;
             }
           },100)
         },
@@ -474,6 +476,23 @@
       position: absolute;
       top:580px;
       right: 400px;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter: grayscale(100%);
+    }
+    .button9{
+        position: absolute;
+        top:50px;
+        right: 47%;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button9Disabled{
+      position: absolute;
+      top:50px;
+      right: 47%;
       height: 6%;
       width: 7%;
       border-radius: 10%;

@@ -37,6 +37,10 @@ const nextActions = [{
     id: 6,
 },
 {
+    title: "Appuyer sur les 4 boutons orange en même temps",
+    id:9,
+},
+{
     title: "Détruire les asteroids",
     id: 8,
 },
@@ -80,9 +84,8 @@ function updateDataGame() {
   function processAction(action){
     console.log("test", seqRelancerCourant)
 
-    if (action.id === 1) slider1Value = action.value
-    if (action.id === 2) slider2Value = action.value
-    console.log("test3", slider1Value, slider2Value)
+    if (action.id === 1) this.slider1Value = action.value
+    if (action.id === 2) this.slider2Value = action.value
     if (slider1Value == 100 && slider2Value == 100) {
         seqRelancerCourant.push(1);
     }
@@ -152,6 +155,8 @@ function getShowButton(){return showButton}
 function setShowButton(newVal){showButton = newVal}
 function getCourantStatus(){return courantRestart}
 function getCourantSequence(){return seqRelancerCourant}
+function getSliderValue1(){return slider1Value}
+function getSliderValue2(){return slider2Value}
 function getActivateAntiMatiere(){return activateAntimatière}
 
 module.exports = {
@@ -165,5 +170,7 @@ module.exports = {
     getAntimatiereValue,
     getCourantStatus,
     getCourantSequence,
+    getSliderValue1,
+    getSliderValue2,
     getActivateAntiMatiere,
 }
