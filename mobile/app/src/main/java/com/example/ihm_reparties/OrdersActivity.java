@@ -85,6 +85,7 @@ public class OrdersActivity extends AppCompatActivity {
     CourantStatus courantStatus;
     boolean hasCourantStatusBeenCalled = true;
     boolean enigmAlreadyStartedOnce = false;
+    int currentAntimatiereValue = 0;
     CourantSequence courantSequence;
     int sizeCourantSequence = 0;
     int hypervitesseButtonCountClick = 3;
@@ -356,7 +357,8 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<AntimatiereValue> call, Response<AntimatiereValue> response) {
                         antimatiereValue = response.body();
-                        if(antimatiereValue != null) {
+                        if(antimatiereValue != null && currentAntimatiereValue != antimatiereValue.getValue()) {
+                            currentAntimatiereValue = antimatiereValue.getValue();
                             gaugeReact2.setValue(antimatiereValue.getValue());
                             Toast.makeText(OrdersActivity.this, "Le réacteur 2 se remplit...",
                                     Toast.LENGTH_SHORT).show();

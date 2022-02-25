@@ -31,6 +31,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<OrdersApiResponse> orders;
     private String restAddress;
     AddAntimatiere addAntimatiere = new AddAntimatiere();
+    AntimatiereUnlocked antimatiereUnlocked;
     private int speedGaugeValue = 0;
 
     // Pass in the contact array into the constructor
@@ -86,9 +87,30 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 textView = viewHolderWithButtonPlus.orderTextView;
                 textView.setText(order.getTitle());
 
+
+
                 Button buttonPlus = viewHolderWithButtonPlus.buttonPlus;
                 buttonPlus.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
+                        Call<AntimatiereUnlocked> callSyncForAntimatiereUnlocked = api.getAntimatiereUnlockedCall();
+                        callSyncForAntimatiereUnlocked.enqueue(new Callback<AntimatiereUnlocked>() {
+                            @Override
+                            public void onResponse(Call<AntimatiereUnlocked> call, Response<AntimatiereUnlocked> response) {
+                                antimatiereUnlocked = response.body();
+                                if(antimatiereUnlocked != null && antimatiereUnlocked.getUnlocked() != null) {
+                                    if(antimatiereUnlocked.getUnlocked()){
+                                        buttonPlus.setEnabled(true);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<AntimatiereUnlocked> call, Throwable t) {
+                                Log.d("CallBack AntimatiereUnlocked", "Callback failure");
+                                t.printStackTrace();
+                            }
+                        });
+
                         Call<AddAntimatiere> callSync = api.addAntimatiere(addAntimatiere);
                         callSync.enqueue(new Callback<AddAntimatiere>() {
                             @Override

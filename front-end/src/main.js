@@ -16,5 +16,5 @@ new Vue({
 }).$mount('#app')
 
 
-export const URL_REST = process.env.VUE_APP_URL_REST || 'localhost:3000';
-export const URL_WS = process.env.VUE_APP_URL_WS || 'localhost:4000';
+export const URL_REST = 'localhost:3000';
+export const URL_WS = 'localhost:4000';

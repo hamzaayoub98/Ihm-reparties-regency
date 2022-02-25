@@ -5,6 +5,7 @@ let slider1Value = 0
 let slider2Value = 0
 let seqRelancerCourant = []
 let courantRestart = false
+let activateAntimatière = false;
 
 const baseActions = [{
     title: "Appuyer sur les boutons rouge et bleu en même temps",
@@ -25,7 +26,11 @@ const baseActions = [{
 },{
     title:"Abaisser le levier",
     id:'lever'
-}
+},
+    {
+        title:"Activer la distribution d'antimatière",
+        id:'antimater'
+    },
 ]
 const nextActions = [{
     title: "Activez l'hyper vitesse",
@@ -103,9 +108,17 @@ function updateDataGame() {
             baseActions.forEach(baseAction =>{
                 if(baseAction.id === 'lever'){
                     showButton = true
-                    baseActions.splice(baseAction.indexOf(baseAction),1)
+                    baseActions.splice(baseActions.indexOf(baseAction),1)
                 }
             })
+    }
+    else if (action === 'antimater'){
+        baseActions.forEach(baseAction =>{
+            if(baseAction.id === 'antimater'){
+                activateAntimatière = true;
+                baseActions.splice(baseActions.indexOf(baseAction),1)
+            }
+        })
     }
     if(actionStack.includes(action)){
         actionStack.splice(actionStack.indexOf(action),1);
@@ -144,6 +157,7 @@ function getCourantStatus(){return courantRestart}
 function getCourantSequence(){return seqRelancerCourant}
 function getSliderValue1(){return slider1Value}
 function getSliderValue2(){return slider2Value}
+function getActivateAntiMatiere(){return activateAntimatière}
 
 module.exports = {
     updateDataGame,
@@ -157,5 +171,6 @@ module.exports = {
     getCourantStatus,
     getCourantSequence,
     getSliderValue1,
-    getSliderValue2
+    getSliderValue2,
+    getActivateAntiMatiere,
 }
