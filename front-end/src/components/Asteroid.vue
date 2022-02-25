@@ -132,8 +132,8 @@
 </script>
 <style scoped>
     #container{
-        height: 540px;
-        width:540px;
+        height: 740px;
+        width:740px;
         float: left;
         top:0%;
         left: 0%;
