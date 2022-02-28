@@ -3,8 +3,8 @@ let actionStack = [1,2,"antimatiere","asteroidsVue",7,8]
 let showButton = false;
 let slider1Value = 0
 let slider2Value = 0
-let seqRelancerCourant = []
-let courantRestart = false
+var seqRelancerCourant = [3,2,1]
+var courantRestart = false
 let activateAntimatière = false;
 
 const baseActions = [{
@@ -23,10 +23,11 @@ const baseActions = [{
     title: "Augmenter les rétro-propulseurs",
     id: 'slider',
     value: 100,
-},{
-    title:"Abaisser le levier",
-    id:'lever'
 },
+// {
+//     title:"Abaisser le levier",
+//     id:'lever'
+// },
     {
         title:"Activer la distribution d'antimatière",
         id:'antimater'
@@ -57,16 +58,9 @@ const antimatiereValue = {
     value: 0,
 }
 
-function arrayEquals(a, b) {
-    return Array.isArray(a) &&
-      Array.isArray(b) &&
-      a.length === b.length &&
-      a.every((val, index) => val === b[index]);
-  }
-
   function processActionSeq(seq){
-    courantRestart = arrayEquals(seq.splice(-3), [1,2,3])
-    return courantRestart
+    courantRestart = seq.includes(1) && seq.includes(2) && seq.includes(3)
+    if (seq.length>5) courantRestart = true
   }
 
 function updateDataGame() {
@@ -81,70 +75,69 @@ function updateDataGame() {
     }
   }
 
-  function processAction(action){
-    console.log("test", seqRelancerCourant)
-
-    if (action.id === 1) this.slider1Value = action.value
-    if (action.id === 2) this.slider2Value = action.value
-    if (slider1Value == 100 && slider2Value == 100) {
+function processAction(action) {
+    if (action.id === 1) slider1Value = action.value
+    if (action.id === 2) slider2Value = action.value
+    if (slider1Value >= 99 && slider2Value >= 99) {
         seqRelancerCourant.push(1);
     }
 
-    if(action.action === 'slider'){
-        baseActions.forEach(baseAction =>{
-            if(baseAction.id === 'slider'){
-                if(action.value >= baseAction.value - 10 && action.value <= baseAction.value + 10){
-                    baseActions.splice(baseActions.indexOf(baseAction),1)
+    if (action.action === 'slider') {
+        baseActions.forEach(baseAction => {
+            if (baseAction.id === 'slider') {
+                if (action.value >= baseAction.value - 10 && action.value <= baseAction.value + 10) {
+                    baseActions.splice(baseActions.indexOf(baseAction), 1)
                 }
             }
-            if(baseAction.id === 6){
-                if(action.value === 100){
-                    baseActions.splice(baseActions.indexOf(baseAction),1)
+            if (baseAction.id === 6) {
+                if (action.value === 100) {
+                    baseActions.splice(baseActions.indexOf(baseAction), 1)
                 }
             }
         })
     }
-    else if (action.action === 'lever'){
-            baseActions.forEach(baseAction =>{
-                if(baseAction.id === 'lever'){
-                    showButton = true
-                    baseActions.splice(baseActions.indexOf(baseAction),1)
-                }
-            })
+    else if (action.action === 'lever') {
+        baseActions.forEach(baseAction => {
+            if (baseAction.id === 'lever') {
+                showButton = true
+                baseActions.splice(baseActions.indexOf(baseAction), 1)
+            }
+        })
     }
-    else if (action === 'antimater'){
-        baseActions.forEach(baseAction =>{
-            if(baseAction.id === 'antimater'){
+    else if (action === 'antimater') {
+        baseActions.forEach(baseAction => {
+            if (baseAction.id === 'antimater') {
                 activateAntimatière = true;
-                baseActions.splice(baseActions.indexOf(baseAction),1)
+                baseActions.splice(baseActions.indexOf(baseAction), 1)
             }
         })
     }
-    if(actionStack.includes(action)){
-        actionStack.splice(actionStack.indexOf(action),1);
-        baseActions.forEach(actions =>{
-            if(actions.id === action){
-                baseActions.splice(baseActions.indexOf(actions),1);
+    if (actionStack.includes(action)) {
+        actionStack.splice(actionStack.indexOf(action), 1);
+        baseActions.forEach(actions => {
+            if (actions.id === action) {
+                baseActions.splice(baseActions.indexOf(actions), 1);
             }
         })
     }
 
-        // Actions du mécano
-        if (action.action === "activerLevier"){
-            seqRelancerCourant.push(2);
-            processActionSeq(seqRelancerCourant)
-        }
-        if (action.action === "desactiverLevier"){
-            seqRelancerCourant.forEach(e => {
-                seqRelancerCourant.splice(seqRelancerCourant.indexOf(e),1)
-            })
-            processActionSeq(seqRelancerCourant)
-        }
-        if (action === "activerCourant"){ // Action du capitaine
-            seqRelancerCourant.push(3)
-            console.log("HHIHIHI : " + seqRelancerCourant)
-            processActionSeq(seqRelancerCourant)
-        }
+    // Actions du mécano
+    if (action.action === "activerLevier") {
+        console.log("action detected :  activerLevier")
+        seqRelancerCourant.push(2);
+    }
+    if (action.action === "desactiverLevier") {
+        console.log("action detected :  desactiverLevier")
+        seqRelancerCourant.forEach(e => {
+            seqRelancerCourant.splice(seqRelancerCourant.indexOf(e), 1)
+        })
+    }
+    if (action === "activerCourant") { // Action du capitaine
+        seqRelancerCourant.push(3)
+        console.log("action detected :  activer courant")
+        courantRestart = true
+    }
+    processActionSeq([...seqRelancerCourant])
 }
 
 function getBaseActions(){return baseActions}
@@ -158,6 +151,7 @@ function getCourantSequence(){return seqRelancerCourant}
 function getSliderValue1(){return slider1Value}
 function getSliderValue2(){return slider2Value}
 function getActivateAntiMatiere(){return activateAntimatière}
+function setCourantStatus(){courantRestart = true}
 
 module.exports = {
     updateDataGame,
@@ -173,4 +167,5 @@ module.exports = {
     getSliderValue1,
     getSliderValue2,
     getActivateAntiMatiere,
+    setCourantStatus
 }

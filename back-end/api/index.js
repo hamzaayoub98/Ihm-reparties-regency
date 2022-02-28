@@ -50,20 +50,28 @@ router.get('/show-button',function(request,response){
 router.post('/action', function(request, response){
     actions.processAction(request.body.action)
     console.log("baseActions", actions.getBaseActions())
-    response.status(200).send("data received")
+    response.status(200).json()
 });
 
-router.get('/actionvr',function (request,response) {
-    action = parseInt(request.query.id)
-    actions.processAction(action)
+router.get('/actionvr', async function (request,response) {
+    let tmp = request.query.id
+
+    actions.processAction({
+        action: tmp,
+    })
     console.log("baseActions VR", actions.getBaseActions())
-    response.status(200).send(actions.getActionStack().includes(action));
+    response.status(200).send(actions.getActionStack().includes(tmp));
 })
 
 /* ########################### COURANT ###########################
 */
 router.get('/courant/status', (req, res) => {
     res.status(200).json({"restart": actions.getCourantStatus()});
+});
+
+router.post('/courant/status', (req, res) => {
+    res.status(200).json('ok');
+    actions.setCourantStatus();
 });
 
 router.get('/courant/seq', (req, res) => {
