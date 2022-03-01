@@ -39,6 +39,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     int delay = 1000;
     ApiInterface api;
     Button buttonPlus;
+    boolean courantRestarted = false;
 
     // Pass in the contact array into the constructor
     public OrdersAdapter(List<OrdersApiResponse> orders, String restAddress) {
@@ -48,6 +49,31 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public void setOrders(List<OrdersApiResponse> orders){
         this.orders = orders;
+    }
+
+    public void callAPIAntimatiereUnlocked() {
+        handler.postDelayed(runnable = new Runnable() {
+            public void run() {
+                Call<AntimatiereUnlocked> callSyncForAntimatiereUnlocked = api.getAntimatiereUnlockedCall();
+                callSyncForAntimatiereUnlocked.enqueue(new Callback<AntimatiereUnlocked>() {
+                    @Override
+                    public void onResponse(Call<AntimatiereUnlocked> call, Response<AntimatiereUnlocked> response) {
+                        antimatiereUnlocked = response.body();
+                        if (antimatiereUnlocked != null && antimatiereUnlocked.getUnlocked() != null) {
+                            if (antimatiereUnlocked.getUnlocked()) {
+                                buttonPlus.setEnabled(true);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AntimatiereUnlocked> call, Throwable t) {
+                        Log.d("CallBack AntimatiereUnlocked", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
+            }
+        }, delay);
     }
 
     @NonNull
@@ -92,30 +118,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 textView = viewHolderWithButtonPlus.orderTextView;
                 textView.setText(order.getTitle());
                 buttonPlus = viewHolderWithButtonPlus.buttonPlus;
-
-                handler.postDelayed(runnable = new Runnable() {
-                    public void run() {
-                        handler.postDelayed(runnable, delay);
-                        Call<AntimatiereUnlocked> callSyncForAntimatiereUnlocked = api.getAntimatiereUnlockedCall();
-                        callSyncForAntimatiereUnlocked.enqueue(new Callback<AntimatiereUnlocked>() {
-                            @Override
-                            public void onResponse(Call<AntimatiereUnlocked> call, Response<AntimatiereUnlocked> response) {
-                                antimatiereUnlocked = response.body();
-                                if(antimatiereUnlocked != null && antimatiereUnlocked.getUnlocked() != null) {
-                                    if(antimatiereUnlocked.getUnlocked()){
-                                        buttonPlus.setEnabled(true);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<AntimatiereUnlocked> call, Throwable t) {
-                                Log.d("CallBack AntimatiereUnlocked", "Callback failure");
-                                t.printStackTrace();
-                            }
-                        });
-                    }
-                }, delay);
 
                 buttonPlus.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
