@@ -12,28 +12,31 @@
         <button id="b2" :disabled="buttonVisible===false" v-on:click="action(2)">
             <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
-        <button id="b5" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b5" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button5"  v-bind:class="buttonVisible?'button5':'button5Disabled'"     src="../assets/orange.png">
         </button>
-        <button id="b6" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b6" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button6"  v-bind:class="buttonVisible?'button6':'button6Disabled'"     src="../assets/orange.png">
         </button>
-        <button id="b7" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b7" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button7"  v-bind:class="buttonVisible?'button7':'button7Disabled'"     src="../assets/orange.png">
         </button>
-        <button id="b8" :disabled="buttonVisible===false" v-on:click="action(2)">
+        <button id="b8" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button8"  v-bind:class="buttonVisible?'button8':'button8Disabled'"     src="../assets/orange.png">
         </button>
-        
-      
+
+
 
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
-        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >Fire !</button>
+        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >
+          <img  id="button9"  v-bind:class="buttonVisible?'button9':'button9Disabled'"     src="../assets/fire.png">
+        </button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
-        <button id="b10" :disabled="buttonVisible === false" v-bind:class="buttonVisible?'button10':'button10Disabled'" v-on:click="activateAntiMater">
-            <img id="button10" src="../assets/energy.png">
+
+        <button id="b10" :disabled="buttonVisible === false"  v-on:click="activateAntiMater">
+            <img id="button10" src="../assets/energy.png" v-bind:class="buttonVisible?'button10':'button10Disabled'">
         </button>
         <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
@@ -101,12 +104,12 @@
         mounted() {
           let button1Pressed = false;
           let button2Pressed = false;
-          
+
           let button5Pressed = false;
           let button6Pressed = false;
           let button7Pressed = false;
           let button8Pressed = false;
-          
+
             this.doc = document.getElementById("home")
             this.button1 = document.getElementById("b1")
             this.button2 = document.getElementById("b2")
@@ -152,7 +155,7 @@
                   });
             }
           });
-          
+
           this.button5.addEventListener('touchstart',function (event){
                 console.log("b5",event);
                 button5Pressed = true;
@@ -233,7 +236,7 @@
             console.log("b2-end",event);
             this.button2Pressed = false;
           });
-          
+
           this.button5.addEventListener('touchend',function (event){
             console.log("b5-end",event);
             this.button5Pressed = false;
@@ -255,12 +258,12 @@
             }, 500)
           window.setInterval(() => {
             if(!this.onSlider){
-              this.sliderValue--;
+              //this.sliderValue--;
             }
           },100)
           window.setInterval(() => {
             if(!this.onSlider2){
-              this.sliderValue2--;
+              //this.sliderValue2--;
             }
           },100)
         },
@@ -322,11 +325,6 @@
               this.connection.onmessage = function (event) {
                     _this.buttonVisible = event.data === "true"
               }
-            },
-            activateAntiMater:function(){
-              Axios.get('http://'+URL_REST+'/activateMater').then(
-                  console.log("distribution activated")
-              )
             },
             concurentTouch:function (){
               console.log("ok")
@@ -479,6 +477,23 @@
       border-radius: 10%;
       filter: grayscale(100%);
     }
+    .button9{
+        position: absolute;
+        top:50px;
+        right: 47%;
+        height: 6%;
+        width: 7%;
+        border-radius: 10%;
+    }
+    .button9Disabled{
+      position: absolute;
+      top:50px;
+      right: 47%;
+      height: 6%;
+      width: 7%;
+      border-radius: 10%;
+      filter: grayscale(100%);
+    }
     #button3{
         position: absolute;
         top:65%;
@@ -491,19 +506,20 @@
         position: absolute;
         top:800px;
         right: 1000px;
-        height: 6%;
-        width: 7%;
+        height: 10%;
+        width: 5%;
         border-radius: 10%;
     }
     .button10Disabled{
         position: absolute;
         top:800px;
         right: 1000px;
-        height: 6%;
-        width: 7%;
+        height: 10%;
+        width: 5%;
         border-radius: 10%;
         filter: grayscale(100%);
     }
+
     #b4{
         position: absolute;
         top:750px;
