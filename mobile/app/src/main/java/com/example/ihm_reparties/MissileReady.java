@@ -12,20 +12,20 @@ public class MissileReady implements Serializable
 {
     public MissileReady(){}
 
-    public MissileReady(Boolean isReady){
-        this.isReady = isReady;
+    public MissileReady(Boolean missileReady){
+        this.missileReady = missileReady;
     }
 
-    @SerializedName("isReady")
+    @SerializedName("missileReady")
     @Expose
-    private Boolean isReady;
+    private Boolean missileReady;
 
-    public Boolean getIsReady() {
-        return isReady;
+    public Boolean getMissileReady() {
+        return missileReady;
     }
 
-    public void setIsReady(Boolean isReady) {
-        this.isReady = isReady;
+    public void setMissileReady(Boolean missileReady) {
+        this.missileReady = missileReady;
     }
 
 }

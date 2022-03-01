@@ -77,35 +77,35 @@ public class OrdersActivity extends AppCompatActivity {
     NoMoreAntimatiere noMoreAntimatiere;
     ActivateEnergy activateEnergy = new ActivateEnergy();
     ActivateHypervitesse activateHypervitesse = new ActivateHypervitesse();
-    ActivateMissile activateMissile = new ActivateMissile();
     AntimatiereValue antimatiereValue = new AntimatiereValue();
     MissileReady missileReady;
     MissilePlaced missilePlaced;
     HypervitesseReady hypervitesseReady;
     CourantStatus courantStatus;
-    boolean hasCourantStatusBeenCalled = true;
+    boolean hasCourantStatusBeenCalled = false;
     boolean enigmAlreadyStartedOnce = false;
     int currentAntimatiereValue = 0;
     int indicatorLevel = 0;
     boolean isLevierActivated = false;
     boolean isSlider1To100 = false;
     boolean isSlider2To100 = false;
-    boolean hasCaptainLaunchedEnergy = false;
+    boolean isAlreadyFull = false;
     CourantSequence courantSequence;
     int sizeCourantSequence = 0;
     int hypervitesseButtonCountClick = 3;
     boolean areOrdersVisible = true;
+    boolean isMissileLaunched = false;
     private Context context = this;
     Vibrator vib;
     Handler handler = new Handler();
     Runnable runnable;
-    int delay = 3000;
+    int delay = 1000;
     private OkHttpClient client;
     private WebSocket ws;
 
     //Graphic components
     OrdersAdapter adapter;
-    Button buttonCaptors, buttonOrders, buttonHypervitesse, buttonCourant, buttonMissile;
+    Button buttonCaptors, buttonOrders, buttonHypervitesse, buttonCourant, buttonMissile, buttonMissile2;
     Group captorsLayoutGroup, ordersLayoutGroup;
     HalfGauge gaugeReact1, gaugeReact2;
     ImageView arrowEnergyIndicator, warningEnergy, warningAntimatiere, warningHypervitesse, checkEnergy, checkAntimatiere, checkHypervitesse;
@@ -131,8 +131,10 @@ public class OrdersActivity extends AppCompatActivity {
 //        startWsConnection();
         api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
 
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         //Initialize graphic components
-        adapter = new OrdersAdapter(orders, getRestAddressPortString());
+        adapter = new OrdersAdapter(orders, getRestAddressPortString(), getApplicationContext(), vib);
         // Attach the adapter to the recyclerview to populate items
         rvOrders.setAdapter(adapter);
         // Set layout manager to position the items
@@ -153,6 +155,7 @@ public class OrdersActivity extends AppCompatActivity {
         ordersLayoutGroup = (Group) findViewById(R.id.ordersLayoutGroup);
         counterHypervitesse = (TextView) findViewById(R.id.counter_hypervitesse);
         buttonMissile = (Button) findViewById(R.id.button_missile);
+        buttonMissile2 = (Button) findViewById(R.id.button_missile2);
 
         courantStatus = new CourantStatus(false);
         initGauge(gaugeReact1);
@@ -194,24 +197,46 @@ public class OrdersActivity extends AppCompatActivity {
         buttonMissile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<ActivateMissile> callSync = api.activateMissile(activateMissile);
-                callSync.enqueue(new Callback<ActivateMissile>() {
+                Call<String> callSync = api.getLaunchMissileCall();
+                callSync.enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call<ActivateMissile> call, Response<ActivateMissile> response) {
-                        Log.d("CallBack ActivateMissile", "Sending activate missile action successful");
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("CallBack LaunchMissile", "Sending launch missile action successful");
                     }
 
                     @Override
-                    public void onFailure(Call<ActivateMissile> call, Throwable t) {
-                        Log.d("CallBack ActivateMissile", "Sending activate missile action failed");
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("CallBack LaunchMissile", "Sending launch missile action failed");
                         t.printStackTrace();
                     }
                 });
                 buttonMissile.setVisibility(View.INVISIBLE);
+                buttonMissile2.setVisibility(View.INVISIBLE);
+                isMissileLaunched = true;
             }
         });
 
-        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        buttonMissile2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<String> callSync = api.getLaunchMissileCall();
+                callSync.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("CallBack LaunchMissile", "Sending launch missile action successful");
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("CallBack LaunchMissile", "Sending launch missile action failed");
+                        t.printStackTrace();
+                    }
+                });
+                buttonMissile2.setVisibility(View.INVISIBLE);
+                buttonMissile.setVisibility(View.INVISIBLE);
+                isMissileLaunched = true;
+            }
+        });
 
         //API Call
         handler.postDelayed(runnable = new Runnable() {
@@ -348,6 +373,7 @@ public class OrdersActivity extends AppCompatActivity {
                             }
                             if(isLevierActivated && isSlider1To100 && isSlider2To100){
                                 buttonCourant.setVisibility(View.VISIBLE);
+                                vib.vibrate(200);
                             }
                             else {
                                 buttonCourant.setVisibility(View.INVISIBLE);
@@ -373,16 +399,14 @@ public class OrdersActivity extends AppCompatActivity {
                             if (courantStatus.getCourantStatus()) {
                                 Log.d("Status", "Courant status success");
                                 transformWarningEnergyToCheck();
+                                moveArrowIndicator(3);
                                 buttonCourant.setEnabled(false);
+                                buttonCourant.setVisibility(View.VISIBLE);
                                 buttonCourant.setText("Le courant est activé");
                                 Toast.makeText(getApplicationContext(), "Le courant a été rétabli !", Toast.LENGTH_LONG).show();
-                                adapter.callAPIAntimatiereUnlocked();
-                            } else {
-//                                vib.vibrate(300);
-//                                moveArrowIndicator(0);
-                                Toast.makeText(getApplicationContext(), "IA : Les étapes ont été effectuées dans le désordre, reprenez la procédure du début.", Toast.LENGTH_LONG).show();
+                                vib.vibrate(200);
+                                hasCourantStatusBeenCalled = true;
                             }
-                            hasCourantStatusBeenCalled = true;
                             Log.d("Status", "Courant status : " + courantStatus.getCourantStatus());
                         }
                     }
@@ -396,6 +420,10 @@ public class OrdersActivity extends AppCompatActivity {
                     }
                 });
 
+                if (courantStatus != null && courantStatus.getCourantStatus() && courantStatus.getCourantStatus()) {
+                    adapter.callAPIAntimatiereUnlocked();
+                }
+
                 Call<AntimatiereValue> callSyncForAntimatiereValue = api.getAntimatiereValueCall();
                 callSyncForAntimatiereValue.enqueue(new Callback<AntimatiereValue>() {
                     @Override
@@ -404,8 +432,14 @@ public class OrdersActivity extends AppCompatActivity {
                         if(antimatiereValue != null && currentAntimatiereValue != antimatiereValue.getValue()) {
                             currentAntimatiereValue = antimatiereValue.getValue();
                             gaugeReact2.setValue(antimatiereValue.getValue());
+                            vib.vibrate(200);
                             Toast.makeText(OrdersActivity.this, "Le réacteur 2 se remplit...",
                                     Toast.LENGTH_SHORT).show();
+                            Log.d("antimatiereValue","valeur back = " + antimatiereValue.getValue() + "\n currentAntimatiereValue = " + currentAntimatiereValue);
+                            if(antimatiereValue.getValue() == 90){
+                                transformWarningAntimatiereToCheck();
+                                Toast.makeText(OrdersActivity.this, "Le réacteur 2 est remplit !!",Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
 
@@ -423,11 +457,9 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<MissilePlaced> call, Response<MissilePlaced> response) {
                         missilePlaced = response.body();
-                        if(missilePlaced != null && missilePlaced.getIsPlaced() != null) {
-                            if(missilePlaced.getIsPlaced()){
+                        if(missilePlaced != null && missilePlaced.getMissilePlaced() != null) {
+                            if(missilePlaced.getMissilePlaced() && !isMissileLaunched){
                                 vib.vibrate(1000);
-                                Toast.makeText(OrdersActivity.this, "Un missile est positionné...",
-                                        Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -446,9 +478,10 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<MissileReady> call, Response<MissileReady> response) {
                         missileReady = response.body();
-                        if(missileReady != null && missileReady.getIsReady() != null) {
+                        if(missileReady != null && missileReady.getMissileReady() != null && !isMissileLaunched) {
                             buttonMissile.setVisibility(View.VISIBLE);
-                            Toast.makeText(OrdersActivity.this, "Le réacteur 2 se remplit...",
+                            buttonMissile2.setVisibility(View.VISIBLE);
+                            Toast.makeText(OrdersActivity.this, "Les pilotes ont donné leur accord, faites feu !",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -468,11 +501,14 @@ public class OrdersActivity extends AppCompatActivity {
                     public void onResponse(Call<HypervitesseReady> call, Response<HypervitesseReady> response) {
                         hypervitesseReady = response.body();
                         if(hypervitesseReady != null && hypervitesseReady.getHypervitesseReady() != null) {
+                            Log.d("hypervitesse", "1er if");
                             if(hypervitesseReady.getHypervitesseReady() && !enigmAlreadyStartedOnce){
-                                enigmWithVibrations();
-                                enigmAlreadyStartedOnce = true;
+                                Log.d("hypervitesse", "2e if");
                                 Toast.makeText(OrdersActivity.this, "Le bouton semble défaillant...",
                                         Toast.LENGTH_LONG).show();
+                                enigmWithVibrations();
+                                enigmAlreadyStartedOnce = true;
+
                             }
                         }
                     }
@@ -486,7 +522,7 @@ public class OrdersActivity extends AppCompatActivity {
                     }
                 });
             }
-        }, delay);
+        }, 500);
     }
 
 
@@ -505,20 +541,21 @@ public class OrdersActivity extends AppCompatActivity {
     }
 
     public void enigmWithVibrations(){
+        Toast.makeText(getApplicationContext(), "Une histoire de longueur ?", Toast.LENGTH_SHORT).show();
         List<Integer> checkClicks = new ArrayList<>();
         List<Integer> correctsClicks = new ArrayList<>();
         correctsClicks.add(0);
-        correctsClicks.add(1);
         correctsClicks.add(0);
+        correctsClicks.add(1);
         hypervitesseButtonCountClick = 3;
-        buttonHypervitesse.setText(hypervitesseButtonCountClick);
+        counterHypervitesse.setText("" + hypervitesseButtonCountClick);
         buttonHypervitesse.setEnabled(true);
         buttonHypervitesse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkClicks.add(0);
                 hypervitesseButtonCountClick -= 1;
-                buttonHypervitesse.setText(hypervitesseButtonCountClick);
+                counterHypervitesse.setText("" + hypervitesseButtonCountClick);
                 if(hypervitesseButtonCountClick == 0){
                     buttonHypervitesse.setEnabled(false);
                     if(checkClicks.equals(correctsClicks)){
@@ -548,7 +585,7 @@ public class OrdersActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 checkClicks.add(1);
                 hypervitesseButtonCountClick -= 1;
-                buttonHypervitesse.setText(hypervitesseButtonCountClick);
+                counterHypervitesse.setText("" + hypervitesseButtonCountClick);
                 if(hypervitesseButtonCountClick == 0){
                     buttonHypervitesse.setEnabled(false);
                     if(checkClicks.equals(correctsClicks)){
@@ -573,22 +610,24 @@ public class OrdersActivity extends AppCompatActivity {
                 return false;
             }
         });
-        new CountDownTimer(2100, 700) {
-
-            public void onTick(long millisUntilFinished) {
-                if(millisUntilFinished / 700 > 2 ){
-                    vib.vibrate(300);
-                } else if (millisUntilFinished / 700 > 1 && millisUntilFinished / 700 <= 2) {
-                    vib.vibrate(800);
-                } else {
-                    vib.vibrate(300);
-                }
-            }
-
-            public void onFinish() {
-                Toast.makeText(getApplicationContext(), "3 vibrations...", Toast.LENGTH_LONG);
-            }
-        }.start();
+        long[] pattern = {0,200, 1500, 200, 1500, 800};
+        vib.vibrate(pattern, -1);
+//        new CountDownTimer(6000, 2000) {
+//            long[] pattern = {0,200, 1300, 200, 600};
+//            public void onTick(long millisUntilFinished) {
+//                if(millisUntilFinished / 2000 > 2 ){
+//                    vib.vibrate(200);
+//                } else if (millisUntilFinished / 2000 > 1 && millisUntilFinished / 2000 < 2) {
+//                    vib.vibrate(200);
+//                } else {
+//                    vib.vibrate(2000);
+//                }
+//            }
+//
+//            public void onFinish() {
+//                Toast.makeText(getApplicationContext(), "3 vibrations...", Toast.LENGTH_LONG).show();
+//            }
+//        }.start();
     }
 
     private void swapGroupVisibility(){

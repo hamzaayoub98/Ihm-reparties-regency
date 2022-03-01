@@ -3,6 +3,7 @@ let actionStack = [1,2,"antimatiere","asteroidsVue",7,8]
 let showButton = false;
 let slider1Value = 0
 let slider2Value = 0
+let slider3Value = 0
 var seqRelancerCourant = []
 var courantRestart = false
 let activateAntimatière = false;
@@ -42,7 +43,7 @@ const nextActions = [{
     id:9,
 },
 {
-    title: "Détruire les asteroids",
+    title: "Détruire les asteroids avec un missile",
     id: 8,
 },
 {
@@ -97,6 +98,10 @@ function processAction(action) {
                 if(e == 2) seqRelancerCourant.splice(seqRelancerCourant.indexOf(e), 1)
             })
         }
+    }
+
+    if (action.id === 3) {
+        slider3Value = action.value
     }
     
 
@@ -168,6 +173,7 @@ function getCourantStatus(){return courantRestart}
 function getCourantSequence(){return seqRelancerCourant}
 function getSliderValue1(){return slider1Value}
 function getSliderValue2(){return slider2Value}
+function getSliderValue3(){return slider3Value}
 function getActivateAntiMatiere(){return activateAntimatière}
 function setCourantStatus(){courantRestart = true}
 
@@ -184,6 +190,7 @@ module.exports = {
     getCourantSequence,
     getSliderValue1,
     getSliderValue2,
+    getSliderValue3,
     getActivateAntiMatiere,
     setCourantStatus
 }

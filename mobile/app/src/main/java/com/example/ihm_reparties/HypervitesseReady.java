@@ -14,7 +14,7 @@ public class HypervitesseReady implements Serializable
         this.hypervitesseReady = hypervitesseReady;
     }
 
-    @SerializedName("hypervitesseReady")
+    @SerializedName("hyperVitesseStatus")
     @Expose
     private Boolean hypervitesseReady;
 
