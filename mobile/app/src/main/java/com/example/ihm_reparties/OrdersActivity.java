@@ -94,7 +94,7 @@ public class OrdersActivity extends AppCompatActivity {
     Vibrator vib;
     Handler handler = new Handler();
     Runnable runnable;
-    int delay = 1000;
+    int delay = 3000;
     private OkHttpClient client;
     private WebSocket ws;
 
@@ -123,7 +123,7 @@ public class OrdersActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(getApplicationContext(), "No ipv4 and port address defined in the settings.", Toast.LENGTH_SHORT);
             toast.show();
         }
-        startWsConnection();
+//        startWsConnection();
         api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
 
         //Initialize graphic components
@@ -169,7 +169,7 @@ public class OrdersActivity extends AppCompatActivity {
 
         buttonCourant.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Call<ActivateEnergy> callSync = api.activateEnergy(activateEnergy);
+                Call<ActivateEnergy> callSync = api.activateEnergy(new ActivateEnergy());
                 callSync.enqueue(new Callback<ActivateEnergy>() {
                     @Override
                     public void onResponse(Call<ActivateEnergy> call, Response<ActivateEnergy> response) {
@@ -290,16 +290,18 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<CourantSequence> call, Response<CourantSequence> response) {
                         courantSequence = response.body();
-                        Log.d("Sequence", courantSequence.getCourantSequence().toString());
                         if(courantSequence != null && courantSequence.getCourantSequence() != null && !courantStatus.getCourantStatus()) {
+                            Log.d("Sequence : ", courantSequence.getCourantSequence().toString());
                             if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != -1 && sizeCourantSequence == 2) {
                                 moveArrowIndicator(3);
                                 sizeCourantSequence = -1;
                                 hasCourantStatusBeenCalled = false;
+                                buttonCourant.setVisibility(View.VISIBLE);
                                 Toast.makeText(getApplicationContext(), "Le courant... il est sur le point de fonctionner !", Toast.LENGTH_SHORT).show();
 
                             } else if(courantSequence.getCourantSequence().size()%3 == 1 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
                                 moveArrowIndicator(1);
+                                buttonCourant.setVisibility(View.VISIBLE);
                                 sizeCourantSequence = 1;
                                 Toast.makeText(getApplicationContext(), "Il y a un changement avec le courant... !", Toast.LENGTH_SHORT).show();
                             } else if(courantSequence.getCourantSequence().size()%3 == 2 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3) {
@@ -308,7 +310,7 @@ public class OrdersActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "On devrait être sur la bonne voie...", Toast.LENGTH_SHORT).show();
                                 buttonCourant.setVisibility(View.VISIBLE);
                             } else if (courantSequence.getCourantSequence().size()%3 == 0 && sizeCourantSequence != courantSequence.getCourantSequence().size()%3){
-//                                buttonCourant.setVisibility(View.INVISIBLE);
+                                buttonCourant.setVisibility(View.VISIBLE);
                                 moveArrowIndicator(0);
                                 sizeCourantSequence = 0;
                                 Toast.makeText(getApplicationContext(), "Le courant est HS !", Toast.LENGTH_SHORT).show();
@@ -330,16 +332,18 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<CourantStatus> call, Response<CourantStatus> response) {
                         courantStatus = response.body();
-                        if(courantStatus != null && courantStatus.getCourantStatus() != null && !hasCourantStatusBeenCalled) {
+                        if(courantStatus != null && courantStatus.getCourantStatus() != null ){ //&& !hasCourantStatusBeenCalled
                             if (courantStatus.getCourantStatus()) {
+                                Log.d("Status", "Courant status success");
                                 transformWarningEnergyToCheck();
                                 Toast.makeText(getApplicationContext(), "Le courant a été rétabli !", Toast.LENGTH_LONG).show();
                             } else {
-                                vib.vibrate(300);
+//                                vib.vibrate(300);
 //                                moveArrowIndicator(0);
                                 Toast.makeText(getApplicationContext(), "IA : Les étapes ont été effectuées dans le désordre, reprenez la procédure du début.", Toast.LENGTH_LONG).show();
                             }
                             hasCourantStatusBeenCalled = true;
+                            Log.d("Status", "Courant status : " + courantStatus.getCourantStatus());
                         }
                     }
 

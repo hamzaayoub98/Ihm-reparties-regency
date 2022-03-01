@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     AddAntimatiere addAntimatiere = new AddAntimatiere();
     AntimatiereUnlocked antimatiereUnlocked;
     private int speedGaugeValue = 0;
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 1000;
+    ApiInterface api;
+    Button buttonPlus;
 
     // Pass in the contact array into the constructor
     public OrdersAdapter(List<OrdersApiResponse> orders, String restAddress) {
@@ -71,6 +77,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         // Get the data model based on position
         OrdersApiResponse order = orders.get(position);
         TextView textView;
+        api = ServiceGenerator.createService(ApiInterface.class, restAddress);
 
         switch(holder.getItemViewType()){
             case LAYOUT_DEFAULT:
@@ -80,18 +87,15 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 textView.setText(order.getTitle());
                 break;
             case LAYOUT_PLUS:
-                ApiInterface api = ServiceGenerator.createService(ApiInterface.class, restAddress);
-
                 ViewHolderWithButtonPlus viewHolderWithButtonPlus = (ViewHolderWithButtonPlus) holder;
                 // Set item views based on your views and data model
                 textView = viewHolderWithButtonPlus.orderTextView;
                 textView.setText(order.getTitle());
+                buttonPlus = viewHolderWithButtonPlus.buttonPlus;
 
-
-
-                Button buttonPlus = viewHolderWithButtonPlus.buttonPlus;
-                buttonPlus.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
+                handler.postDelayed(runnable = new Runnable() {
+                    public void run() {
+                        handler.postDelayed(runnable, delay);
                         Call<AntimatiereUnlocked> callSyncForAntimatiereUnlocked = api.getAntimatiereUnlockedCall();
                         callSyncForAntimatiereUnlocked.enqueue(new Callback<AntimatiereUnlocked>() {
                             @Override
@@ -110,7 +114,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 t.printStackTrace();
                             }
                         });
+                    }
+                }, delay);
 
+                buttonPlus.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
                         Call<AddAntimatiere> callSync = api.addAntimatiere(addAntimatiere);
                         callSync.enqueue(new Callback<AddAntimatiere>() {
                             @Override
