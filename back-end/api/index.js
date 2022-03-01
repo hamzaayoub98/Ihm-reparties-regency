@@ -4,6 +4,7 @@ const actions = require('../actions');
 
 let gameStarted = false;
 let antimatiereValue = 0;
+let antimatiereVRValue = 0;
 let noMoreAntimatiere = false;
 let hyperVitesseActivated = false;
 
@@ -102,6 +103,16 @@ router.post('/addAntimatiere', function(request, response){
     response.status(200).json(actions.getAntimatiereValue());
 });
 
+router.get('/getVRAntimatiere', function(request, response){
+    console.log("getVRAntimatiere ", actions.getAntimatiereVRValue())
+    response.status(200).json(actions.getAntimatiereVRValue());
+});
+
+router.get('/addVRAntimatiere', function(request, response){
+    actions.incrementAntimatiereVRValue();
+    console.log("Vr adding 1 antimatter, antimatiereVRValue = ", actions.getAntimatiereVRValue())
+    response.status(200).json("value added");
+});
 
 router.get('/antimatiere',function (request,response){
     console.log("Getting antimatiere value : " + this.antimatiereValue);
