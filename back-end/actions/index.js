@@ -54,7 +54,7 @@ const nextActions = [{
 const finishGame = {
     isFinished: false,
 }
-
+var antimatiereVRValue = 0;
 const antimatiereValue = {
     value: 0,
 }
@@ -167,6 +167,8 @@ function getBaseActions(){return baseActions}
 function getActionStack(){return actionStack}
 function getFinishGame(){return finishGame}
 function getAntimatiereValue(){return antimatiereValue}
+function incrementAntimatiereVRValue(){antimatiereVRValue= antimatiereVRValue +1;}
+function getAntimatiereVRValue(){return antimatiereVRValue}
 function getShowButton(){return showButton}
 function setShowButton(newVal){showButton = newVal}
 function getCourantStatus(){return courantRestart}
@@ -192,5 +194,7 @@ module.exports = {
     getSliderValue2,
     getSliderValue3,
     getActivateAntiMatiere,
-    setCourantStatus
+    setCourantStatus,
+    incrementAntimatiereVRValue,
+    getAntimatiereVRValue
 }
