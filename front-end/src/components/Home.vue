@@ -9,7 +9,6 @@
             <img  id="button1" v-bind:class="buttonVisible?'button1':'button1Disabled'"  src="../assets/blue_button.png">
         </button>
 
-        <VueSlider v-model="sliderValue3" id="sliderBar" v-on:change="sendSliderValue3"/>
 
         <button id="b2" :disabled="buttonVisible===false" v-on:click="action(2)">
             <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
@@ -26,7 +25,6 @@
         <button id="b8" :disabled="buttonVisible===false" v-on:click="action(9)">
             <img  id="button8"  v-bind:class="buttonVisible?'button8':'button8Disabled'"     src="../assets/orange.png">
         </button>
-
 
 
         <button v-on:click="sendPing()">
@@ -61,6 +59,9 @@
           radius="120"
           rangeColor="red"
         />
+      <div id="speed">
+        <VueSlider v-model="speedSlider" id="slider" v-on:change="sendSpeedValue"/>
+      </div>
     </div>
 </template>
 
@@ -94,7 +95,7 @@
                 button2:null,
                 buttonVisible:false,
                 onSlider2:false,
-                sliderValue3:0,
+                speedSlider : 0,
             }
 
         },
@@ -313,14 +314,14 @@
               this.onSlider2=false
 
             },
+            sendSpeedValue:function(){
+               this.connection.send(['speed',this.speedSlider]);
+            },
             sendSliderValue:function(){
               this.connection.send(['sliderValue',this.sliderValue]);
             },
             sendSliderValue2:function(){
               this.connection.send(['sliderValue2',this.sliderValue2]);
-            },
-            sendSliderValue3:function(){
-              this.connection.send(['sliderValue3',this.sliderValue3]);
             },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);
@@ -359,14 +360,6 @@
 </script>
 
 <style scoped>
-    #sliderBar{
-      margin-right: 20%;
-      margin-left: 20%;
-      top:650px;
-      margin: 50 auto;
-      width: 200px;
-      height: 30px;
-    }
      #roundslider{
 
       margin-right: 20%;
@@ -494,6 +487,10 @@
         height: 6%;
         width: 7%;
         border-radius: 10%;
+    }
+    #speed{
+      display:flex;
+      flex-direction: column-reverse;
     }
     .button9Disabled{
       position: absolute;

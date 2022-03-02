@@ -49,10 +49,9 @@ function onMessageFromFront(msg) {
         if (sliderValueTmp2>98)console.log("sliderValueTmp2 : " + sliderValueTmp2)
         actions.processAction({action:'slider', id:2, value: sliderValueTmp2})
     }
-    else if(trimmed[0] === 'sliderValue3'){
-        let sliderValueTmp3 = parseInt(trimmed[1]);
-        if (sliderValueTmp3>68)console.log("sliderValueBar : " + sliderValueTmp3)
-        actions.processAction({action:'slider', id:3, value: sliderValueTmp3})
+    else if(trimmed[0] === 'speed'){
+        let speedValue = parseInt(trimmed[1])
+        actions.processAction({action:'speed',id:3,value:speedValue})
     }
     else if (trimmed[0] === 'lever'){
         frontWS.send(actions.getCourantStatus()+"")
