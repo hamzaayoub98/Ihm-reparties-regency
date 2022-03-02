@@ -175,7 +175,7 @@ router.get('/readyMissile', function (request,response){
 });
 
 router.get('/missile/ready', function (request,response){
-    response.status(200).json({"missileReady": this.readyMissile})
+    response.status(200).json({"missileReady": actions.getReadyMissile()})
 });
 
 router.get('/launchMissile', function (request,response){

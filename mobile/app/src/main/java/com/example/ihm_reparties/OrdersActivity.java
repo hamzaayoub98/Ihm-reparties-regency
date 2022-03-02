@@ -80,7 +80,7 @@ public class OrdersActivity extends AppCompatActivity {
     NoMoreAntimatiere noMoreAntimatiere;
     ActivateEnergy activateEnergy = new ActivateEnergy();
     ActivateHypervitesse activateHypervitesse = new ActivateHypervitesse();
-    AntimatiereVRValue antimatiereValue = new AntimatiereValue();
+    AntimatiereVRValue antimatiereValue = new AntimatiereVRValue();
     MissileReady missileReady;
     MissilePlaced missilePlaced;
     HypervitesseReady hypervitesseReady;
@@ -138,7 +138,8 @@ public class OrdersActivity extends AppCompatActivity {
             toast.show();
         }
 //        startWsConnection();
-        api = ServiceGenerator.createService(ApiInterface.class, getRestAddressPortString());
+        api = ServiceGenerator.
+                createService(ApiInterface.class, getRestAddressPortString());
 
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -457,14 +458,14 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<AntimatiereVRValue> call, Response<AntimatiereVRValue> response) {
                         antimatiereValue = response.body();
-                        if(antimatiereValue != null && currentAntimatiereValue != antimatiereValue.getValue()*20 && currentAntimatiereValue != 80) {
-                            currentAntimatiereValue = antimatiereValue.getValue()*20;
-                            gaugeReact2.setValue(antimatiereValue.getValue()*20);
+                        if(antimatiereValue != null && currentAntimatiereValue != antimatiereValue.getAntimatiereVRValue()*20 && currentAntimatiereValue != 80) {
+                            currentAntimatiereValue = antimatiereValue.getAntimatiereVRValue()*20;
+                            gaugeReact2.setValue(antimatiereValue.getAntimatiereVRValue()*20);
                             vib.vibrate(200);
                             Toast.makeText(OrdersActivity.this, "Le réacteur 2 se remplit...",
                                     Toast.LENGTH_SHORT).show();
-                            Log.d("antimatiereValue","valeur back = " + antimatiereValue.getValue() + "\n currentAntimatiereValue = " + currentAntimatiereValue);
-                            if(antimatiereValue.getValue()*20 == 80){
+                            Log.d("antimatiereValue","valeur back = " + antimatiereValue.getAntimatiereVRValue() + "\n currentAntimatiereValue = " + currentAntimatiereValue);
+                            if(antimatiereValue.getAntimatiereVRValue()*20 == 80){
                                 transformWarningAntimatiereToCheck();
                                 Toast.makeText(OrdersActivity.this, "Le réacteur 2 est remplit !!",Toast.LENGTH_SHORT).show();
                             }
@@ -507,10 +508,12 @@ public class OrdersActivity extends AppCompatActivity {
                     public void onResponse(Call<MissileReady> call, Response<MissileReady> response) {
                         missileReady = response.body();
                         if(missileReady != null && missileReady.getMissileReady() != null && !isMissileLaunched) {
-                            buttonMissile.setVisibility(View.VISIBLE);
-                            buttonMissile2.setVisibility(View.VISIBLE);
-                            Toast.makeText(OrdersActivity.this, "Les pilotes ont donné leur accord, faites feu !",
-                                    Toast.LENGTH_SHORT).show();
+                            if(missileReady.getMissileReady()) {
+                                buttonMissile.setVisibility(View.VISIBLE);
+                                buttonMissile2.setVisibility(View.VISIBLE);
+                                Toast.makeText(OrdersActivity.this, "Les pilotes ont donné leur accord, faites feu !",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
 

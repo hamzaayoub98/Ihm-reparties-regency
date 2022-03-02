@@ -10,20 +10,20 @@ public class AntimatiereVRValue implements Serializable
 {
     public AntimatiereVRValue(){ }
 
-    public AntimatiereVRValue(int value){
-        this.value = value;
+    public AntimatiereVRValue(int antimatiereVRValue){
+        this.antimatiereVRValue = antimatiereVRValue;
     }
 
     @SerializedName("antimatiereValueVR")
     @Expose
-    private int value;
+    private int antimatiereVRValue;
 
-    public int getValue() {
-        return value;
+    public int getAntimatiereVRValue() {
+        return antimatiereVRValue;
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public void setAntimatiereVRValue(int antimatiereVRValue) {
+        this.antimatiereVRValue = antimatiereVRValue;
     }
 
 }

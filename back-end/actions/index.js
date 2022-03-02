@@ -7,6 +7,7 @@ let slider3Value = 0
 var seqRelancerCourant = []
 var courantRestart = false
 let activateAntimatière = false;
+let readyMissile = false;
 
 const baseActions = [{
     title: "Appuyer sur les boutons rouge et bleu en même temps",
@@ -30,14 +31,19 @@ const baseActions = [{
 //     id:'lever'
 // },
     {
+        title:"Activer le courant",
+        id:'courant'
+    },
+    {
         title:"Activer la distribution d'antimatière",
         id:'antimater'
     },
+    {
+        title:"Activer l'hypervitesse",
+        id: 6
+    }
 ]
-const nextActions = [{
-    title: "Activez l'hyper vitesse",
-    id: 6,
-},
+const nextActions = [
 {
     title: "Appuyer sur les 4 boutons orange en même temps",
     id:9,
@@ -103,6 +109,10 @@ function processAction(action) {
     if (action.id === 3) {
         slider3Value = action.value
     }
+
+    if(action.id === 9) {
+        readyMissile = true;
+    }
     
 
     if (action.action === 'slider') {
@@ -115,6 +125,7 @@ function processAction(action) {
             if (baseAction.id === 6) {
                 if (action.value === 100) {
                     baseActions.splice(baseActions.indexOf(baseAction), 1)
+
                 }
             }
         })
@@ -159,6 +170,11 @@ function processAction(action) {
         seqRelancerCourant.push(4)
         console.log("action detected :  activer courant")
         courantRestart = true
+        baseActions.forEach(actions => {
+            if (actions.id === "courant") {
+                baseActions.splice(baseActions.indexOf(actions), 1);
+            }
+        })
     }
     processActionSeq([...seqRelancerCourant])
 }
@@ -178,6 +194,7 @@ function getSliderValue2(){return slider2Value}
 function getSliderValue3(){return slider3Value}
 function getActivateAntiMatiere(){return activateAntimatière}
 function setCourantStatus(){courantRestart = true}
+function getReadyMissile(){return readyMissile}
 
 module.exports = {
     updateDataGame,
@@ -196,5 +213,6 @@ module.exports = {
     getActivateAntiMatiere,
     setCourantStatus,
     incrementAntimatiereVRValue,
-    getAntimatiereVRValue
+    getAntimatiereVRValue,
+    getReadyMissile
 }
