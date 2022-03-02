@@ -80,7 +80,7 @@ public class OrdersActivity extends AppCompatActivity {
     NoMoreAntimatiere noMoreAntimatiere;
     ActivateEnergy activateEnergy = new ActivateEnergy();
     ActivateHypervitesse activateHypervitesse = new ActivateHypervitesse();
-    AntimatiereValue antimatiereValue = new AntimatiereValue();
+    AntimatiereVRValue antimatiereValue = new AntimatiereValue();
     MissileReady missileReady;
     MissilePlaced missilePlaced;
     HypervitesseReady hypervitesseReady;
@@ -452,19 +452,19 @@ public class OrdersActivity extends AppCompatActivity {
                     adapter.callAPIAntimatiereUnlocked();
                 }
 
-                Call<AntimatiereValue> callSyncForAntimatiereValue = api.getAntimatiereValueCall();
-                callSyncForAntimatiereValue.enqueue(new Callback<AntimatiereValue>() {
+                Call<AntimatiereVRValue> callSyncForAntimatiereValue = api.getAntimatiereVrValueCall();
+                callSyncForAntimatiereValue.enqueue(new Callback<AntimatiereVRValue>() {
                     @Override
-                    public void onResponse(Call<AntimatiereValue> call, Response<AntimatiereValue> response) {
+                    public void onResponse(Call<AntimatiereVRValue> call, Response<AntimatiereVRValue> response) {
                         antimatiereValue = response.body();
-                        if(antimatiereValue != null && currentAntimatiereValue != antimatiereValue.getValue()) {
-                            currentAntimatiereValue = antimatiereValue.getValue();
-                            gaugeReact2.setValue(antimatiereValue.getValue());
+                        if(antimatiereValue != null && currentAntimatiereValue != antimatiereValue.getValue()*20 && currentAntimatiereValue != 80) {
+                            currentAntimatiereValue = antimatiereValue.getValue()*20;
+                            gaugeReact2.setValue(antimatiereValue.getValue()*20);
                             vib.vibrate(200);
                             Toast.makeText(OrdersActivity.this, "Le réacteur 2 se remplit...",
                                     Toast.LENGTH_SHORT).show();
                             Log.d("antimatiereValue","valeur back = " + antimatiereValue.getValue() + "\n currentAntimatiereValue = " + currentAntimatiereValue);
-                            if(antimatiereValue.getValue() == 90){
+                            if(antimatiereValue.getValue()*20 == 80){
                                 transformWarningAntimatiereToCheck();
                                 Toast.makeText(OrdersActivity.this, "Le réacteur 2 est remplit !!",Toast.LENGTH_SHORT).show();
                             }
@@ -472,7 +472,7 @@ public class OrdersActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<AntimatiereValue> call, Throwable t) {
+                    public void onFailure(Call<AntimatiereVRValue> call, Throwable t) {
                         Toast.makeText(OrdersActivity.this, "AntimatiereValue failed",
                                 Toast.LENGTH_SHORT).show();
                         Log.d("CallBack AntimatiereValue", "Callback failure");

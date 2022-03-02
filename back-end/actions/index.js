@@ -61,7 +61,7 @@ const antimatiereValue = {
 
   function processActionSeq(seq){
     console.log("Sequence : " + seq);
-    courantRestart = seq.includes(1) && seq.includes(2) && seq.includes(3) && seq.includes(4)
+    courantRestart = seq.includes(1) && seq.includes(2) && seq.includes(3) && seq.includes(4) || courantRestart
     console.log("Restart : " + courantRestart);
     if (seq.length>5) courantRestart = true
   }
