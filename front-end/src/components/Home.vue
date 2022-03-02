@@ -198,7 +198,7 @@
           });
           this.button7.addEventListener('touchstart',function (event){
                 console.log("b7",event);
-                button5Pressed = true;
+                button7Pressed = true;
               console.log(button5Pressed, button6Pressed,button7Pressed, button8Pressed)
             if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
               console.log("multi touch detected")
@@ -254,20 +254,21 @@
             this.button7Pressed = false;
           });
           this.button8.addEventListener('touchend',function (event){
-            console.log("b5-end",event);
+            console.log("b8-end",event);
             this.button8Pressed = false;
           });
             window.setInterval(() => {
                 this.checkButtonState();
+     
             }, 500)
           window.setInterval(() => {
-            if(!this.onSlider){
-              //this.sliderValue--;
+            if(!this.onSlider && this.sliderValue <98){
+              this.sliderValue--;
             }
           },100)
           window.setInterval(() => {
-            if(!this.onSlider2){
-              //this.sliderValue2--;
+            if(!this.onSlider2 && this.sliderValue2 < 98){
+              this.sliderValue2--;
             }
           },100)
         },
@@ -335,7 +336,7 @@
               this.connection.send(['lever',"_"]);
               var _this = this;
               this.connection.onmessage = function (event) {
-                    _this.buttonVisible = event.data === "true"
+                    _this.buttonVisible = event.data === "true" ||this.buttonVisible
               }
             },
             concurentTouch:function (){
@@ -414,7 +415,7 @@
     }
     .button5{
         position: absolute;
-        top:490px;
+        top:390px;
         left: 400px;
         height: 6%;
         width: 7%;
@@ -431,7 +432,7 @@
     }
     .button6{
         position: absolute;
-        top:580px;
+        top:660px;
         left: 400px;
         height: 6%;
         width: 7%;
@@ -448,7 +449,7 @@
     }
     .button7{
         position: absolute;
-        top:490px;
+        top:390px;
         right: 400px;
         height: 6%;
         width: 7%;
@@ -465,7 +466,7 @@
     }
     .button8{
         position: absolute;
-        top:580px;
+        top:660px;
         right: 400px;
         height: 6%;
         width: 7%;
