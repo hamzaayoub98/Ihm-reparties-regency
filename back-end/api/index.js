@@ -169,10 +169,10 @@ router.get('/missile/placed', function (request,response){
     response.status(200).json({"missilePlaced": this.placerMissile})
 });
 
-router.get('/readyMissile', function (request,response){
-    this.readyMissile = true
-    response.status(200)
-});
+// router.get('/readyMissile', function (request,response){
+//     this.readyMissile = true
+//     response.status(200)
+// });
 
 router.get('/missile/ready', function (request,response){
     response.status(200).json({"missileReady": actions.getReadyMissile()})

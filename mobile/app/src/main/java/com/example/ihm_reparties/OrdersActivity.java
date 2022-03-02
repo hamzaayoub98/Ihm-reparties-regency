@@ -507,8 +507,11 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<MissileReady> call, Response<MissileReady> response) {
                         missileReady = response.body();
+                        Log.d("Ready", "call API");
                         if(missileReady != null && missileReady.getMissileReady() != null && !isMissileLaunched) {
+                            Log.d("Ready", "1er if");
                             if(missileReady.getMissileReady()) {
+                                Log.d("Ready", "2e if");
                                 buttonMissile.setVisibility(View.VISIBLE);
                                 buttonMissile2.setVisibility(View.VISIBLE);
                                 Toast.makeText(OrdersActivity.this, "Les pilotes ont donné leur accord, faites feu !",

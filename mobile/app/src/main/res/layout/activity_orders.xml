@@ -574,7 +574,6 @@
             android:id="@+id/logo_warning_hypervitesse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/guideline5"
             app:layout_constraintEnd_toStartOf="@+id/guideline_start_lightning_grey"
             app:layout_constraintStart_toStartOf="parent"

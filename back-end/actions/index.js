@@ -110,8 +110,9 @@ function processAction(action) {
         slider3Value = action.value
     }
 
-    if(action.id === 9) {
+    if(action === "missileReady") {
         readyMissile = true;
+        console.log("readyMissile : " + true)
     }
     
 

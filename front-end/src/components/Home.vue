@@ -167,7 +167,7 @@
             if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
               console.log("multi touch detected")
               Axios.post("http://" + URL_REST + "/action", {
-                action: 9,
+                action: "missileReady",
               })
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
@@ -185,7 +185,7 @@
             if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
               console.log("multi touch detected")
               Axios.post("http://" + URL_REST + "/action", {
-                action: 9,
+                action: "missileReady",
               })
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
@@ -203,7 +203,7 @@
             if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
               console.log("multi touch detected")
               Axios.post("http://" + URL_REST + "/action", {
-                action: 9,
+                action: "missileReady",
               })
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
@@ -221,7 +221,7 @@
             if(button5Pressed && button6Pressed && button7Pressed && button8Pressed){
               console.log("multi touch detected")
               Axios.post("http://" + URL_REST + "/action", {
-                action: 9,
+                action: "missileReady",
               })
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)

@@ -134,7 +134,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         callSync.enqueue(new Callback<AddAntimatiere>() {
                             @Override
                             public void onResponse(Call<AddAntimatiere> call, Response<AddAntimatiere> response) {
-                                if(addAntimatiere.getValue() == 4) return;
+                                if(addAntimatiere.getValue() == 5) {
+                                    buttonPlus.setText("Stock vide");
+                                    buttonPlus.setEnabled(false);
+                                    return;
+                                }
                                 addAntimatiere.setValue(addAntimatiere.getValue() + 1);
                                 Toast.makeText(context, "De l'antimatière a été envoyée", Toast.LENGTH_SHORT).show();
                                 Log.d("Antimatiere", "Adding one antimatiere : " + addAntimatiere.getValue());
