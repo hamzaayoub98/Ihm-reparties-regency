@@ -33,10 +33,10 @@
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >
           fire
         </button>
-        <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
+        <!--<b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>-->
 
         <button id="b10" :disabled="buttonVisible === false" v-on:click="activateAntiMater">
-            <img id="button10" src="../assets/energy.png" v-bind:class="buttonVisible?'button10':'button10Disabled'">
+            <img id="button10" src="../assets/motor.png" v-bind:class="buttonVisible?'button10':'button10Disabled'">
         </button>
         <round-slider  v-bind:update="sendSliderValue"
         v-bind:change="mouseDown"
@@ -59,7 +59,7 @@
           radius="120"
           rangeColor="red"
         />
-      <div id="speed" v-if="buttonVisible === true">
+      <div id="speed" v-if="!isShow">
         <VueSlider v-model="speedSlider" id="slider" v-on:change="sendSpeedValue"/>
       </div>
     </div>
