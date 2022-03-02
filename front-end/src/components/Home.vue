@@ -8,7 +8,9 @@
         <button id="b1" :disabled="buttonVisible===false" v-on:click="action(1)">
             <img  id="button1" v-bind:class="buttonVisible?'button1':'button1Disabled'"  src="../assets/blue_button.png">
         </button>
-        <!--<VueSlider v-model="sliderValue" id="slider" v-on:change="sendSliderValue"/>-->
+
+        <VueSlider v-model="sliderValue3" id="sliderBar" v-on:change="sendSliderValue3"/>
+
         <button id="b2" :disabled="buttonVisible===false" v-on:click="action(2)">
             <img  id="button2"  v-bind:class="buttonVisible?'button2':'button2Disabled'"     src="../assets/redButton.png">
         </button>
@@ -31,11 +33,11 @@
             <img  id="button3"  src="../assets/send.png">
         </button>
         <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >
-          <img  id="button9"  v-bind:class="buttonVisible?'button9':'button9Disabled'"     src="../assets/fire.png">
+          fire
         </button>
         <b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>
 
-        <button id="b10" :disabled="buttonVisible === false"  v-on:click="activateAntiMater">
+        <button id="b10" :disabled="buttonVisible === false" v-on:click="activateAntiMater">
             <img id="button10" src="../assets/energy.png" v-bind:class="buttonVisible?'button10':'button10Disabled'">
         </button>
         <round-slider  v-bind:update="sendSliderValue"
@@ -67,7 +69,7 @@
 
     import Asteroid from "./Asteroid";
     import { URL_REST, URL_WS } from '../main.js'
-    //import VueSlider from 'vue-slider-component'
+    import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
     import ToggleButton from './ToggleButton.vue';
@@ -75,7 +77,7 @@
 
     export default {
         name: "Home",
-        components: {Asteroid,AsteroidLeft,ToggleButton,RoundSlider},
+        components: {Asteroid,AsteroidLeft,ToggleButton,RoundSlider,VueSlider},
         data(){
             return {
                 info : null,
@@ -83,6 +85,7 @@
                 mySrc:0,
                 connection: null,
                 sliderValue:0,
+                sliderValue2:0,
                 onSlider :false,
                 isShow: true,
                 finished : false,
@@ -91,7 +94,7 @@
                 button2:null,
                 buttonVisible:false,
                 onSlider2:false,
-                sliderValue2:0,
+                sliderValue3:0,
             }
 
         },
@@ -316,8 +319,16 @@
             sendSliderValue2:function(){
               this.connection.send(['sliderValue2',this.sliderValue2]);
             },
+            sendSliderValue3:function(){
+              this.connection.send(['sliderValue3',this.sliderValue3]);
+            },
             sendAsteroidsState:function(){
               this.connection.send(['AsteroidsState',this.isShow]);
+            },
+            activateAntiMater:function(){
+              Axios.get('http://'+URL_REST+'/activateMater').then(
+                  console.log("distribution activated")
+              )
             },
             checkButtonState:function(){
               this.connection.send(['lever',"_"]);
@@ -348,11 +359,10 @@
 </script>
 
 <style scoped>
-    #slider{
-
+    #sliderBar{
       margin-right: 20%;
       margin-left: 20%;
-      top:350px;
+      top:650px;
       margin: 50 auto;
       width: 200px;
       height: 30px;
