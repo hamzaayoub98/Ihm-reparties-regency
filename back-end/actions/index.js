@@ -3,7 +3,8 @@ let actionStack = [1,2,"antimatiere","asteroidsVue",7,8]
 let showButton = false;
 let slider1Value = 0
 let slider2Value = 0
-var seqRelancerCourant = [3,2,1]
+let slider3Value = 0
+var seqRelancerCourant = []
 var courantRestart = false
 let activateAntimatière = false;
 
@@ -42,7 +43,7 @@ const nextActions = [{
     id:9,
 },
 {
-    title: "Détruire les asteroids",
+    title: "Détruire les asteroids avec un missile",
     id: 8,
 },
 {
@@ -53,13 +54,15 @@ const nextActions = [{
 const finishGame = {
     isFinished: false,
 }
-
+var antimatiereVRValue = 0;
 const antimatiereValue = {
     value: 0,
 }
 
   function processActionSeq(seq){
-    courantRestart = seq.includes(1) && seq.includes(2) && seq.includes(3)
+    console.log("Sequence : " + seq);
+    courantRestart = seq.includes(1) && seq.includes(2) && seq.includes(3) && seq.includes(4)
+    console.log("Restart : " + courantRestart);
     if (seq.length>5) courantRestart = true
   }
 
@@ -76,11 +79,31 @@ function updateDataGame() {
   }
 
 function processAction(action) {
-    if (action.id === 1) slider1Value = action.value
-    if (action.id === 2) slider2Value = action.value
-    if (slider1Value >= 99 && slider2Value >= 99) {
-        seqRelancerCourant.push(1);
+    if (action.id === 1) {
+        slider1Value = action.value
+        if (slider1Value > 99) {
+            seqRelancerCourant.push(1);
+        } else {
+            seqRelancerCourant.forEach(e => {
+                if(e == 1) seqRelancerCourant.splice(seqRelancerCourant.indexOf(e), 1)
+            })
+        }
     }
+    if (action.id === 2) {
+        slider2Value = action.value
+        if (slider2Value > 99) {
+            seqRelancerCourant.push(2);
+        } else {
+            seqRelancerCourant.forEach(e => {
+                if(e == 2) seqRelancerCourant.splice(seqRelancerCourant.indexOf(e), 1)
+            })
+        }
+    }
+
+    if (action.id === 3) {
+        slider3Value = action.value
+    }
+    
 
     if (action.action === 'slider') {
         baseActions.forEach(baseAction => {
@@ -124,16 +147,16 @@ function processAction(action) {
     // Actions du mécano
     if (action.action === "activerLevier") {
         console.log("action detected :  activerLevier")
-        seqRelancerCourant.push(2);
+        seqRelancerCourant.push(3);
     }
     if (action.action === "desactiverLevier") {
         console.log("action detected :  desactiverLevier")
         seqRelancerCourant.forEach(e => {
-            seqRelancerCourant.splice(seqRelancerCourant.indexOf(e), 1)
+            if(e == 3) seqRelancerCourant.splice(seqRelancerCourant.indexOf(e), 1)
         })
     }
     if (action === "activerCourant") { // Action du capitaine
-        seqRelancerCourant.push(3)
+        seqRelancerCourant.push(4)
         console.log("action detected :  activer courant")
         courantRestart = true
     }
@@ -144,12 +167,15 @@ function getBaseActions(){return baseActions}
 function getActionStack(){return actionStack}
 function getFinishGame(){return finishGame}
 function getAntimatiereValue(){return antimatiereValue}
+function incrementAntimatiereVRValue(){antimatiereVRValue= antimatiereVRValue +1;}
+function getAntimatiereVRValue(){return antimatiereVRValue}
 function getShowButton(){return showButton}
 function setShowButton(newVal){showButton = newVal}
 function getCourantStatus(){return courantRestart}
 function getCourantSequence(){return seqRelancerCourant}
 function getSliderValue1(){return slider1Value}
 function getSliderValue2(){return slider2Value}
+function getSliderValue3(){return slider3Value}
 function getActivateAntiMatiere(){return activateAntimatière}
 function setCourantStatus(){courantRestart = true}
 
@@ -166,6 +192,9 @@ module.exports = {
     getCourantSequence,
     getSliderValue1,
     getSliderValue2,
+    getSliderValue3,
     getActivateAntiMatiere,
-    setCourantStatus
+    setCourantStatus,
+    incrementAntimatiereVRValue,
+    getAntimatiereVRValue
 }

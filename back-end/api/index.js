@@ -4,8 +4,12 @@ const actions = require('../actions');
 
 let gameStarted = false;
 let antimatiereValue = 0;
+let antimatiereVRValue = 0;
 let noMoreAntimatiere = false;
 let hyperVitesseActivated = false;
+let placerMissile = false;
+let readyMissile = false;
+let launchedMissile = false;
 
 router.get('/', function(req, res) {
     res.status(200).json({"helloworld": "Hello World !"});
@@ -49,7 +53,7 @@ router.get('/show-button',function(request,response){
 
 router.post('/action', function(request, response){
     actions.processAction(request.body.action)
-    console.log("baseActions", actions.getBaseActions())
+    // console.log("baseActions", actions.getBaseActions())
     response.status(200).json()
 });
 
@@ -59,7 +63,7 @@ router.get('/actionvr', async function (request,response) {
     actions.processAction({
         action: tmp,
     })
-    console.log("baseActions VR", actions.getBaseActions())
+    // console.log("baseActions VR", actions.getBaseActions())
     response.status(200).send(actions.getActionStack().includes(tmp));
 })
 
@@ -102,6 +106,16 @@ router.post('/addAntimatiere', function(request, response){
     response.status(200).json(actions.getAntimatiereValue());
 });
 
+router.get('/getVRAntimatiere', function(request, response){
+    console.log("getVRAntimatiere ", actions.getAntimatiereVRValue())
+    response.status(200).json(actions.getAntimatiereVRValue());
+});
+
+router.get('/addVRAntimatiere', function(request, response){
+    actions.incrementAntimatiereVRValue();
+    console.log("Vr adding 1 antimatter, antimatiereVRValue = ", actions.getAntimatiereVRValue())
+    response.status(200).json("value added");
+});
 
 router.get('/antimatiere',function (request,response){
     console.log("Getting antimatiere value : " + this.antimatiereValue);
@@ -111,17 +125,17 @@ router.get('/antimatiere',function (request,response){
 router.get('/no-more-antimatiere', function (request,response){
     this.noMoreAntimatiere = true;
     actions.processAction('antimatiere')
-    console.log("baseActions", actions.getBaseActions())
+    // console.log("baseActions", actions.getBaseActions())
     response.status(200).json({"noMoreAntimatiere": this.noMoreAntimatiere})
 });
 
 router.get('/is-there-no-more-antimatiere', function (request,response){
-    console.log("baseActions", actions.getBaseActions())
+    // console.log("baseActions", actions.getBaseActions())
     response.status(200).json({"value": this.noMoreAntimatiere})
 });
 
 router.get('/antimatiere/value', function (request,response){
-    console.log("baseActions", actions.getBaseActions())
+    // console.log("baseActions", actions.getBaseActions())
     response.status(200).json({"value": this.antimatiereValue})
 });
 
@@ -129,13 +143,17 @@ router.get('/antimatiere/value', function (request,response){
 /* ########################### HYPERVITESSE ###########################
 */
 router.get('/hypervitesse', function (request,response){
-    console.log("baseActions", actions.getBaseActions())
+    // console.log("baseActions", actions.getBaseActions())
+    if(actions.getSliderValue3() == 100){
+        this.hyperVitesseActivated = true
+    } else {
+        this.hyperVitesseActivated = false
+    }
     response.status(200).json({"hyperVitesseStatus": this.hyperVitesseActivated})
 });
 
 
 router.post('/hypervitesse/activated', function(request, response){
-    this.hyperVitesseActivated = true
     actions.getFinishGame().isFinished= true
     response.status(200).json(actions.getFinishGame());
 });
@@ -144,7 +162,7 @@ router.post('/hypervitesse/activated', function(request, response){
 */
 router.get('/placerMissile', function (request,response){
     this.placerMissile = true
-    response.status(200)
+    response.status(200).json({"placerMissile": this.placerMissile})
 });
 
 router.get('/missile/placed', function (request,response){
@@ -158,6 +176,15 @@ router.get('/readyMissile', function (request,response){
 
 router.get('/missile/ready', function (request,response){
     response.status(200).json({"missileReady": this.readyMissile})
+});
+
+router.get('/launchMissile', function (request,response){
+    this.launchedMissile = true
+    response.status(200)
+});
+
+router.get('/missile/launched', function (request,response){
+    response.status(200).json({"missileLaunched": this.launchedMissile})
 });
 
 

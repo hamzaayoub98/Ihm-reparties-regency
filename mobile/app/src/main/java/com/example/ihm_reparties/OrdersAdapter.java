@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,18 +32,57 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final int LAYOUT_PLUS = 2;
     private List<OrdersApiResponse> orders;
     private String restAddress;
-    AddAntimatiere addAntimatiere = new AddAntimatiere();
+    AddAntimatiere addAntimatiere = new AddAntimatiere(1);
     AntimatiereUnlocked antimatiereUnlocked;
     private int speedGaugeValue = 0;
+    Handler handler = new Handler();
+    Runnable runnable;
+    int delay = 1000;
+    ApiInterface api;
+    Button buttonPlus;
+    boolean courantRestarted = false;
+    Context context;
+    Vibrator vib;
+    boolean isUnlocked = false;
 
     // Pass in the contact array into the constructor
-    public OrdersAdapter(List<OrdersApiResponse> orders, String restAddress) {
+    public OrdersAdapter(List<OrdersApiResponse> orders, String restAddress, Context context, Vibrator vib) {
         this.orders = orders;
         this.restAddress = restAddress;
+        this.context = context;
+        this.vib = vib;
     }
 
     public void setOrders(List<OrdersApiResponse> orders){
         this.orders = orders;
+    }
+
+    public void callAPIAntimatiereUnlocked() {
+        handler.postDelayed(runnable = new Runnable() {
+            public void run() {
+                Call<AntimatiereUnlocked> callSyncForAntimatiereUnlocked = api.getAntimatiereUnlockedCall();
+                callSyncForAntimatiereUnlocked.enqueue(new Callback<AntimatiereUnlocked>() {
+                    @Override
+                    public void onResponse(Call<AntimatiereUnlocked> call, Response<AntimatiereUnlocked> response) {
+                        antimatiereUnlocked = response.body();
+                        if (antimatiereUnlocked != null && antimatiereUnlocked.getUnlocked() != null && !isUnlocked) {
+                            if (antimatiereUnlocked.getUnlocked()) {
+                                buttonPlus.setEnabled(true);
+                                vib.vibrate(200);
+                                Toast.makeText(context, "Oh.. un bouton a été débloqué..", Toast.LENGTH_SHORT).show();
+                                isUnlocked = true;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<AntimatiereUnlocked> call, Throwable t) {
+                        Log.d("CallBack AntimatiereUnlocked", "Callback failure");
+                        t.printStackTrace();
+                    }
+                });
+            }
+        }, delay);
     }
 
     @NonNull
@@ -71,6 +112,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         // Get the data model based on position
         OrdersApiResponse order = orders.get(position);
         TextView textView;
+        api = ServiceGenerator.createService(ApiInterface.class, restAddress);
 
         switch(holder.getItemViewType()){
             case LAYOUT_DEFAULT:
@@ -80,41 +122,19 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 textView.setText(order.getTitle());
                 break;
             case LAYOUT_PLUS:
-                ApiInterface api = ServiceGenerator.createService(ApiInterface.class, restAddress);
-
                 ViewHolderWithButtonPlus viewHolderWithButtonPlus = (ViewHolderWithButtonPlus) holder;
                 // Set item views based on your views and data model
                 textView = viewHolderWithButtonPlus.orderTextView;
                 textView.setText(order.getTitle());
+                buttonPlus = viewHolderWithButtonPlus.buttonPlus;
 
-
-
-                Button buttonPlus = viewHolderWithButtonPlus.buttonPlus;
                 buttonPlus.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        Call<AntimatiereUnlocked> callSyncForAntimatiereUnlocked = api.getAntimatiereUnlockedCall();
-                        callSyncForAntimatiereUnlocked.enqueue(new Callback<AntimatiereUnlocked>() {
-                            @Override
-                            public void onResponse(Call<AntimatiereUnlocked> call, Response<AntimatiereUnlocked> response) {
-                                antimatiereUnlocked = response.body();
-                                if(antimatiereUnlocked != null && antimatiereUnlocked.getUnlocked() != null) {
-                                    if(antimatiereUnlocked.getUnlocked()){
-                                        buttonPlus.setEnabled(true);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<AntimatiereUnlocked> call, Throwable t) {
-                                Log.d("CallBack AntimatiereUnlocked", "Callback failure");
-                                t.printStackTrace();
-                            }
-                        });
-
                         Call<AddAntimatiere> callSync = api.addAntimatiere(addAntimatiere);
                         callSync.enqueue(new Callback<AddAntimatiere>() {
                             @Override
                             public void onResponse(Call<AddAntimatiere> call, Response<AddAntimatiere> response) {
+                                if(addAntimatiere.getValue() == 3) return;
                                 addAntimatiere.setValue(addAntimatiere.getValue() + 1);
                                 Log.d("Antimatiere", "Adding one antimatiere : " + addAntimatiere.getValue());
                             }
@@ -180,6 +200,10 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             orderTextView = (TextView) itemView.findViewById(R.id.order_title);
             buttonPlus = (Button) itemView.findViewById(R.id.button_plus);
+
+            if (antimatiereUnlocked != null && antimatiereUnlocked.getUnlocked() != null && antimatiereUnlocked.getUnlocked()) {
+                buttonPlus.setEnabled(true);
+            }
         }
     }
 }

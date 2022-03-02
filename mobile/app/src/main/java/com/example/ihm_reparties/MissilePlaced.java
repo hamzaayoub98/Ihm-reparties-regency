@@ -12,20 +12,20 @@ public class MissilePlaced implements Serializable
 {
     public MissilePlaced(){}
 
-    public MissilePlaced(Boolean isPlaced){
-        this.isPlaced = isPlaced;
+    public MissilePlaced(Boolean missilePlaced){
+        this.missilePlaced = missilePlaced;
     }
 
-    @SerializedName("isPlaced")
+    @SerializedName("missilePlaced")
     @Expose
-    private Boolean isPlaced;
+    private Boolean missilePlaced;
 
-    public Boolean getIsPlaced() {
-        return isPlaced;
+    public Boolean getMissilePlaced() {
+        return missilePlaced;
     }
 
-    public void setIsPlaced(Boolean isPlaced) {
-        this.isPlaced = isPlaced;
+    public void setMissilePlaced(Boolean missilePlaced) {
+        this.missilePlaced = missilePlaced;
     }
 
 }

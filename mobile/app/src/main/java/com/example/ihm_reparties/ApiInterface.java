@@ -26,9 +26,6 @@ public interface ApiInterface {
     @POST("/hypervitesse/activated") // specify the sub url for our base url
     Call<ActivateHypervitesse> activateHypervitesse(@Body ActivateHypervitesse activateHypervitesse);
 
-    @POST("/missile/activated") // specify the sub url for our base url
-    Call<ActivateMissile> activateMissile(@Body ActivateMissile activateMissile);
-
 
 // for GET request
 
@@ -64,6 +61,10 @@ public interface ApiInterface {
 
     @GET("/courant/seq")
     Call<CourantSequence> getCourantSequenceCall();
+
+    @GET("/launchMissile")
+    Call<String> getLaunchMissileCall();
+
 // CountryResponse is a POJO class which receives the response of this API
 
 }
