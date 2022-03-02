@@ -26,7 +26,6 @@
         </button>
 
 
-
         <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
         </button>
@@ -59,6 +58,9 @@
           radius="120"
           rangeColor="red"
         />
+      <div id="speed">
+        <VueSlider v-model="speedSlider" id="slider" v-on:change="sendSpeedValue"/>
+      </div>
     </div>
 </template>
 
@@ -67,7 +69,7 @@
 
     import Asteroid from "./Asteroid";
     import { URL_REST, URL_WS } from '../main.js'
-    //import VueSlider from 'vue-slider-component'
+    import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
     import ToggleButton from './ToggleButton.vue';
@@ -75,7 +77,7 @@
 
     export default {
         name: "Home",
-        components: {Asteroid,AsteroidLeft,ToggleButton,RoundSlider},
+        components: {Asteroid,AsteroidLeft,ToggleButton,RoundSlider,VueSlider},
         data(){
             return {
                 info : null,
@@ -92,6 +94,7 @@
                 buttonVisible:false,
                 onSlider2:false,
                 sliderValue2:0,
+                speedSlider : 0,
             }
 
         },
@@ -310,6 +313,9 @@
               this.onSlider2=false
 
             },
+            sendSpeedValue:function(){
+               this.connection.send(['speed',this.speedSlider]);
+            },
             sendSliderValue:function(){
               this.connection.send(['sliderValue',this.sliderValue]);
             },
@@ -489,6 +495,10 @@
         height: 6%;
         width: 7%;
         border-radius: 10%;
+    }
+    #speed{
+      display:flex;
+      flex-direction: column-reverse;
     }
     .button9Disabled{
       position: absolute;
