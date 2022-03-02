@@ -48,6 +48,7 @@ router.post('/finish', function(request, response){
 
 router.get('/show-button',function(request,response){
     actions.setShowButton(true);
+    actions.setCourantStatus();
     response.status(200).json("new val is  : " + actions.getShowButton())
 })
 

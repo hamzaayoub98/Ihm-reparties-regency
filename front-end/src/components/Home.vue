@@ -59,7 +59,7 @@
           radius="120"
           rangeColor="red"
         />
-      <div id="speed">
+      <div id="speed" v-if="buttonVisible === true">
         <VueSlider v-model="speedSlider" id="slider" v-on:change="sendSpeedValue"/>
       </div>
     </div>
@@ -108,7 +108,7 @@
         mounted() {
           let button1Pressed = false;
           let button2Pressed = false;
-
+          console.log(this.buttonVisible)
           let button5Pressed = false;
           let button6Pressed = false;
           let button7Pressed = false;
@@ -283,16 +283,18 @@
               })
             },
             action:function (number) {
-                Axios.post("http://" + URL_REST + "/action", {
+                if(this.buttonVisible){
+                  Axios.post("http://" + URL_REST + "/action", {
                     action: number,
-                })
-                    .then(res => {
+                  })
+                      .then(res => {
                         console.log(`statusCode: ${res.status}`)
                         console.log(res)
-                    })
-                    .catch(error => {
+                      })
+                      .catch(error => {
                         console.log(error);
-            });
+                      });
+                }
             },
             initWSConnection: function() {
                 console.log("Starting connection to WebSocket Server")
