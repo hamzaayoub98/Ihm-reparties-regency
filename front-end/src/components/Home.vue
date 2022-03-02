@@ -259,7 +259,7 @@
           });
             window.setInterval(() => {
                 this.checkButtonState();
-     
+
             }, 500)
           window.setInterval(() => {
             if(!this.onSlider && this.sliderValue <98){
@@ -271,8 +271,17 @@
               this.sliderValue2--;
             }
           },100)
+          window.setInterval(()=>{
+            this.checkMissile()
+          },500)
         },
         methods: {
+            checkMissile : function(){
+                Axios.get("http://" + URL_REST + "/missile/launched")
+              .then(res=>{
+                this.isShow =!(res.data.missileLaunched)
+              })
+            },
             action:function (number) {
                 Axios.post("http://" + URL_REST + "/action", {
                     action: number,
