@@ -9,6 +9,9 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -95,6 +98,7 @@ public class OrdersActivity extends AppCompatActivity {
     int hypervitesseButtonCountClick = 3;
     boolean areOrdersVisible = true;
     boolean isMissileLaunched = false;
+    boolean isHelpVisible = false;
     private Context context = this;
     Vibrator vib;
     Handler handler = new Handler();
@@ -106,16 +110,21 @@ public class OrdersActivity extends AppCompatActivity {
     //Graphic components
     OrdersAdapter adapter;
     Button buttonCaptors, buttonOrders, buttonHypervitesse, buttonCourant, buttonMissile, buttonMissile2;
-    Group captorsLayoutGroup, ordersLayoutGroup;
+    Button buttonIndiceCourant, buttonIndiceAntimatiere, buttonIndiceMissile, buttonIndiceHypervitesse, buttonSolutionCourant, buttonSolutionAntimatiere, buttonSolutionMissile, buttonSolutionHypervitesse;
+    Group captorsLayoutGroup, ordersLayoutGroup, helpLayout;
     HalfGauge gaugeReact1, gaugeReact2;
     ImageView arrowEnergyIndicator, warningEnergy, warningAntimatiere, warningHypervitesse, checkEnergy, checkAntimatiere, checkHypervitesse;
     TextView counterHypervitesse;
+    TextView indiceCourant, indiceAntimatiere, indiceMissile, indiceHypervitesse, solutionCourant, solutionAntimatiere, solutionMissile, solutionHypervitesse;
+    CountDownTimer timer_help;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
         client = new OkHttpClient();
+
+        startTimerHelpCourant();
 
         sharedPref = this.getSharedPreferences("app", this.MODE_PRIVATE);
         // Lookup the recyclerview in activity layout
@@ -153,9 +162,28 @@ public class OrdersActivity extends AppCompatActivity {
         buttonCourant = (Button) findViewById(R.id.button_activate_energy);
         captorsLayoutGroup = (Group) findViewById(R.id.captorsLayoutGroup);
         ordersLayoutGroup = (Group) findViewById(R.id.ordersLayoutGroup);
+        helpLayout = (Group) findViewById(R.id.helpLayoutGroup);
         counterHypervitesse = (TextView) findViewById(R.id.counter_hypervitesse);
         buttonMissile = (Button) findViewById(R.id.button_missile);
         buttonMissile2 = (Button) findViewById(R.id.button_missile2);
+        buttonIndiceCourant = (Button) findViewById(R.id.button_indice_courant);
+        buttonIndiceAntimatiere = (Button) findViewById(R.id.button_indice_antimatiere);
+        buttonIndiceMissile = (Button) findViewById(R.id.button_indice_missile);
+        buttonIndiceHypervitesse = (Button) findViewById(R.id.button_indice_hypervitesse);
+        buttonSolutionCourant = (Button) findViewById(R.id.button_solution_courant);
+        buttonSolutionAntimatiere = (Button) findViewById(R.id.button_solution_antimatiere);
+        buttonSolutionMissile = (Button) findViewById(R.id.button_solution_missile);
+        buttonSolutionHypervitesse = (Button) findViewById(R.id.button_solution_hypervitesse);
+        indiceCourant = (TextView) findViewById(R.id.text_indice_courant);
+        indiceAntimatiere = (TextView) findViewById(R.id.text_indice_antimatiere);
+        indiceMissile = (TextView) findViewById(R.id.text_indice_missile);
+        indiceHypervitesse = (TextView) findViewById(R.id.text_indice_hypervitesse);
+        solutionCourant = (TextView) findViewById(R.id.text_solution_courant);
+        solutionAntimatiere = (TextView) findViewById(R.id.text_solution_antimatiere);
+        solutionMissile = (TextView) findViewById(R.id.text_solution_missile);
+        solutionHypervitesse = (TextView) findViewById(R.id.text_solution_hypervitesse);
+
+        implementButtonsHelp();
 
         courantStatus = new CourantStatus(false);
         initGauge(gaugeReact1);
@@ -540,6 +568,32 @@ public class OrdersActivity extends AppCompatActivity {
         handler.postDelayed(runnable, delay);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_help, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.help:
+                if(!isHelpVisible){
+                    swapGroupVisibilityForHelp();
+                    item.setIcon(R.drawable.ic_baseline_videogame_asset_24);
+                } else {
+                    swapGroupVisibilityForHelp();
+                    item.setIcon(R.drawable.ic_baseline_help_24);
+                }
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void enigmWithVibrations(){
         Toast.makeText(getApplicationContext(), "Une histoire de longueur ?", Toast.LENGTH_SHORT).show();
         List<Integer> checkClicks = new ArrayList<>();
@@ -651,6 +705,38 @@ public class OrdersActivity extends AppCompatActivity {
         }
     }
 
+    private void swapGroupVisibilityForHelp(){
+        if(!isHelpVisible){
+            for(int id : captorsLayoutGroup.getReferencedIds()){
+                findViewById(id).setVisibility(View.INVISIBLE);
+            }
+            for(int id : ordersLayoutGroup.getReferencedIds()){
+                findViewById(id).setVisibility(View.INVISIBLE);
+            }
+            for(int id : helpLayout.getReferencedIds()){
+                findViewById(id).setVisibility(View.VISIBLE);
+            }
+            isHelpVisible = true;
+        } else {
+            for(int id : helpLayout.getReferencedIds()){
+                findViewById(id).setVisibility(View.INVISIBLE);
+            }
+            if(areOrdersVisible){
+                for(int id : ordersLayoutGroup.getReferencedIds()){
+                    findViewById(id).setVisibility(View.VISIBLE);
+                }
+            }
+            else {
+                for(int id : captorsLayoutGroup.getReferencedIds()){
+                    findViewById(id).setVisibility(View.VISIBLE);
+                }
+            }
+            isHelpVisible = false;
+        }
+    }
+
+
+
 //    public int getReactorValue(){
 //        for(OrdersApiResponse order : orders) {
 //            if(order.getId().equals("slider")){
@@ -742,6 +828,119 @@ public class OrdersActivity extends AppCompatActivity {
             gauge.setValue(9.0);
 
         }
+    }
+
+    public void startTimerHelpCourant(){
+        timer_help = new CountDownTimer(180000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                buttonSolutionCourant.setText("Voir Solution : " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                buttonSolutionCourant.setEnabled(true);
+                startTimerHelpAntimatiere();
+            }
+        }.start();
+    }
+
+    public void startTimerHelpAntimatiere(){
+        timer_help = new CountDownTimer(180000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                buttonSolutionAntimatiere.setText("Voir Solution : " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                buttonSolutionAntimatiere.setEnabled(true);
+                startTimerHelpMissile();
+            }
+        }.start();
+    }
+
+    public void startTimerHelpMissile(){
+        timer_help = new CountDownTimer(180000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                buttonSolutionMissile.setText("Voir Solution : " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                buttonSolutionMissile.setEnabled(true);
+                startTimerHelpHypervitesse();
+            }
+        }.start();
+    }
+
+    public void startTimerHelpHypervitesse(){
+        timer_help = new CountDownTimer(180000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                buttonSolutionHypervitesse.setText("Voir Solution : " + millisUntilFinished / 1000);
+            }
+
+            public void onFinish() {
+                buttonSolutionHypervitesse.setEnabled(true);
+            }
+        }.start();
+    }
+
+    public void implementButtonsHelp(){
+        buttonIndiceCourant.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonIndiceCourant.setVisibility(View.INVISIBLE);
+                indiceCourant.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonIndiceAntimatiere.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonIndiceAntimatiere.setVisibility(View.INVISIBLE);
+                indiceAntimatiere.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonIndiceMissile.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonIndiceMissile.setVisibility(View.INVISIBLE);
+                indiceMissile.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonIndiceHypervitesse.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonIndiceHypervitesse.setVisibility(View.INVISIBLE);
+                indiceHypervitesse.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonSolutionCourant.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonSolutionCourant.setVisibility(View.INVISIBLE);
+                solutionCourant.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonSolutionAntimatiere.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonSolutionAntimatiere.setVisibility(View.INVISIBLE);
+                solutionAntimatiere.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonSolutionMissile.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonSolutionMissile.setVisibility(View.INVISIBLE);
+                solutionMissile.setVisibility(View.VISIBLE);
+            }
+        });
+
+        buttonSolutionHypervitesse.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                buttonSolutionHypervitesse.setVisibility(View.INVISIBLE);
+                solutionHypervitesse.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     //Connections
