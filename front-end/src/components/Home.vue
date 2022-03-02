@@ -489,6 +489,11 @@
         border-radius: 10%;
     }
     #speed{
+      position: absolute;
+      margin-left: 35%;
+      top:680px;
+      width: 30%;
+      height: 30px;
       display:flex;
       flex-direction: column-reverse;
     }
