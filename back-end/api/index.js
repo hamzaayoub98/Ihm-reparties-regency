@@ -108,7 +108,7 @@ router.post('/addAntimatiere', function(request, response){
 
 router.get('/getVRAntimatiere', function(request, response){
     console.log("getVRAntimatiere ", actions.getAntimatiereVRValue())
-    response.status(200).json(actions.getAntimatiereVRValue());
+    response.status(200).json({"antimatiereValueVR": actions.getAntimatiereVRValue()});
 });
 
 router.get('/addVRAntimatiere', function(request, response){

@@ -47,6 +47,9 @@ public interface ApiInterface {
     @GET("/antimatiere/unlocked")
     Call<AntimatiereUnlocked> getAntimatiereUnlockedCall();
 
+    @GET("/getVRAntimatiere")
+    Call<AntimatiereVRValue> getAntimatiereVrValueCall();
+
     @GET("/courant/status")
     Call<CourantStatus> getCourantStatusCall();
 
