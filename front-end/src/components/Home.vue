@@ -337,11 +337,6 @@
                     _this.buttonVisible = event.data === "true"
               }
             },
-            activateAntiMater:function(){
-              Axios.get('http://'+URL_REST+'/activateMater').then(
-                  console.log("distribution activated")
-              )
-            },
             concurentTouch:function (){
               console.log("ok")
               if(this.button1Pressed && this.button2Pressed){

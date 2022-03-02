@@ -52,7 +52,7 @@ function onMessageFromFront(msg) {
     else if(trimmed[0] === 'sliderValue3'){
         let sliderValueTmp3 = parseInt(trimmed[1]);
         if (sliderValueTmp3>68)console.log("sliderValueBar : " + sliderValueTmp3)
-        //actions.processAction({action:'slider', id:2, value: sliderValueTmp2})
+        actions.processAction({action:'slider', id:3, value: sliderValueTmp3})
     }
     else if (trimmed[0] === 'lever'){
         frontWS.send(actions.getCourantStatus()+"")
