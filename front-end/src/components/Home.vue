@@ -2,9 +2,9 @@
     <div id="home" >
         <Asteroid  v-show="isShow"></Asteroid>
         <AsteroidLeft v-show="isShow"></AsteroidLeft>
-        <div class="box">
+        <!--<div class="box">
             <ToggleButton />
-        </div>
+        </div>-->
         <button id="b1" :disabled="buttonVisible===false" v-on:click="action(1)">
             <img  id="button1" v-bind:class="buttonVisible?'button1':'button1Disabled'"  src="../assets/blue_button.png">
         </button>
@@ -27,13 +27,13 @@
         </button>
 
 
-        <button v-on:click="sendPing()">
+       <!-- <button v-on:click="sendPing()">
             <img  id="button3"  src="../assets/send.png">
-        </button>
-        <button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >
+        </button>-->
+        <!--<button @click="isShow = !isShow" id="asteroidsVue" v-on:click="action(8)" >
           fire
-        </button>
-        <!--<b-button id="b4" :disabled="buttonVisible===false" size="lg" variant="primary" >Action</b-button>-->
+        </button>-->
+        <!--<b-button id="b4"  size="lg" variant="primary" v-on:click="openTopCourant">Action</b-button>-->
 
         <button id="b10" :disabled="buttonVisible === false" v-on:click="activateAntiMater">
             <img id="button10" src="../assets/motor.png" v-bind:class="buttonVisible?'button10':'button10Disabled'">
@@ -73,12 +73,11 @@
     import VueSlider from 'vue-slider-component'
     import 'vue-slider-component/theme/antd.css'
     import AsteroidLeft from './AsteroidLeft';
-    import ToggleButton from './ToggleButton.vue';
     import RoundSlider from "vue-round-slider";
 
     export default {
         name: "Home",
-        components: {Asteroid,AsteroidLeft,ToggleButton,RoundSlider,VueSlider},
+        components: {Asteroid,AsteroidLeft,RoundSlider,VueSlider},
         data(){
             return {
                 info : null,
@@ -96,6 +95,7 @@
                 buttonVisible:false,
                 onSlider2:false,
                 speedSlider : 0,
+                toastrDisplayed : false,
             }
 
         },
@@ -108,7 +108,6 @@
         mounted() {
           let button1Pressed = false;
           let button2Pressed = false;
-          console.log(this.buttonVisible)
           let button5Pressed = false;
           let button6Pressed = false;
           let button7Pressed = false;
@@ -135,6 +134,7 @@
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
                     console.log(res)
+                    this.openTopMultiTouch()
                   })
                   .catch(error => {
                     console.log(error);
@@ -153,6 +153,7 @@
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
                     console.log(res)
+                    this.openTopMultiTouch()
                   })
                   .catch(error => {
                     console.log(error);
@@ -172,6 +173,7 @@
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
                     console.log(res)
+                    this.openTopMultiTouch()
                   })
                   .catch(error => {
                     console.log(error);
@@ -190,6 +192,7 @@
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
                     console.log(res)
+                    this.openTopMultiTouch()
                   })
                   .catch(error => {
                     console.log(error);
@@ -208,6 +211,7 @@
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
                     console.log(res)
+                    this.openTopMultiTouch()
                   })
                   .catch(error => {
                     console.log(error);
@@ -226,6 +230,7 @@
                   .then(res => {
                     console.log(`statusCode: ${res.status}`)
                     console.log(res)
+                    this.openTopMultiTouch()
                   })
                   .catch(error => {
                     console.log(error);
@@ -276,6 +281,12 @@
           },500)
         },
         methods: {
+            openTopCourant: function(){
+              this.$toast.top('Courant actif ! ');
+            },
+            openTopMultiTouch:function (){
+              this.$toast.top('Action MultiTouch détectée');
+            },
             checkMissile : function(){
                 Axios.get("http://" + URL_REST + "/missile/launched")
               .then(res=>{
@@ -348,6 +359,10 @@
               var _this = this;
               this.connection.onmessage = function (event) {
                     _this.buttonVisible = event.data === "true" ||this.buttonVisible
+              }
+              if(this.buttonVisible && !this.toastrDisplayed){
+                this.openTopCourant();
+                this.toastrDisplayed = true;
               }
             },
             concurentTouch:function (){
@@ -434,7 +449,7 @@
     }
     .button5Disabled{
       position: absolute;
-      top:490px;
+      top:390px;
       left: 400px;
       height: 6%;
       width: 7%;
@@ -443,7 +458,7 @@
     }
     .button6{
         position: absolute;
-        top:660px;
+        top:620px;
         left: 400px;
         height: 6%;
         width: 7%;
@@ -451,7 +466,7 @@
     }
     .button6Disabled{
       position: absolute;
-      top:580px;
+      top:620px;
       left: 400px;
       height: 6%;
       width: 7%;
@@ -468,7 +483,7 @@
     }
     .button7Disabled{
       position: absolute;
-      top:490px;
+      top:390px;
       right: 400px;
       height: 6%;
       width: 7%;
@@ -477,7 +492,7 @@
     }
     .button8{
         position: absolute;
-        top:660px;
+        top:620px;
         right: 400px;
         height: 6%;
         width: 7%;
@@ -485,7 +500,7 @@
     }
     .button8Disabled{
       position: absolute;
-      top:580px;
+      top:620px;
       right: 400px;
       height: 6%;
       width: 7%;
