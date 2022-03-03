@@ -50,7 +50,7 @@ const nextActions = [
 },
 {
     title: "Détruire les asteroids avec un missile",
-    id: 8,
+    id: "launchMissile",
 },
 {
     title: "Appuyez sur le bouton rouge",
@@ -215,6 +215,5 @@ module.exports = {
     setCourantStatus,
     incrementAntimatiereVRValue,
     getAntimatiereVRValue,
-    getReadyMissile,
-    processAction
+    getReadyMissile
 }

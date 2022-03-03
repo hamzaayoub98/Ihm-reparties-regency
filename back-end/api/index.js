@@ -182,14 +182,12 @@ router.get('/missile/ready', function (request,response){
 router.get('/launchMissile', function (request,response){
     this.launchedMissile = true
     launchedMissile = true
+    actions.processAction("launchMissile")
     response.status(200).json("missile inbound !")
 });
 
 router.get('/missile/launched', function (request,response){
     response.status(200).json({"missileLaunched": launchedMissile})
 });
-
-
-
 
 module.exports = router;
