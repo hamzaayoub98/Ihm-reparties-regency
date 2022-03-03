@@ -350,9 +350,11 @@
               this.connection.send(['AsteroidsState',this.isShow]);
             },
             activateAntiMater:function(){
-              Axios.get('http://'+URL_REST+'/activateMater').then(
-                  console.log("distribution activated")
-              )
+              if(this.buttonVisible){
+                Axios.get('http://'+URL_REST+'/activateMater').then(
+                    console.log("distribution activated")
+                )
+              }
             },
             checkButtonState:function(){
               this.connection.send(['lever',"_"]);
