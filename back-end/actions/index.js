@@ -46,7 +46,7 @@ const baseActions = [{
 const nextActions = [
 {
     title: "Appuyer sur les 4 boutons orange en même temps",
-    id:9,
+    id:"missileReady",
 },
 {
     title: "Détruire les asteroids avec un missile",
@@ -215,5 +215,6 @@ module.exports = {
     setCourantStatus,
     incrementAntimatiereVRValue,
     getAntimatiereVRValue,
-    getReadyMissile
+    getReadyMissile,
+    processAction
 }

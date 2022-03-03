@@ -135,8 +135,6 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             @Override
                             public void onResponse(Call<AddAntimatiere> call, Response<AddAntimatiere> response) {
                                 if(addAntimatiere.getValue() == 5) {
-                                    buttonPlus.setText("Stock vide");
-                                    buttonPlus.setEnabled(false);
                                     return;
                                 }
                                 addAntimatiere.setValue(addAntimatiere.getValue() + 1);
@@ -208,6 +206,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             if (antimatiereUnlocked != null && antimatiereUnlocked.getUnlocked() != null && antimatiereUnlocked.getUnlocked()) {
                 buttonPlus.setEnabled(true);
+            }
+
+            if(addAntimatiere.getValue() == 5) {
+                buttonPlus.setText("Stock vide");
+                buttonPlus.setEnabled(false);
             }
         }
     }
